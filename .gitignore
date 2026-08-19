@@ -1,0 +1,9 @@
+# Secrets and personal tokens
+cookies.txt
+*.cookies
+*.session
+
+# MPV Cache & Watch later
+watch_later/
+mpv-cache/
+*.log

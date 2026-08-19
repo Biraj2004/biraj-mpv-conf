@@ -158,12 +158,16 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 - **Native File Dialog (<kbd>Ctrl</kbd> + <kbd>O</kbd>)**: Press <kbd>Ctrl</kbd> + <kbd>O</kbd> (or right-click $\rightarrow$ **Open** $\rightarrow$ **Open File**) to open the native Windows File Explorer picker. Select single or multiple files to load into the playlist.
 - **Default Player Integration**: Right-click any media file in Windows File Explorer $\rightarrow$ **Open with** $\rightarrow$ **Choose another app** $\rightarrow$ select **mpv** and check *"Always use this app"*.
 
-### 2. Streaming Online URLs (YouTube, Twitch, Anime & Web Videos)
-- **Drag & Drop URL**: Copy any video/stream link from your web browser and drag/drop it directly into the mpv window.
+### 2. Streaming Online URLs (YouTube, Twitch, Playlists & Web Videos)
+- **Drag & Drop URL**: Copy any video/stream or playlist link from your web browser and drag/drop it directly into the mpv window.
+- **Playlists Support**: Automatically extracts and plays all playlist items when opening/pasting playlist URLs (`youtube.com/playlist?list=...` or `watch?v=...&list=...`).
 - **Command Line / Terminal**:
   ```powershell
-  # Stream video (automatically plays 4K -> 2K -> 1080p -> 720p best available)
+  # Stream video (automatically plays 2K 1440p -> 1080p -> 720p best available)
   mpv "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+  # Stream a full YouTube playlist
+  mpv "https://www.youtube.com/playlist?list=PLrEnWoR732-BHrPp_Pm8_VleD68f9n14-"
 
   # Stream capped at 1080p Full HD
   mpv --profile=q-1080p "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
@@ -172,12 +176,38 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
   mpv --profile=q-720p "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
   ```
 - **Switch Stream Quality On-The-Fly**:
-  - **Right-Click**: Navigate to **Video** $\rightarrow$ **YT-Stream Quality** and select `720p`, `1080p`, `1440p`, `2160p`, or `Best`.
-  - **Keyboard**: Press <kbd>Ctrl</kbd> + <kbd>y</kbd> to cycle between stream resolutions.
+  - **Right-Click**: Navigate to **Video** $\rightarrow$ **YT-Stream Quality** and select `720p`, `1080p`, `1440p`, or `Best`.
+  - **Keyboard**: Press <kbd>Ctrl</kbd> + <kbd>y</kbd> to cycle between stream resolutions (720p $\rightarrow$ 1080p $\rightarrow$ 1440p $\rightarrow$ Best).
   - *The stream instantly reloads at the new resolution and resumes from your current second.*
 - **One-Click Stream Download**: Click the download button on the ModernZ controller bar to save the online video directly to `~/Downloads/MPV-Downloads`.
 
-### 3. Adding Subtitles & External Audio Tracks
+### 3. Setting Up YouTube Cookies (Unlocking Full 1080p & 1440p Streaming)
+YouTube enforces session authentication on separate high-definition adaptive streams (DASH/HLS). Without cookies, YouTube blocks direct stream requests with HTTP 403 Forbidden or falls back to 360p. Supplying your cookies allows mpv to stream high-definition 1080p Full HD and 1440p 2K with hardware decoding.
+
+#### Method 1: Exporting `cookies.txt` (Works with Chrome, Brave, Edge, Opera, Firefox)
+1. Install a cookie exporter extension in your browser:
+   - **Cookie-Editor** (Chrome / Edge / Firefox / Brave) or **Get cookies.txt LOCALLY**.
+2. Open [YouTube](https://www.youtube.com) in your browser and ensure you are signed in.
+3. Open the extension and click **Export** $\rightarrow$ **Export as Netscape** (or **Export as cookies.txt**).
+4. Save the file as `cookies.txt` inside your mpv configuration directory:
+   ```plaintext
+   C:\Users\<YourUsername>\AppData\Roaming\mpv\cookies.txt
+   ```
+5. In `mpv.conf`, enable the cookie path:
+   ```ini
+   ytdl-raw-options-append=cookies=C:\Users\<YourUsername>\AppData\Roaming\mpv\cookies.txt
+   ```
+
+#### Method 2: Direct Browser Session (Firefox)
+If you use Mozilla Firefox, you can read cookies directly without exporting a file:
+```ini
+ytdl-raw-options-append=cookies-from-browser=firefox
+```
+
+> [!NOTE]
+> `cookies.txt` is automatically excluded in `.gitignore` so your personal authentication tokens will never be committed or uploaded to GitHub.
+
+### 4. Adding Subtitles & External Audio Tracks
 - **Drag & Drop**: Drag any `.srt`, `.ass`, `.vtt`, or `.sub` file directly onto the playing video.
 - **Native Subtitle Dialog (<kbd>Ctrl</kbd> + <kbd>S</kbd>)**: Opens Windows Explorer to browse and attach subtitles.
 - **Native Audio Track Dialog (<kbd>Ctrl</kbd> + <kbd>A</kbd>)**: Opens Windows Explorer to add secondary audio tracks (e.g. commentary, alternative dubs).
@@ -185,7 +215,7 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
   - Press <kbd>v</kbd> to cycle subtitle tracks *(VLC-style)*.
   - Press <kbd>b</kbd> to cycle audio languages *(VLC-style)*.
 
-### 4. Essential Playback Controls
+### 5. Essential Playback Controls
 - **Play / Pause**: <kbd>Space</kbd> or <kbd>Media Play/Pause</kbd>
 - **Exact Seeking**: <kbd>→</kbd> / <kbd>←</kbd> (5s exact) • <kbd>Media Forward/Rewind</kbd> (15s exact) • <kbd>Home</kbd> (beginning)
 - **Volume & Mute**: <kbd>↑</kbd> / <kbd>↓</kbd> (±5%) • <kbd>m</kbd> (Mute)
@@ -245,7 +275,7 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
-- **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, 2160p 4K UHD, or Max Source**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-2160p]`, `[q-best]`).
+- **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, or Best Fallback**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
 
 ---
@@ -341,7 +371,7 @@ biraj-mpv-conf/
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>l</kbd> | **Toggle Dynamic Format Badge (DV / HDR10+ / HDR / SDR)** |
-| <kbd>Ctrl</kbd> + <kbd>y</kbd> | **Cycle Streaming Quality (*720p → 1080p → 1440p → 2160p → Best*)** |
+| <kbd>Ctrl</kbd> + <kbd>y</kbd> | **Cycle Streaming Quality (*720p → 1080p → 1440p → Best*)** |
 | <kbd>d</kbd> | Toggle Debanding filter on/off |
 | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
 | <kbd>Alt</kbd> + <kbd>h</kbd> | Cycle HDR Tone-Mapping curves (*Auto, BT.2390, Spline, Reinhard, Clip*) |
