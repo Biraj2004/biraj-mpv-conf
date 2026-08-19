@@ -151,7 +151,7 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Advanced Subtitle & Audio Management
-- **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, and `ass/` subdirectories.
+- **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, `ass/`, and `vtt/` subdirectories.
 - **Subtitle Preroll**: Avoids missing subtitle lines when seeking into the middle of an MKV subtitle block.
 - **Subtitles Off by Default**: Clean view on launch (`sid=no`), easily enabled when needed via <kbd>v</kbd> or right-click menu.
 - **Multi-Language Priority**: Default subtitle matching priority for English (`slang=en,enm`) and audio stream selection for Hindi, English, and Japanese (`alang=hi,en,ja`).
