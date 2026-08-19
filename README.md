@@ -6,15 +6,16 @@
 
 [![mpv](https://img.shields.io/badge/mpv-v0.38%2B-blue?style=for-the-badge&logo=mpv&logoColor=white)](https://mpv.io/)
 [![Renderer](https://img.shields.io/badge/Renderer-gpu--next-success?style=for-the-badge&logo=vulkan&logoColor=white)](https://mpv.io/manual/master/#options-vo)
-[![Hardware Acceleration](https://img.shields.io/badge/HW%20Dec-Direct3D11-informational?style=for-the-badge&logo=windows&logoColor=white)](https://mpv.io/manual/master/#options-hwdec)
-[![UI Theme](https://img.shields.io/badge/UI-ModernZ%20(Fluent)-orange?style=for-the-badge)](https://github.com/Samillion/ModernZ)
+[![Hardware Acceleration](https://img.shields.io/badge/HW%20Dec-auto--safe-informational?style=for-the-badge&logo=windows&logoColor=white)](https://mpv.io/manual/master/#options-hwdec)
+[![UI Theme](https://img.shields.io/badge/UI-ModernZ%20(Fluent%2FMaterial)-orange?style=for-the-badge)](https://github.com/Samillion/ModernZ)
+[![Security Policy](https://img.shields.io/badge/Security-Policy-brightgreen?style=for-the-badge&logo=shieldsdotio&logoColor=white)](SECURITY.md)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blueviolet?style=for-the-badge)](LICENSE)
 
 <br/>
 
 *Bridges the gap between mpv's lightweight performance and a sleek, feature-rich modern media player experience.*
 
-[Key Features](#key-features) • [Installation](#installation) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [Customization](#customization) • [Credits](#credits--acknowledgements)
+[Quick Start / Installation](#installation) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [Customization](#customization) • [Credits](#credits--acknowledgements)
 
 ---
 
@@ -26,46 +27,131 @@
 
 ---
 
+## Installation
+
+> [!TIP]
+> **Zero Setup Required:** You can use this entire configuration suite as-is by simply copying or extracting the repository contents directly into your mpv configuration directory.
+
+### Full Target Paths on Windows
+
+| Mode | Target Directory | Description |
+| :--- | :--- | :--- |
+| **Standard (Roaming)** | `C:\Users\<YourUsername>\AppData\Roaming\mpv\` | Default configuration location for installed mpv builds (accessible via `%APPDATA%\mpv`). |
+| **Portable** | `C:\<PathToMpv>\portable_config\` | Used for standalone/portable mpv installations. |
+
+---
+
+### Method 1: Standard Installation (Windows) — *Recommended*
+
+#### Option A: Quick Clone via PowerShell (Fastest)
+Open **PowerShell** and run:
+```powershell
+# Create the directory if it doesn't already exist and clone directly into Roaming
+New-Item -ItemType Directory -Force -Path "$env:APPDATA\mpv"
+git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
+```
+
+#### Option B: Manual Extraction (ZIP)
+1. Download this repository as a ZIP archive: [**Download ZIP**](https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip).
+2. Press <kbd>Win</kbd> + <kbd>R</kbd>, type `%APPDATA%\mpv`, and press **Enter** (or navigate to the full path `C:\Users\<YourUsername>\AppData\Roaming\mpv\`).
+3. Extract all files and folders from the ZIP directly into this folder so your directory looks like:
+   ```plaintext
+   C:\Users\<YourUsername>\AppData\Roaming\mpv\
+   ├── fonts/
+   │   └── modernz-icons.ttf
+   ├── script-opts/
+   │   ├── modernz.conf
+   │   ├── pause_indicator_lite.conf
+   │   └── thumbfast.conf
+   ├── scripts/
+   │   ├── modernz.lua
+   │   ├── open-file.lua
+   │   ├── pause_indicator_lite.lua
+   │   └── thumbfast.lua
+   ├── biraj-mpv-guide.pdf
+   ├── input.conf
+   ├── menu.conf
+   ├── mpv.conf
+   ├── LICENSE
+   ├── README.md
+   └── SECURITY.md
+   ```
+4. **Install Icons Font**: Open `fonts/` inside your mpv directory, double-click `modernz-icons.ttf`, and click **Install**.
+
+---
+
+### Method 2: Portable Installation (All-in-One Folder)
+
+If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB drive):
+1. Navigate to your mpv root directory (where `mpv.exe` resides).
+2. Create a folder named `portable_config` if one does not exist.
+3. Extract/copy all files from this repository directly into:
+   ```plaintext
+   C:\mpv\portable_config\
+   ├── fonts/
+   ├── script-opts/
+   ├── scripts/
+   ├── input.conf
+   ├── menu.conf
+   ├── mpv.conf
+   └── ...
+   ```
+4. Install `fonts/modernz-icons.ttf` onto your system to enable vector icons.
+
+---
+
+### Method 3: Linux / macOS
+
+While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3D hardware acceleration, this configuration works smoothly on Linux and macOS:
+1. Clone or extract the repository to `~/.config/mpv/`.
+2. *(Optional)* In `mpv.conf`, verify or adjust the hardware decoding backend if needed:
+   - **Linux**: `hwdec=auto-safe` (or explicitly `hwdec=vaapi` / `hwdec=nvdec`).
+   - **macOS**: `hwdec=auto-safe` (or `hwdec=videotoolbox`).
+
+---
+
 ## Key Features
 
 ### Modern UI and Fluent On-Screen Controller
 - **[ModernZ](https://github.com/Samillion/ModernZ) OSC Interface**: Replaces the default interface with a clean, responsive On-Screen Controller styled with Fluent/Material vector icons.
-- **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography, eliminating disruptive double seekbars.
-- **Sleek Pause / Play Indicator**: Minimalist, non-distracting center pause/unpause visual flash indicators (`pause_indicator_lite`).
+- **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography, eliminating disruptive double seekbars (`osd-bar=no`).
+- **Sleek Pause / Play Indicator**: Minimalist, non-distracting center pause/unpause visual flash indicators ([`pause_indicator_lite`](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)).
 
 ### Next-Gen GPU Video Rendering
-- **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy and HDR processing.
-- **Direct3D 11 Hardware Decoding (`d3d11va`)**: Blazing fast, low-CPU/low-power video decoding for 4K/8K media on modern GPUs.
-- **Debanding and Temporal Dithering**: Eliminates color banding artifacts in dark scenes, anime, and compressed web video streams.
-- **High-Fidelity Scaling**: Sigmoid upscaling and correct color-space downscaling algorithms for razor-sharp playback without ringing artifacts.
+- **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
+- **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms.
+- **Debanding & Temporal Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `temporal-dither=yes`).
+- **High-Fidelity Scaling**: Sigmoid upscaling and correct color-space downscaling algorithms for sharp playback without ringing artifacts.
 
 ### Instant Seekbar Hover Thumbnails
-- Integrated with **`thumbfast`** to provide instant, real-time visual preview thumbnails when hovering or scrubbing along the seekbar.
+- Integrated with **[`thumbfast`](https://github.com/po5/thumbfast)** to provide instant, real-time visual preview thumbnails when hovering or scrubbing along the seekbar.
 
 ### Rich Right-Click Context Menu
-- Full-featured **contextual GUI menu** (`menu.conf`) accessible on right-click:
+- Full-featured **contextual GUI menu** (`menu.conf`) accessible on right-click or via <kbd>g</kbd> <kbd>m</kbd>:
   - Toggle audio/subtitle streams, secondary subtitles, and audio devices.
   - Switch ModernZ layouts (*Default, Compact, Mini, Seekbar*) and icon styles (*Fluent, Material*).
   - Adjust playback speed (*0.25x* to *8.0x*), A-B looping, aspect ratios, zoom, and rotation.
   - View real-time playback statistics, drop frames, and media information.
+  - Quick-copy media file paths, titles, or active subtitle text to the clipboard.
 
 ### Native Windows File and Track Selectors
-- **PowerShell / WPF Native Dialogs**: Seamlessly browse and open files (`Ctrl+O`), load external subtitles (`Ctrl+S`), or attach secondary audio tracks (`Ctrl+A`) using standard Windows File Explorer dialogs.
+- **PowerShell / WPF Native Dialogs** ([`open-file.lua`](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)): Seamlessly browse and open files (<kbd>Ctrl</kbd>+<kbd>O</kbd>), load external subtitles (<kbd>Ctrl</kbd>+<kbd>S</kbd>), or attach secondary audio tracks (<kbd>Ctrl</kbd>+<kbd>A</kbd>) using standard Windows File Explorer dialogs.
 
 ### Smart Dynamic Profiles
 - **Picture-in-Picture (`[Window-PiP]`)**: Automatically scales the OSC and enables a persistent progress bar when floating on-top in windowed mode.
-- **Auto-Pause on Minimize (`[Minimized]`)**: Automatically pauses video when the player window is minimized to conserve resources.
-- **Windows Taskbar Progress Indicator (`[Video]`)**: Displays live playback completion progress directly in the Windows taskbar icon.
-- **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (`Wheel Up/Down`), image recentering, and infinite display duration.
+- **Auto-Pause on Minimize (`[Minimized]`)**: Automatically pauses video when the player window is minimized to conserve system resources.
+- **Windows Taskbar Progress Indicator (`[Video]`)**: Displays live playback completion progress directly on the Windows taskbar icon.
+- **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
-### Advanced Subtitle and Multi-Audio Management
+### Advanced Subtitle & Audio Management
 - **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, and `ass/` subdirectories.
 - **Subtitle Preroll**: Avoids missing subtitle lines when seeking into the middle of an MKV subtitle block.
-- **Multi-Language Priority**: Default subtitle matching priority for English (`en`, `enm`) and audio stream selection for Hindi, English, and Japanese (`hi`, `en`, `ja`).
+- **Subtitles Off by Default**: Clean view on launch (`sid=no`), easily enabled when needed via <kbd>v</kbd> or right-click menu.
+- **Multi-Language Priority**: Default subtitle matching priority for English (`slang=en,enm`) and audio stream selection for Hindi, English, and Japanese (`alang=hi,en,ja`).
 
-### High-Speed Streaming and Extended Format Support
-- Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming.
-- Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`), audio (`FLAC`, `OPUS`, `ALAC`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`).
+### High-Speed Streaming & Extended Format Support
+- Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with best format selection.
+- Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
 
 ---
 
@@ -88,65 +174,10 @@ biraj-mpv-conf/
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
 ├── biraj-mpv-guide.pdf       # Quick reference manual
-└── LICENSE                   # Apache 2.0 Open Source License
+├── SECURITY.md               # Security policy and vulnerability disclosure
+├── LICENSE                   # Apache 2.0 Open Source License
+└── README.md                 # Documentation
 ```
-
----
-
-## Installation
-
-### Prerequisites
-- **mpv**: Download the latest build from [mpv.io](https://mpv.io/installation/) or [shinchiro's builds](https://sourceforge.net/projects/mpv-player-windows/files/release/).
-- **yt-dlp** *(Optional, for online streaming)*: Place `yt-dlp.exe` in your system `PATH` or in the mpv installation directory.
-
----
-
-### Method 1: Standard Installation (Windows)
-
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/Biraj2004/biraj-mpv-conf.git
-   ```
-2. Press `Win + R`, type `%APPDATA%\mpv`, and press **Enter**.
-3. Copy all files and folders from this repository into `%APPDATA%\mpv\`:
-   ```plaintext
-   C:\Users\<YourUsername>\AppData\Roaming\mpv\
-   ├── fonts/
-   ├── script-opts/
-   ├── scripts/
-   ├── input.conf
-   ├── menu.conf
-   └── mpv.conf
-   ```
-4. *(Recommended)* Install the icon font by double-clicking `fonts/modernz-icons.ttf` and clicking **Install**.
-
----
-
-### Method 2: Portable Installation (All-in-One Folder)
-
-If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB drive):
-1. Navigate to your mpv root folder.
-2. Create a folder named `portable_config`.
-3. Copy all repository contents into:
-   ```plaintext
-   C:\mpv\portable_config\
-   ├── fonts/
-   ├── script-opts/
-   ├── scripts/
-   ├── input.conf
-   ├── menu.conf
-   └── mpv.conf
-   ```
-
----
-
-### Method 3: Linux / macOS
-
-While tuned with Windows hardware acceleration (`d3d11va`) and PowerShell dialogs, you can use this configuration on Linux or macOS by adjusting a few options:
-1. Copy the files to `~/.config/mpv/`.
-2. In `mpv.conf`, update hardware decoding:
-   - **Linux**: Change `hwdec=d3d11va` to `hwdec=vaapi` or `hwdec=nvdec`.
-   - **macOS**: Change `hwdec=d3d11va` to `hwdec=videotoolbox` and `vo=gpu-next` to `vo=gpu-next` (MoltenVK).
 
 ---
 
@@ -158,7 +189,7 @@ While tuned with Windows hardware acceleration (`d3d11va`) and PowerShell dialog
 | **Double Click Left** | Toggle Fullscreen |
 | **Right Click** | Open Context Menu (`menu.conf`) |
 | **Mouse Hover Seekbar** | Show Fast Hover Thumbnail Preview (`thumbfast`) |
-| **Scroll Wheel (Image Mode)** | Cursor-centric Zoom In / Zoom Out |
+| **Scroll Wheel (Image Mode)** | Cursor-centric Zoom In / Zoom Out (±10%) |
 
 ---
 
@@ -166,11 +197,11 @@ While tuned with Windows hardware acceleration (`d3d11va`) and PowerShell dialog
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>Space</kbd> / <kbd>Media Play/Pause</kbd> | Toggle Play / Pause |
-| <kbd>→</kbd> / <kbd>←</kbd> | Seek forward / backward 2 seconds (exact) |
-| <kbd>Forward</kbd> / <kbd>Rewind</kbd> | Seek forward / backward 10 seconds |
-| <kbd>Home</kbd> | Seek to beginning of media |
+| <kbd>→</kbd> / <kbd>←</kbd> | Seek forward / backward **5 seconds** (exact with OSD bar) |
+| <kbd>Media Forward</kbd> / <kbd>Media Rewind</kbd> | Seek forward / backward **15 seconds** (exact with OSD bar) |
+| <kbd>Home</kbd> | Seek to beginning of media (0s) |
 | <kbd>.</kbd> / <kbd>,</kbd> | Frame step forward / backward |
-| <kbd>n</kbd> / <kbd>p</kbd> | Next / Previous playlist item |
+| <kbd>n</kbd> / <kbd>p</kbd> *(or Media Next/Prev)* | Next / Previous playlist item |
 | <kbd>l</kbd> | Set / Clear A-B repeat loop points |
 | <kbd>q</kbd> / <kbd>Alt+F4</kbd> | Quit mpv (remembers watch history & playback position) |
 
@@ -181,8 +212,8 @@ While tuned with Windows hardware acceleration (`d3d11va`) and PowerShell dialog
 | :--- | :--- |
 | <kbd>b</kbd> | Cycle audio tracks *(VLC-style)* |
 | <kbd>v</kbd> | Cycle subtitle tracks *(VLC-style)* |
-| <kbd>↑</kbd> / <kbd>↓</kbd> | Volume up / down (+2% / -2%) |
-| <kbd>m</kbd> / <kbd>Mute</kbd> | Toggle Mute |
+| <kbd>↑</kbd> / <kbd>↓</kbd> *(or Media Vol Up/Down)* | Volume up / down (+5% / -5%) |
+| <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
 | <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
 | <kbd>Ctrl</kbd> + <kbd>a</kbd> | Open Native File Dialog to add Audio track |
 
@@ -204,7 +235,7 @@ While tuned with Windows hardware acceleration (`d3d11va`) and PowerShell dialog
 | :--- | :--- |
 | <kbd>Wheel Up</kbd> | Smooth Cursor-Centric Zoom In (+10%) |
 | <kbd>Wheel Down</kbd> | Smooth Cursor-Centric Zoom Out (-10%) |
-| <kbd>0</kbd> | Reset Image Position & Zoom to Center |
+| <kbd>0</kbd> | Reset Image Position & Center Alignment |
 
 ---
 
@@ -215,23 +246,24 @@ This configuration leverages mpv's conditional profiles for zero-friction playba
 ```mermaid
 graph TD
     A[Open Media in mpv] --> B{Media Type / State}
-    B -->|Playing Video| C[Profile: Video<br/>Enables Taskbar Progress]
-    B -->|Opening Image| D[Profile: Image<br/>Cursor Zoom, No Aspect Warp, Infinite Display]
-    B -->|Window Minimized| E[Profile: Minimized<br/>Auto-Pause Playback]
-    B -->|Pinned On Top & Windowed| F[Profile: Window-PiP<br/>Borderless, Scaled OSC, Progress Bar]
+    B -->|Playing Video| C[Profile: Video<br/>Enables Windows Taskbar Progress]
+    B -->|Opening Image| D[Profile: Image<br/>Cursor Zoom, Aspect Ignore, Infinite Display]
+    B -->|Window Minimized| E[Profile: Minimized<br/>Auto-Pause Video Playback]
+    B -->|Pinned On Top & Windowed| F[Profile: Window-PiP<br/>Borderless, 1.8x Scaled OSC, Progress Bar]
 ```
 
 1. **`[Window-PiP]`**:
    - **Trigger**: When `ontop=yes` and windowed (not fullscreen).
-   - **Behavior**: Strips borders, scales OSC size by `1.8x` for readability at small sizes, and keeps progress bar active.
+   - **Behavior**: Strips borders, scales OSC size by `1.8x` for effortless control in mini windows, and keeps progress bar active.
 2. **`[Minimized]`**:
    - **Trigger**: When the mpv window is minimized (excluding audio album art).
-   - **Behavior**: Pauses playback automatically and resumes upon restoration.
+   - **Behavior**: Pauses video playback automatically and resumes upon restoration.
 3. **`[Video]`**:
    - **Trigger**: Active video track with duration > 0.
    - **Behavior**: Activates Windows taskbar progress tracking.
+   - **Initial State**: Fullscreen by default (`fullscreen=yes`).
 4. **`[Image]`**:
-   - **Trigger**: Still images (`png`, `jpg`, `webp`, `avif`, `jxl`, etc.).
+   - **Trigger**: Still images (`png`, `jpg`, `webp`, `avif`, `jxl`, `svg`, `qoi`, etc.).
    - **Behavior**: Holds display duration infinitely, centers view, and activates cursor-anchored zoom bindings.
 
 ---
@@ -239,10 +271,13 @@ graph TD
 ## Customization
 
 ### 1. Changing Hardware Acceleration
-In [`mpv.conf`](file:///c:/Users/biraj/Desktop/biraj-mpv-conf/mpv.conf#L46-L48):
+In [`mpv.conf`](mpv.conf):
 ```ini
-# Default: Direct3D 11 (Best for Windows)
-hwdec=d3d11va
+# Default: Auto-Safe (Automatically picks best stable hardware decoder)
+hwdec=auto-safe
+
+# For Direct3D 11 specifically on Windows:
+# hwdec=d3d11va
 
 # For NVIDIA GPUs with NVDEC:
 # hwdec=nvdec
@@ -255,26 +290,26 @@ hwdec=d3d11va
 ```
 
 ### 2. Audio & Subtitle Language Priorities
-In [`mpv.conf`](file:///c:/Users/biraj/Desktop/biraj-mpv-conf/mpv.conf#L81-L84):
+In [`mpv.conf`](mpv.conf):
 ```ini
 # Prioritize subtitle language (comma separated):
-slang=en,enm,es,ja
+slang=en,enm
 
 # Prioritize audio language (comma separated):
 alang=hi,en,ja
 ```
 
 ### 3. Screenshot Directory & Format
-In [`mpv.conf`](file:///c:/Users/biraj/Desktop/biraj-mpv-conf/mpv.conf#L34-L39):
+In [`mpv.conf`](mpv.conf):
 ```ini
-screenshot-format=png
-screenshot-png-compression=6
+screenshot-format=jpeg
+screenshot-jpeg-quality=99
 screenshot-directory=~/Pictures/mpv-screenshots
 screenshot-template=%F-(%P)-%n
 ```
 
 ### 4. ModernZ OSC Layout & Theme
-You can change the OSC theme directly from the right-click context menu or by editing [`script-opts/modernz.conf`](file:///c:/Users/biraj/Desktop/biraj-mpv-conf/script-opts/modernz.conf#L1-L10):
+You can change the OSC theme directly from the right-click context menu or by editing [`script-opts/modernz.conf`](script-opts/modernz.conf):
 ```ini
 layout=default        # Options: default, compact, mini, seekbar
 icon_theme=fluent     # Options: fluent, material
@@ -285,13 +320,20 @@ icon_style=mixed      # Options: mixed, filled, outline
 
 ## Credits & Acknowledgements
 
-This configuration is powered by the work of the mpv open-source community:
+This configuration suite is curated, tuned, and maintained by **[Biraj2004](https://github.com/Biraj2004)**, built upon the exceptional work of the open-source multimedia community:
 
-- **[mpv](https://mpv.io/)**: The ultra-customizable, open-source media player.
-- **[ModernZ](https://github.com/Samillion/ModernZ)** by *Samillion*: Clean, modern OSC replacement with fluent iconography.
-- **[thumbfast](https://github.com/po5/thumbfast)** by *po5*: High-performance on-the-fly thumbnail generator.
-- **[pause_indicator_lite](https://github.com/mpv-player/mpv)**: Minimalist pause/resume visual indicator.
-- **[mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)** by *rossy*: Native Windows file dialog integration.
+- **[mpv](https://mpv.io/)** ([mpv-player/mpv](https://github.com/mpv-player/mpv)): The high-performance, ultra-customizable open-source media player engine.
+- **[ModernZ](https://github.com/Samillion/ModernZ)** by [Samillion](https://github.com/Samillion): Modern On-Screen Controller (OSC) replacement with fluent vector iconography and responsive layouts.
+- **[thumbfast](https://github.com/po5/thumbfast)** by [po5](https://github.com/po5): High-performance on-the-fly seekbar thumbnail generator for mpv.
+- **[pause_indicator_lite](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)** by [Samillion](https://github.com/Samillion): Lightweight, customizable center pause/resume visual indicator.
+- **[open-file](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)** maintained by [Samillion](https://github.com/Samillion) (fork of [mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog) by [rossy](https://github.com/rossy)): Seamless native Windows Open File / Add Track dialog integration via PowerShell & WPF.
+- **[yt-dlp](https://github.com/yt-dlp/yt-dlp)**: High-speed video downloader and streaming backend.
+
+---
+
+## Security
+
+Please refer to the [SECURITY.md](SECURITY.md) policy document for supported versions and instructions on reporting security vulnerabilities.
 
 ---
 
