@@ -83,7 +83,8 @@ local user_opts = {
     windowcontrols_independent = true,     -- show window controls (top bar) and bottom bar independently on hover
 
     -- Subtitle and OSD display settings
-    sub_margins = true,                    -- raise subtitles above the OSC when shown
+    sub_margins = false,                   -- raise subtitles above the OSC when shown
+    sub_margins_factor = 0.65,             -- scaling factor to keep subtitles close above seekbar without huge gap
     osd_margins = false,                   -- adjust OSD to not overlap with OSC
     dynamic_margins = true,                -- update margins dynamically with OSC visibility
 
@@ -1020,10 +1021,11 @@ local function update_margins()
     -- raise amount is based on OSC height
     if user_opts.sub_margins and mp.get_property_native("sid") then
         if margins.b > 0 then
-            local raise_percent = margins.b * 100
+            local factor = tonumber(user_opts.sub_margins_factor) or 0.55
+            local raise_percent = margins.b * factor * 100
             -- only raise if subs are low enough that they would overlap the OSC
             if state.user_subpos >= (100 - raise_percent) then
-                local adjusted = math.floor((1 - margins.b) * 100)
+                local adjusted = math.floor((1 - (margins.b * factor)) * 100)
                 if adjusted < 0 then adjusted = state.user_subpos end
                 state.osc_adjusted_subpos = adjusted
                 mp.set_property_number("sub-pos", adjusted)

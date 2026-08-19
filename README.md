@@ -154,6 +154,9 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Advanced Subtitle & Audio Management
+- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=40`, `sub-border-size=2.5`, `#FFFFFF` with `#000000` outline) with zero shadow blur, guaranteeing immediate readability in both dark and bright scenes.
+- **Consistent Heights & Margins (`sub-ass-override=strip`)**: Automatically strips conflicting internal ASS margins so that plain `.srt` movies and anime `.ass` subtitles share the exact same uniform bottom margin (`sub-margin-y=35`).
+- **Locked Subtitle Baseline**: Subtitles remain fixed to the video frame (`sub-use-margins=no`, `sub_margins=no`) and never jitter or jump when the seekbar/OSC appears.
 - **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, `ass/`, and `vtt/` subdirectories.
 - **Subtitle Preroll**: Avoids missing subtitle lines when seeking into the middle of an MKV subtitle block.
 - **Subtitles Off by Default**: Clean view on launch (`sid=no`), easily enabled when needed via <kbd>v</kbd> or right-click menu.
@@ -364,7 +367,20 @@ slang=en,enm
 alang=hi,en,ja
 ```
 
-### 4. Screenshot Directory & Format
+### 4. Subtitle Typography & Positioning
+In [`mpv.conf`](mpv.conf):
+```ini
+sub-font-size=40
+sub-color="#FFFFFF"
+sub-border-size=2.5
+sub-border-color="#000000"
+sub-shadow-offset=0
+sub-border-style=outline-and-shadow
+sub-margin-y=35
+sub-ass-override=strip
+```
+
+### 5. Screenshot Directory & Format
 In [`mpv.conf`](mpv.conf):
 ```ini
 screenshot-format=jpeg
@@ -373,7 +389,7 @@ screenshot-directory=~/Pictures/MPV-Screenshots
 screenshot-template=%F-(%P)-%n
 ```
 
-### 5. ModernZ OSC Layout & Theme
+### 6. ModernZ OSC Layout & Theme
 You can change the OSC theme directly from the right-click context menu or by editing [`script-opts/modernz.conf`](script-opts/modernz.conf):
 ```ini
 layout=default        # Options: default, compact, mini, seekbar
