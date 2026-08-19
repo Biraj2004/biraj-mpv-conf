@@ -60,10 +60,12 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
    ├── fonts/
    │   └── modernz-icons.ttf
    ├── script-opts/
+   │   ├── hdr_badge.conf
    │   ├── modernz.conf
    │   ├── pause_indicator_lite.conf
    │   └── thumbfast.conf
    ├── scripts/
+   │   ├── hdr_badge.lua
    │   ├── modernz.lua
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
@@ -123,6 +125,7 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
 - **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard laptop displays, preserving highlight details and color saturation without washed-out tones. Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
+- **Dynamic HDR / DV / SDR Format Badge**: Sleek, minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that automatically announces detected video format on start.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms.
 - **Debanding & Temporal Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `temporal-dither=yes`).
 - **High-Fidelity Scaling**: Sigmoid upscaling and correct color-space downscaling algorithms for sharp playback without ringing artifacts.
@@ -172,11 +175,13 @@ biraj-mpv-conf/
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
+│   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
 │   └── thumbfast.lua         # High-performance seekbar thumbnail engine
 ├── script-opts/
+│   ├── hdr_badge.conf        # Configuration for dynamic format badge
 │   ├── modernz.conf          # Configuration for ModernZ UI theme, layout, fonts
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
@@ -217,7 +222,6 @@ biraj-mpv-conf/
 | <kbd>Home</kbd> | Seek to beginning of media (0s) |
 | <kbd>.</kbd> / <kbd>,</kbd> | Frame step forward / backward |
 | <kbd>n</kbd> / <kbd>p</kbd> *(or Media Next/Prev)* | Next / Previous playlist item |
-| <kbd>l</kbd> | Set / Clear A-B repeat loop points |
 | <kbd>q</kbd> / <kbd>Alt+F4</kbd> | Quit mpv (remembers watch history & playback position) |
 
 ---
@@ -244,6 +248,7 @@ biraj-mpv-conf/
 ### Video, Performance & Screenshots
 | Shortcut | Action |
 | :--- | :--- |
+| <kbd>l</kbd> | **Toggle Dynamic Format Badge (DV / HDR10+ / HDR / SDR)** |
 | <kbd>d</kbd> | Toggle Debanding filter on/off |
 | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
 | <kbd>Alt</kbd> + <kbd>h</kbd> | Cycle HDR Tone-Mapping curves (*Auto, BT.2390, Spline, Reinhard, Clip*) |
