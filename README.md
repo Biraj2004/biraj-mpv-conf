@@ -15,7 +15,7 @@
 
 *Bridges the gap between mpv's lightweight performance and a sleek, feature-rich modern media player experience.*
 
-[Quick Start / Installation](#installation) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [Customization](#customization) • [Credits](#credits--acknowledgements)
+[Quick Start / Installation](#installation) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [HDR & Tone-Mapping](#hdr--dolby-vision-playback) • [Customization](#customization) • [Credits](#credits--acknowledgements)
 
 ---
 
@@ -23,7 +23,7 @@
 
 ## Overview
 
-**`biraj-mpv-conf`** elevates mpv from a minimalist, command-line-driven player into a polished desktop media powerhouse. Designed with performance, aesthetics, and convenience in mind, it combines next-generation video rendering pipelines with a modern Fluent/Material user interface, interactive right-click context menus, fast hover thumbnails, native file pickers, and smart contextual profiles.
+**`biraj-mpv-conf`** elevates mpv from a minimalist, command-line-driven player into a polished desktop media powerhouse. Designed with performance, aesthetics, and convenience in mind, it combines next-generation video rendering pipelines with a modern Fluent/Material user interface, interactive right-click context menus, fast hover thumbnails, native file pickers, dynamic audio normalization, and smart contextual profiles.
 
 ---
 
@@ -69,6 +69,8 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
    │   ├── pause_indicator_lite.lua
    │   └── thumbfast.lua
    ├── biraj-mpv-guide.pdf
+   ├── key-binding.pdf
+   ├── keybindings-chart.jpg
    ├── input.conf
    ├── menu.conf
    ├── mpv.conf
@@ -94,6 +96,7 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    ├── input.conf
    ├── menu.conf
    ├── mpv.conf
+   ├── key-binding.pdf
    └── ...
    ```
 4. Install `fonts/modernz-icons.ttf` onto your system to enable vector icons.
@@ -117,8 +120,9 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 - **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography, eliminating disruptive double seekbars (`osd-bar=no`).
 - **Sleek Pause / Play Indicator**: Minimalist, non-distracting center pause/unpause visual flash indicators ([`pause_indicator_lite`](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)).
 
-### Next-Gen GPU Video Rendering
+### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
+- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard laptop displays, preserving highlight details and color saturation without washed-out tones. Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms.
 - **Debanding & Temporal Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `temporal-dither=yes`).
 - **High-Fidelity Scaling**: Sigmoid upscaling and correct color-space downscaling algorithms for sharp playback without ringing artifacts.
@@ -129,6 +133,8 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 ### Rich Right-Click Context Menu
 - Full-featured **contextual GUI menu** (`menu.conf`) accessible on right-click or via <kbd>g</kbd> <kbd>m</kbd>:
   - Toggle audio/subtitle streams, secondary subtitles, and audio devices.
+  - Enable **Night Mode Audio Normalization** directly from the audio menu.
+  - Choose HDR Tone-Mapping curves (*Auto libplacebo, BT.2390, Spline, Reinhard, Clip*).
   - Switch ModernZ layouts (*Default, Compact, Mini, Seekbar*) and icon styles (*Fluent, Material*).
   - Adjust playback speed (*0.25x* to *8.0x*), A-B looping, aspect ratios, zoom, and rotation.
   - View real-time playback statistics, drop frames, and media information.
@@ -137,7 +143,8 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 ### Native Windows File and Track Selectors
 - **PowerShell / WPF Native Dialogs** ([`open-file.lua`](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)): Seamlessly browse and open files (<kbd>Ctrl</kbd>+<kbd>O</kbd>), load external subtitles (<kbd>Ctrl</kbd>+<kbd>S</kbd>), or attach secondary audio tracks (<kbd>Ctrl</kbd>+<kbd>A</kbd>) using standard Windows File Explorer dialogs.
 
-### Smart Dynamic Profiles
+### Smart Dynamic Profiles & Audio Normalization
+- **Night Mode Audio Normalization (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time `dynaudnorm` filter balancing quiet dialogue and loud sound effects during late-night viewing.
 - **Picture-in-Picture (`[Window-PiP]`)**: Automatically scales the OSC and enables a persistent progress bar when floating on-top in windowed mode.
 - **Auto-Pause on Minimize (`[Minimized]`)**: Automatically pauses video when the player window is minimized to conserve system resources.
 - **Windows Taskbar Progress Indicator (`[Video]`)**: Displays live playback completion progress directly on the Windows taskbar icon.
@@ -150,7 +157,7 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 - **Multi-Language Priority**: Default subtitle matching priority for English (`slang=en,enm`) and audio stream selection for Hindi, English, and Japanese (`alang=hi,en,ja`).
 
 ### High-Speed Streaming & Extended Format Support
-- Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with best format selection.
+- Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
 
 ---
@@ -173,7 +180,9 @@ biraj-mpv-conf/
 │   ├── modernz.conf          # Configuration for ModernZ UI theme, layout, fonts
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
-├── biraj-mpv-guide.pdf       # Quick reference manual
+├── key-binding.pdf           # 1-page visual cheat sheet manual (XeLaTeX)
+├── keybindings-chart.jpg     # Visual keyboard & mouse shortcuts cheat sheet (300 DPI)
+├── biraj-mpv-guide.pdf       # Comprehensive reference guide
 ├── SECURITY.md               # Security policy and vulnerability disclosure
 ├── LICENSE                   # Apache 2.0 Open Source License
 └── README.md                 # Documentation
@@ -182,6 +191,12 @@ biraj-mpv-conf/
 ---
 
 ## Keyboard & Mouse Shortcuts
+
+<div align="center">
+
+![Keyboard & Mouse Shortcuts Cheat Sheet](keybindings-chart.jpg)
+
+</div>
 
 ### Mouse Controls
 | Input | Action |
@@ -207,15 +222,33 @@ biraj-mpv-conf/
 
 ---
 
-### Audio & Subtitles
+### Audio & Night Mode
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>b</kbd> | Cycle audio tracks *(VLC-style)* |
-| <kbd>v</kbd> | Cycle subtitle tracks *(VLC-style)* |
+| <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Audio Normalization** (`dynaudnorm`) |
 | <kbd>↑</kbd> / <kbd>↓</kbd> *(or Media Vol Up/Down)* | Volume up / down (+5% / -5%) |
 | <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
-| <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
 | <kbd>Ctrl</kbd> + <kbd>a</kbd> | Open Native File Dialog to add Audio track |
+
+---
+
+### Subtitles
+| Shortcut | Action |
+| :--- | :--- |
+| <kbd>v</kbd> | Cycle subtitle tracks *(VLC-style)* |
+| <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
+
+---
+
+### Video, Performance & Screenshots
+| Shortcut | Action |
+| :--- | :--- |
+| <kbd>d</kbd> | Toggle Debanding filter on/off |
+| <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
+| <kbd>Alt</kbd> + <kbd>h</kbd> | Cycle HDR Tone-Mapping curves (*Auto, BT.2390, Spline, Reinhard, Clip*) |
+| <kbd>s</kbd> | Take Screenshot (saved to `~/Pictures/MPV-Screenshots/`) |
+| <kbd>Shift</kbd> + <kbd>s</kbd> (<kbd>S</kbd>) | Take Screenshot **without subtitles** |
 
 ---
 
@@ -226,6 +259,8 @@ biraj-mpv-conf/
 | <kbd>Esc</kbd> | Exit Fullscreen |
 | <kbd>Tab</kbd> | Cycle ModernZ OSC visibility |
 | <kbd>g</kbd> <kbd>m</kbd> | Open GUI menu |
+| <kbd>Ctrl</kbd> + <kbd>p</kbd> | **Open Profile Selector interactive menu** |
+| <kbd>Alt</kbd> + <kbd>p</kbd> | **Apply `[high-quality]` EWA Lanczos scaling profile** |
 | <kbd>Ctrl</kbd> + <kbd>o</kbd> | Open Native File Dialog to load Media file(s) |
 
 ---
@@ -236,6 +271,19 @@ biraj-mpv-conf/
 | <kbd>Wheel Up</kbd> | Smooth Cursor-Centric Zoom In (+10%) |
 | <kbd>Wheel Down</kbd> | Smooth Cursor-Centric Zoom Out (-10%) |
 | <kbd>0</kbd> | Reset Image Position & Center Alignment |
+
+---
+
+## HDR & Dolby Vision Playback
+
+This configuration utilizes **`vo=gpu-next`** with mpv's **libplacebo** rendering engine:
+
+1. **On Standard SDR Displays (e.g. Laptops & Regular Monitors)**:
+   - HDR10 and Dolby Vision (Profile 5 and Profile 8.1) video streams are **dynamically tone-mapped into the standard sRGB / BT.709 color gamut**.
+   - Highlights and shadows are compressed cleanly, preventing the dull, washed-out appearance typical of unmapped HDR content.
+   - `hdr-compute-peak=auto` dynamically assesses peak brightness for optimal scene contrast.
+2. **On Windows HDR Displays**:
+   - `target-colorspace-hint=yes` automatically signals the Windows Display Subsystem to pass wide-gamut (BT.2020) and high-peak brightness metadata directly to your HDR monitor or TV.
 
 ---
 
@@ -268,9 +316,19 @@ graph TD
 
 ---
 
-## Customization
+## Customization & Optional Profiles
 
-### 1. Changing Hardware Acceleration
+### 1. Optional Profiles (High-End GPUs & Night Audio)
+In [`mpv.conf`](mpv.conf), you can activate optional profiles on-demand:
+```ini
+# To launch mpv with high-end EWA Lanczos scaling (for dedicated GPUs):
+# mpv --profile=high-quality "video.mkv"
+
+# To launch mpv with dynamic audio normalizer active:
+# mpv --profile=night-audio "movie.mkv"
+```
+
+### 2. Changing Hardware Acceleration
 In [`mpv.conf`](mpv.conf):
 ```ini
 # Default: Auto-Safe (Automatically picks best stable hardware decoder)
@@ -289,7 +347,7 @@ hwdec=auto-safe
 # hwdec=videotoolbox
 ```
 
-### 2. Audio & Subtitle Language Priorities
+### 3. Audio & Subtitle Language Priorities
 In [`mpv.conf`](mpv.conf):
 ```ini
 # Prioritize subtitle language (comma separated):
@@ -299,16 +357,16 @@ slang=en,enm
 alang=hi,en,ja
 ```
 
-### 3. Screenshot Directory & Format
+### 4. Screenshot Directory & Format
 In [`mpv.conf`](mpv.conf):
 ```ini
 screenshot-format=jpeg
 screenshot-jpeg-quality=99
-screenshot-directory=~/Pictures/mpv-screenshots
+screenshot-directory=~/Pictures/MPV-Screenshots
 screenshot-template=%F-(%P)-%n
 ```
 
-### 4. ModernZ OSC Layout & Theme
+### 5. ModernZ OSC Layout & Theme
 You can change the OSC theme directly from the right-click context menu or by editing [`script-opts/modernz.conf`](script-opts/modernz.conf):
 ```ini
 layout=default        # Options: default, compact, mini, seekbar
