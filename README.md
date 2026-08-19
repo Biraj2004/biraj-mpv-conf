@@ -71,7 +71,7 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
    │   ├── pause_indicator_lite.lua
    │   └── thumbfast.lua
    ├── biraj-mpv-guide.pdf
-   ├── key-binding.pdf
+   ├── biraj-mpv-key-binding.pdf
    ├── keybindings-chart.jpg
    ├── input.conf
    ├── menu.conf
@@ -185,9 +185,11 @@ biraj-mpv-conf/
 │   ├── modernz.conf          # Configuration for ModernZ UI theme, layout, fonts
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
-├── key-binding.pdf           # 1-page visual cheat sheet manual (XeLaTeX)
+├── biraj-mpv-key-binding.pdf # 1-page visual shortcuts manual (XeLaTeX)
+├── biraj-mpv-key-binding.tex # XeLaTeX source for shortcuts manual
 ├── keybindings-chart.jpg     # Visual keyboard & mouse shortcuts cheat sheet (300 DPI)
-├── biraj-mpv-guide.pdf       # Comprehensive reference guide
+├── biraj-mpv-guide.pdf       # Comprehensive reference guide (XeLaTeX)
+├── biraj-mpv-guide.tex       # XeLaTeX source for comprehensive guide
 ├── SECURITY.md               # Security policy and vulnerability disclosure
 ├── LICENSE                   # Apache 2.0 Open Source License
 └── README.md                 # Documentation

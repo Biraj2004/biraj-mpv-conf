@@ -1,0 +1,185 @@
+\documentclass[12pt]{article}
+
+% --- Packages ---
+\usepackage[a4paper, margin=0.8in]{geometry}
+\usepackage{fontspec}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% --- Fonts (XeLaTeX) ---
+\setmainfont{TeX Gyre Pagella}
+\setmonofont[Scale=0.88]{TeX Gyre Cursor}
+
+% --- Color Palette ---
+\definecolor{mainpurple}{RGB}{112, 48, 160}
+\definecolor{linkpurple}{RGB}{128, 70, 160}
+\definecolor{inlinecodebg}{RGB}{225, 228, 233}
+
+% --- Hyperlinks ---
+\usepackage[colorlinks=true, linkcolor=linkpurple, urlcolor=linkpurple, citecolor=linkpurple]{hyperref}
+
+% --- Global Page & Typography Rules ---
+\setstretch{1.2}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+% --- Header & Footer (General Specs) ---
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\cfoot{\thepage}
+\rfoot{\textcolor{mainpurple}{\textit{\copyright~Biraj's Notes}}}
+
+% --- Table Column Types & Padding ---
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+
+% --- Inline Code Command ---
+\setlength{\fboxsep}{2.5pt}
+\newcommand{\code}[1]{\colorbox{inlinecodebg}{\texttt{\textbf{\detokenize{#1}}}}}
+
+% --- Heading Scale ---
+\newcommand{\docheading}[1]{%
+  \begin{center}
+    {\fontsize{17}{21}\selectfont\textbf{\MakeUppercase{#1}}}\par
+  \end{center}
+  \vspace{2pt}
+}
+
+\newcommand{\subheading}[1]{%
+  \vspace{6pt}
+  {\fontsize{14}{17}\selectfont\textbf{#1}}\par
+  \vspace{2pt}
+}
+
+\begin{document}
+
+\docheading{mpv Media Player — Keyboard \& Mouse Shortcuts}
+
+\subheading{1. Playback \& Navigation Controls}
+
+\noindent
+\begin{tabular}{|L{4.5cm}|L{11.3cm}|}
+  \hline
+  \multicolumn{1}{|c|}{\textbf{Shortcut / Input}} & \multicolumn{1}{c|}{\textbf{Action \& Description}} \\
+  \hline
+  \code{Space} / \code{Media Play} & Toggle Play / Pause playback \\
+  \hline
+  \code{Right} / \code{Left} & Seek forward / backward 5 seconds (exact seek with OSD bar) \\
+  \hline
+  \code{Forward} / \code{Rewind} & Seek forward / backward 15 seconds (exact seek with OSD bar) \\
+  \hline
+  \code{Home} & Seek to the beginning of the file (0s) \\
+  \hline
+  \code{.} / \code{,} & Step one frame forward / backward \\
+  \hline
+  \code{n} / \code{p} (or Next/Prev) & Play next / previous item in the playlist \\
+  \hline
+  \code{q} / \code{Alt+F4} & Quit mpv (saves resume position and watch history) \\
+  \hline
+\end{tabular}
+
+\subheading{2. Audio \& Subtitle Controls}
+
+\noindent
+\begin{tabular}{|L{4.5cm}|L{11.3cm}|}
+  \hline
+  \multicolumn{1}{|c|}{\textbf{Shortcut / Input}} & \multicolumn{1}{c|}{\textbf{Action \& Description}} \\
+  \hline
+  \code{b} & Cycle available audio tracks (VLC-style) \\
+  \hline
+  \code{y} & Toggle Night Mode Audio Normalization (\code{dynaudnorm}) \\
+  \hline
+  \code{Up} / \code{Down} & Increase / decrease volume by 5\% (maximum limit: 200\%) \\
+  \hline
+  \code{m} / \code{Media Mute} & Toggle audio mute on / off \\
+  \hline
+  \code{Ctrl+a} & Open native Windows File Dialog to attach audio track \\
+  \hline
+  \code{v} & Cycle available subtitle tracks (VLC-style) \\
+  \hline
+  \code{Ctrl+s} & Open native Windows File Dialog to load subtitle file \\
+  \hline
+  \code{Language Priority} & English subtitles (\code{slang=en,enm}); Hindi, English, Japanese audio (\code{alang=hi,en,ja}) \\
+  \hline
+\end{tabular}
+
+\newpage
+
+\subheading{3. Video, Performance \& UI Controls}
+
+\noindent
+\begin{tabular}{|L{4.5cm}|L{11.3cm}|}
+  \hline
+  \multicolumn{1}{|c|}{\textbf{Shortcut / Input}} & \multicolumn{1}{c|}{\textbf{Action \& Description}} \\
+  \hline
+  \code{l} & Toggle Dynamic Format Badge (announces DV, HDR10+, HDR, HLG, SDR) \\
+  \hline
+  \code{i} & Toggle real-time performance statistics and frame drop monitor \\
+  \hline
+  \code{f} / \code{Esc} & Toggle Fullscreen mode / Exit Fullscreen \\
+  \hline
+  \code{Tab} & Toggle ModernZ On-Screen Controller (OSC) visibility \\
+  \hline
+  \code{g-m} & Open full GUI Context Menu (\code{menu.conf}) \\
+  \hline
+  \code{Alt+p} / \code{F9} & Open interactive Profile Selector menu \\
+  \hline
+  \code{Ctrl+o} & Open native Windows File Dialog to load media file(s) \\
+  \hline
+  \code{s} & Take video screenshot (saved to \code{~/Pictures/MPV-Screenshots}) \\
+  \hline
+\end{tabular}
+
+\subheading{4. Mouse Controls \& Image Viewer Mode}
+
+\noindent
+\begin{tabular}{|L{4.5cm}|L{11.3cm}|}
+  \hline
+  \multicolumn{1}{|c|}{\textbf{Shortcut / Input}} & \multicolumn{1}{c|}{\textbf{Action \& Description}} \\
+  \hline
+  Double Click Left & Toggle Fullscreen mode \\
+  \hline
+  Right Click & Open Context Menu (\code{menu.conf}) \\
+  \hline
+  Hover on Seekbar & Real-time seekbar thumbnail preview (\code{thumbfast}) \\
+  \hline
+  Scroll Wheel & (Image mode) Smooth cursor-centered zoom in / out ($\pm 10\%$) \\
+  \hline
+  \code{0} & (Image mode) Reset image position and center alignment \\
+  \hline
+\end{tabular}
+
+\subheading{5. Smart Automation Profiles}
+
+\noindent
+\begin{tabular}{|L{4.5cm}|L{11.3cm}|}
+  \hline
+  \multicolumn{1}{|c|}{\textbf{Profile Name}} & \multicolumn{1}{c|}{\textbf{Trigger Condition \& Behavior}} \\
+  \hline
+  \code{[Window-PiP]} & Windowed on-top mode: strips borders and scales OSC by 1.8x \\
+  \hline
+  \code{[Minimized]} & Auto-pauses video playback when the window is minimized \\
+  \hline
+  \code{[Video]} & Enables live playback progress tracking on the Windows Taskbar \\
+  \hline
+  \code{[Image]} & Sets infinite display duration and enables cursor-centered zoom \\
+  \hline
+  \code{[night-audio]} & Dynamic audio normalizer balancing dialogues and sound effects \\
+  \hline
+  \code{[dolby-vision-perf]} & Low-overhead tone-mapping profile for smooth 4K DV/HDR playback \\
+  \hline
+\end{tabular}
+
+\end{document}
