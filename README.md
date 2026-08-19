@@ -15,7 +15,7 @@
 
 *Bridges the gap between mpv's lightweight performance and a sleek, feature-rich modern media player experience.*
 
-[Quick Start / Installation](#installation) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [HDR & Tone-Mapping](#hdr--dolby-vision-playback) • [Customization](#customization) • [Credits](#credits--acknowledgements)
+[Quick Start / Installation](#installation) • [Visual Showcase](#visual-showcase) • [How to Play](#how-to-play--usage-guide) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [HDR & Tone-Mapping](#hdr--dolby-vision-playback) • [Customization](#customization) • [Credits](#credits--acknowledgements)
 
 ---
 
@@ -24,6 +24,35 @@
 ## Overview
 
 **`biraj-mpv-conf`** elevates mpv from a minimalist, command-line-driven player into a polished desktop media powerhouse. Designed with performance, aesthetics, and convenience in mind, it combines next-generation video rendering pipelines with a modern Fluent/Material user interface, interactive right-click context menus, fast hover thumbnails, native file pickers, dynamic audio normalization, and smart contextual profiles.
+
+---
+
+## Visual Showcase
+
+<div align="center">
+
+### Modern Interface & Visual Scrubbing
+
+| ModernZ OSC & Center Pause Indicator | Thumbfast Hover Preview & Subtitles |
+| :---: | :---: |
+| [![ModernZ OSC & Center Pause Indicator](screenshots/modernz-osc-pause-indicator.jpg)](screenshots/modernz-osc-pause-indicator.jpg) | [![Thumbfast Hover Preview & Subtitles](screenshots/thumbfast-hover-preview-subtitles.jpg)](screenshots/thumbfast-hover-preview-subtitles.jpg) |
+| *ModernZ Fluent controller, chapter title, stream download button, center pause badge & format badge.* | *Instant seekbar hover thumbnail preview (`thumbfast`) with high-contrast, black-outlined subtitle rendering.* |
+
+### Real-Time Engine & Playback Performance
+
+| 4K HDR10+ Playback Statistics (`gpu-next`) | 1080p SDR Video Playback Statistics |
+| :---: | :---: |
+| [![4K HDR10+ Stats Overlay](screenshots/stats-overlay-4k-hdr10plus.jpg)](screenshots/stats-overlay-4k-hdr10plus.jpg) | [![1080p SDR Stats Overlay](screenshots/stats-overlay-1080p-sdr.jpg)](screenshots/stats-overlay-1080p-sdr.jpg) |
+| *`gpu-next` rendering pipeline, D3D11VA HW decode, 144 Hz display sync, and HDR10+ peak brightness metadata.* | *1080p AVC decoding, frame timings, 0 dropped frames, WASAPI audio output, and chapter indexing.* |
+
+### Format Detection & Interactive Stream Diagnostics
+
+| Dynamic HDR10+ Format Badge Overlay | Interactive Console & Stream Log Overlay |
+| :---: | :---: |
+| [![HDR10+ Format Badge Overlay](screenshots/hdr10plus-badge-overlay.jpg)](screenshots/hdr10plus-badge-overlay.jpg) | [![Interactive Console & Stream Log](screenshots/interactive-console-stream-log.jpg)](screenshots/interactive-console-stream-log.jpg) |
+| *Top-right floating badge (`hdr_badge.lua`) automatically announcing detected HDR10+ format on start.* | *Interactive REPL console (`~`), automatic profile switching, ModernZ URL detection, and yt-dlp log stream.* |
+
+</div>
 
 ---
 
@@ -70,6 +99,13 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
    │   └── thumbfast.lua
+   ├── screenshots/
+   │   ├── hdr10plus-badge-overlay.jpg
+   │   ├── interactive-console-stream-log.jpg
+   │   ├── modernz-osc-pause-indicator.jpg
+   │   ├── stats-overlay-1080p-sdr.jpg
+   │   ├── stats-overlay-4k-hdr10plus.jpg
+   │   └── thumbfast-hover-preview-subtitles.jpg
    ├── biraj-mpv-guide.pdf
    ├── biraj-mpv-key-binding.pdf
    ├── keybindings-chart.jpg
@@ -112,6 +148,51 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 2. *(Optional)* In `mpv.conf`, verify or adjust the hardware decoding backend if needed:
    - **Linux**: `hwdec=auto-safe` (or explicitly `hwdec=vaapi` / `hwdec=nvdec`).
    - **macOS**: `hwdec=auto-safe` (or `hwdec=videotoolbox`).
+
+---
+
+## How to Play & Usage Guide
+
+### 1. Playing Local Media Files & Folders
+- **Drag & Drop**: Drag any video, audio track, image, or entire directory directly onto the mpv window.
+- **Native File Dialog (<kbd>Ctrl</kbd> + <kbd>O</kbd>)**: Press <kbd>Ctrl</kbd> + <kbd>O</kbd> (or right-click $\rightarrow$ **Open** $\rightarrow$ **Open File**) to open the native Windows File Explorer picker. Select single or multiple files to load into the playlist.
+- **Default Player Integration**: Right-click any media file in Windows File Explorer $\rightarrow$ **Open with** $\rightarrow$ **Choose another app** $\rightarrow$ select **mpv** and check *"Always use this app"*.
+
+### 2. Streaming Online URLs (YouTube, Twitch, Anime & Web Videos)
+- **Drag & Drop URL**: Copy any video/stream link from your web browser and drag/drop it directly into the mpv window.
+- **Command Line / Terminal**:
+  ```powershell
+  # Stream video (automatically plays 4K -> 2K -> 1080p -> 720p best available)
+  mpv "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+  # Stream capped at 1080p Full HD
+  mpv --profile=q-1080p "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+  # Stream capped at 720p HD
+  mpv --profile=q-720p "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  ```
+- **Switch Stream Quality On-The-Fly**:
+  - **Right-Click**: Navigate to **Video** $\rightarrow$ **YT-Stream Quality** and select `720p`, `1080p`, `1440p`, `2160p`, or `Best`.
+  - **Keyboard**: Press <kbd>Ctrl</kbd> + <kbd>y</kbd> to cycle between stream resolutions.
+  - *The stream instantly reloads at the new resolution and resumes from your current second.*
+- **One-Click Stream Download**: Click the download button on the ModernZ controller bar to save the online video directly to `~/Downloads/MPV-Downloads`.
+
+### 3. Adding Subtitles & External Audio Tracks
+- **Drag & Drop**: Drag any `.srt`, `.ass`, `.vtt`, or `.sub` file directly onto the playing video.
+- **Native Subtitle Dialog (<kbd>Ctrl</kbd> + <kbd>S</kbd>)**: Opens Windows Explorer to browse and attach subtitles.
+- **Native Audio Track Dialog (<kbd>Ctrl</kbd> + <kbd>A</kbd>)**: Opens Windows Explorer to add secondary audio tracks (e.g. commentary, alternative dubs).
+- **Quick Track Cycling**:
+  - Press <kbd>v</kbd> to cycle subtitle tracks *(VLC-style)*.
+  - Press <kbd>b</kbd> to cycle audio languages *(VLC-style)*.
+
+### 4. Essential Playback Controls
+- **Play / Pause**: <kbd>Space</kbd> or <kbd>Media Play/Pause</kbd>
+- **Exact Seeking**: <kbd>→</kbd> / <kbd>←</kbd> (5s exact) • <kbd>Media Forward/Rewind</kbd> (15s exact) • <kbd>Home</kbd> (beginning)
+- **Volume & Mute**: <kbd>↑</kbd> / <kbd>↓</kbd> (±5%) • <kbd>m</kbd> (Mute)
+- **Toggle Fullscreen**: <kbd>f</kbd> or **Double Click Left Mouse**
+- **Context Menu**: <kbd>Right Click</kbd> or <kbd>g</kbd> <kbd>m</kbd>
+- **Night Mode Audio Normalization**: <kbd>y</kbd> or <kbd>N</kbd> (balances loud explosions & quiet dialogue)
+- **Real-Time Performance Stats**: <kbd>i</kbd> (fps, dropped frames, decoder, HDR nits)
 
 ---
 
@@ -164,6 +245,7 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
 
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
+- **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, 2160p 4K UHD, or Max Source**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-2160p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
 
 ---
@@ -188,11 +270,16 @@ biraj-mpv-conf/
 │   ├── modernz.conf          # Configuration for ModernZ UI theme, layout, fonts
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
+├── screenshots/
+│   ├── hdr10plus-badge-overlay.jpg         # Dynamic HDR10+ format badge overlay
+│   ├── interactive-console-stream-log.jpg  # Interactive console with yt-dlp & decoder logs
+│   ├── modernz-osc-pause-indicator.jpg     # ModernZ OSC interface & center pause indicator
+│   ├── stats-overlay-1080p-sdr.jpg         # Real-time stats overlay on 1080p SDR playback
+│   ├── stats-overlay-4k-hdr10plus.jpg      # Real-time stats overlay on 4K HDR10+ playback
+│   └── thumbfast-hover-preview-subtitles.jpg # Seekbar thumbnail preview & styled subtitles
 ├── biraj-mpv-key-binding.pdf # 1-page visual shortcuts manual (XeLaTeX)
-├── biraj-mpv-key-binding.tex # XeLaTeX source for shortcuts manual
-├── keybindings-chart.jpg     # Visual keyboard & mouse shortcuts cheat sheet (300 DPI)
 ├── biraj-mpv-guide.pdf       # Comprehensive reference guide (XeLaTeX)
-├── biraj-mpv-guide.tex       # XeLaTeX source for comprehensive guide
+├── keybindings-chart.jpg     # Visual keyboard & mouse shortcuts cheat sheet (300 DPI)
 ├── SECURITY.md               # Security policy and vulnerability disclosure
 ├── LICENSE                   # Apache 2.0 Open Source License
 └── README.md                 # Documentation
@@ -254,6 +341,7 @@ biraj-mpv-conf/
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>l</kbd> | **Toggle Dynamic Format Badge (DV / HDR10+ / HDR / SDR)** |
+| <kbd>Ctrl</kbd> + <kbd>y</kbd> | **Cycle Streaming Quality (*720p → 1080p → 1440p → 2160p → Best*)** |
 | <kbd>d</kbd> | Toggle Debanding filter on/off |
 | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
 | <kbd>Alt</kbd> + <kbd>h</kbd> | Cycle HDR Tone-Mapping curves (*Auto, BT.2390, Spline, Reinhard, Clip*) |
@@ -319,7 +407,7 @@ graph TD
 3. **`[Video]`**:
    - **Trigger**: Active video track with duration > 0.
    - **Behavior**: Activates Windows taskbar progress tracking.
-   - **Initial State**: Fullscreen by default (`fullscreen=yes`).
+   - **Initial State**: Windowed by default (`fullscreen=no`, autofit 85%, centered). Toggle fullscreen anytime via <kbd>f</kbd> or double-click.
 4. **`[Image]`**:
    - **Trigger**: Still images (`png`, `jpg`, `webp`, `avif`, `jxl`, `svg`, `qoi`, etc.).
    - **Behavior**: Holds display duration infinitely, centers view, and activates cursor-anchored zoom bindings.
