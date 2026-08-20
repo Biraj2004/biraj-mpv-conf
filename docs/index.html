@@ -84,8 +84,17 @@
                 <a href="#screenshots" class="nav-link">Screenshots</a>
                 <a href="#installation" class="nav-link">Installation</a>
                 <a href="#shortcuts" class="nav-link">Shortcuts</a>
-                <a href="#config" class="nav-link">Config</a>
                 <a href="#credits" class="nav-link">Credits</a>
+                <div class="mobile-nav-cta">
+                    <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="btn btn-primary btn-sm btn-mobile-dl" download>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Download ZIP</span>
+                    </a>
+                </div>
             </nav>
 
             <div class="nav-actions">
@@ -102,11 +111,15 @@
                         <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                     </svg>
                 </a>
-                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation" aria-expanded="false">
+                    <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                    <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
@@ -119,7 +132,10 @@
         <div class="container hero-container">
             <div class="hero-badge">
                 <span class="badge-dot"></span>
-                <span>Tuned for Windows git builds by zhongfly &bull; mpv v0.40+ / v0.41+</span>
+                <span class="badge-text">
+                    <span class="badge-primary-text">Tuned for Windows git builds by zhongfly</span>
+                    <span class="badge-secondary-text">mpv v0.40+ / v0.41+</span>
+                </span>
             </div>
             <h1 class="hero-title">
                 The Definitive, Next-Gen <br>
@@ -930,7 +946,7 @@ sub-margin-y=38</code></pre>
                 <div class="credit-card creator-card">
                     <div class="credit-badge creator-badge">Author & Maintainer</div>
                     <div class="credit-header">
-                        <div class="credit-avatar">BS</div>
+                        <img src="assets/biraj2004.jpg" alt="Biraj Sarkar (@Biraj2004)" class="credit-avatar" width="48" height="48" loading="lazy" decoding="async">
                         <div>
                             <h3 class="credit-name">Biraj Sarkar</h3>
                             <a href="https://github.com/Biraj2004" target="_blank" rel="noopener" class="credit-handle">@Biraj2004</a>

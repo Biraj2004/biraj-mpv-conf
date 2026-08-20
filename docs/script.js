@@ -36,15 +36,26 @@ function initMobileNavigation() {
 
     if (!mobileToggle || !navLinks) return;
 
-    mobileToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('open');
+    mobileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = navLinks.classList.toggle('open');
+        mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
-    // Close menu when clicking any nav link
-    navLinks.querySelectorAll('.nav-link').forEach(link => {
+    // Close menu when clicking any nav link or CTA button inside drawer
+    navLinks.querySelectorAll('.nav-link, .btn-mobile-dl').forEach(link => {
         link.addEventListener('click', () => {
             navLinks.classList.remove('open');
+            mobileToggle.setAttribute('aria-expanded', 'false');
         });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
+            navLinks.classList.remove('open');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+        }
     });
 }
 
@@ -205,7 +216,7 @@ function initScrollSpy() {
 
         // Active link tracking
         sections.forEach(sec => {
-            const top = sec.offsetTop - 120;
+            const top = sec.offsetTop - 72;
             const height = sec.offsetHeight;
             const id = sec.getAttribute('id');
 
