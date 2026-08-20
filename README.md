@@ -380,9 +380,7 @@ biraj-mpv-conf/
 ---
 
 ### Subtitles
-| Shortcut | Action |
-| :--- | :--- |
-| <kbd>v</kbd> | Cycle subtitle tracks *(VLC-style)* |
+| <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) | Cycle subtitle tracks forward / backward *(VLC-style, anti-spam)* |
 | <kbd>r</kbd> | Raise subtitle position up (`sub-pos -1`) |
 | <kbd>t</kbd> | Move subtitle position down (`sub-pos +1`) |
 | <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
