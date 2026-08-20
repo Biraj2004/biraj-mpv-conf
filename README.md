@@ -98,6 +98,7 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
    │   ├── modernz.lua
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
+   │   ├── sort_playlist.lua
    │   └── thumbfast.lua
    ├── screenshots/
    │   ├── hdr10plus-badge-overlay.jpg
@@ -257,8 +258,13 @@ ytdl-raw-options-append=cookies-from-browser=firefox
   - View real-time playback statistics, drop frames, and media information.
   - Quick-copy media file paths, titles, or active subtitle text to the clipboard.
 
+### Multi-File Playlist Natural Ascending Sorting
+- **Natural Ascending Drag & Drop Sorting ([`sort_playlist.lua`](scripts/sort_playlist.lua))**: When multiple files are dropped or loaded into mpv to watch as a playlist, they are automatically organized in **natural alphanumeric ascending order** (`Episode 1`, `Episode 2` ... `Episode 10`), fixing out-of-order drag selection. Does **not** auto-scan or add unselected files from your folders.
+- **Natural Ascending File Dialog Loading ([`open-file.lua`](scripts/open-file.lua))**: Selecting multiple files via <kbd>Ctrl</kbd>+<kbd>O</kbd> automatically sorts them in ascending order before adding them to the playlist.
+- **On-Demand Playlist Sorter (<kbd>k</kbd> / Context Menu)**: Instant shortcut (`sort_playlist/sort-playlist`) to re-sort any active playlist into natural ascending order on demand.
+
 ### Native Windows File and Track Selectors
-- **PowerShell / WPF Native Dialogs** ([`open-file.lua`](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)): Seamlessly browse and open files (<kbd>Ctrl</kbd>+<kbd>O</kbd>), load external subtitles (<kbd>Ctrl</kbd>+<kbd>S</kbd>), or attach secondary audio tracks (<kbd>Ctrl</kbd>+<kbd>A</kbd>) using standard Windows File Explorer dialogs.
+- **PowerShell / WPF Native Dialogs** ([`open-file.lua`](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)): Seamlessly browse and open files (<kbd>Ctrl</kbd>+<kbd>O</kbd>), load external subtitles (<kbd>Ctrl</kbd>+<kbd>S</kbd>), or attach secondary audio tracks (<kbd>Ctrl</kbd>+<kbd>A</kbd>) using standard Windows File Explorer dialogs with natural ascending sort.
 
 ### Smart Dynamic Profiles & Audio Normalization
 - **Night Mode Audio Normalization (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time `dynaudnorm` filter balancing quiet dialogue and loud sound effects during late-night viewing.
@@ -268,7 +274,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Advanced Subtitle & Audio Management
-- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=40`, `sub-border-size=2.5`, `#FFFFFF` with `#000000` outline) with zero shadow blur, guaranteeing immediate readability in both dark and bright scenes.
+- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=48`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
 - **Consistent Heights & Margins (`sub-ass-override=strip`)**: Automatically strips conflicting internal ASS margins so that plain `.srt` movies and anime `.ass` subtitles share the exact same uniform bottom margin (`sub-margin-y=35`).
 - **Locked Subtitle Baseline**: Subtitles remain fixed to the video frame (`sub-use-margins=no`, `sub_margins=no`) and never jitter or jump when the seekbar/OSC appears.
 - **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, `ass/`, and `vtt/` subdirectories.
@@ -295,8 +301,9 @@ biraj-mpv-conf/
 ├── scripts/
 │   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
-│   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs
+│   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
+│   ├── sort_playlist.lua     # Natural alphanumeric ascending playlist sorter
 │   └── thumbfast.lua         # High-performance seekbar thumbnail engine
 ├── script-opts/
 │   ├── hdr_badge.conf        # Configuration for dynamic format badge
@@ -347,6 +354,7 @@ biraj-mpv-conf/
 | <kbd>Home</kbd> | Seek to beginning of media (0s) |
 | <kbd>.</kbd> / <kbd>,</kbd> | Frame step forward / backward |
 | <kbd>n</kbd> / <kbd>p</kbd> *(or Media Next/Prev)* | Next / Previous playlist item |
+| <kbd>k</kbd> | **Sort active playlist in natural ascending order** |
 | <kbd>q</kbd> / <kbd>Alt+F4</kbd> | Quit mpv (remembers watch history & playback position) |
 
 ---
@@ -366,6 +374,8 @@ biraj-mpv-conf/
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>v</kbd> | Cycle subtitle tracks *(VLC-style)* |
+| <kbd>r</kbd> | Raise subtitle position up (`sub-pos -1`) |
+| <kbd>t</kbd> | Move subtitle position down (`sub-pos +1`) |
 | <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
 
 ---
@@ -494,13 +504,14 @@ alang=hi,en,ja
 ### 4. Subtitle Typography & Positioning
 In [`mpv.conf`](mpv.conf):
 ```ini
-sub-font-size=40
+sub-font-size=48
 sub-color="#FFFFFF"
-sub-border-size=2.5
+sub-border-size=1.8
 sub-border-color="#000000"
-sub-shadow-offset=0
+sub-shadow-offset=1.45
+sub-shadow-color=0/0/0/0.45
 sub-border-style=outline-and-shadow
-sub-margin-y=35
+sub-margin-y=37.5
 sub-ass-override=strip
 ```
 
