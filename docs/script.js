@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initShortcutsFiltering();
     initLightboxModal();
     initScrollSpy();
+    initScrollTopButton();
 });
 
 /**
@@ -144,13 +145,13 @@ function initLightboxModal() {
         if (caption) caption.textContent = titleText || '';
         modal.classList.add('active');
         modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
     }
 
     function closeModal() {
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
     }
 
     // Gallery cards zoom trigger
@@ -218,6 +219,31 @@ function initScrollSpy() {
             }
         });
     }, { passive: true });
+}
+
+/**
+ * 7. Smooth Theme-Matched Scroll to Top Button
+ */
+function initScrollTopButton() {
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    if (!scrollTopBtn) return;
+
+    // Show/hide based on scroll threshold (400px)
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    }, { passive: true });
+
+    // Smooth fast scroll back to top
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
 }
 
 /**

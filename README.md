@@ -15,7 +15,7 @@
 
 *Bridges the gap between mpv's lightweight performance and a sleek, feature-rich modern media player experience.*
 
-[Quick Start / Installation](#installation) • [Visual Showcase](#visual-showcase) • [How to Play](#how-to-play--usage-guide) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [HDR & Tone-Mapping](#hdr--dolby-vision-playback) • [Customization](#customization) • [Credits](#credits--acknowledgements)
+[Live Documentation Website](https://biraj2004.github.io/biraj-mpv-conf/) • [Quick Start / Installation](#installation) • [Visual Showcase](#visual-showcase) • [How to Play](#how-to-play--usage-guide) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [HDR & Tone-Mapping](#hdr--dolby-vision-playback) • [Customization](#customization) • [Credits](#credits--acknowledgements)
 
 ---
 
@@ -52,6 +52,13 @@
 | [![HDR10+ Format Badge Overlay](screenshots/hdr10plus-badge-overlay.jpg)](screenshots/hdr10plus-badge-overlay.jpg) | [![Interactive Console & Stream Log](screenshots/interactive-console-stream-log.jpg)](screenshots/interactive-console-stream-log.jpg) |
 | *Top-right floating badge (`hdr_badge.lua`) automatically announcing detected HDR10+ format on start.* | *Interactive REPL console (`~`), automatic profile switching, ModernZ URL detection, and yt-dlp log stream.* |
 
+### Smart Playlist Sorting & Native File Dialog
+
+| Natural Ascending Playlist Sorter | Native File Picker Dialog (Unicode Support) |
+| :---: | :---: |
+| [![Playlist Menu Ascending Sort](screenshots/playlist-menu-ascending-sort.jpg)](screenshots/playlist-menu-ascending-sort.jpg) | [![Native File Picker Dialog](screenshots/native-file-picker-dialog.jpg)](screenshots/native-file-picker-dialog.jpg) |
+| *Interactive playlist selection menu automatically arranged in natural numerical ascending order (EP1 &rarr; EP2 &rarr; EP3 &rarr; EP3.1).* | *Windows native file picker dialog (<kbd>Ctrl</kbd>+<kbd>O</kbd>) supporting Unicode characters, curly quotes, and special symbols.* |
+
 </div>
 
 ---
@@ -59,6 +66,8 @@
 ## Installation
 
 > [!TIP]
+> **Recommended Windows Build:** This configuration is built and tuned using the modern **[Windows builds by zhongfly (git)](https://github.com/zhongfly/mpv-winbuild/releases)** with `gpu-next`, `libplacebo`, `d3d11va`, and `Vulkan` support.
+> 
 > **Zero Setup Required:** You can use this entire configuration suite as-is by simply copying or extracting the repository contents directly into your mpv configuration directory.
 
 ### Full Target Paths on Windows
@@ -86,6 +95,14 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
 3. Extract all files and folders from the ZIP directly into this folder so your directory looks like:
    ```plaintext
    C:\Users\<YourUsername>\AppData\Roaming\mpv\
+   ├── docs/                         # Live Documentation Website (GitHub Pages)
+   │   ├── index.html
+   │   ├── style.css
+   │   ├── script.js
+   │   ├── favicon.svg
+   │   ├── site.webmanifest
+   │   ├── robots.txt
+   │   └── sitemap.xml
    ├── fonts/
    │   └── modernz-icons.ttf
    ├── script-opts/
@@ -104,6 +121,8 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
    │   ├── hdr10plus-badge-overlay.jpg
    │   ├── interactive-console-stream-log.jpg
    │   ├── modernz-osc-pause-indicator.jpg
+   │   ├── native-file-picker-dialog.jpg
+   │   ├── playlist-menu-ascending-sort.jpg
    │   ├── stats-overlay-1080p-sdr.jpg
    │   ├── stats-overlay-4k-hdr10plus.jpg
    │   └── thumbfast-hover-preview-subtitles.jpg
@@ -504,7 +523,7 @@ alang=hi,en,ja
 ### 4. Subtitle Typography & Positioning
 In [`mpv.conf`](mpv.conf):
 ```ini
-sub-font-size=50
+sub-font-size=52
 sub-color="#FFFFFF"
 sub-border-size=1.8
 sub-border-color="#000000"
@@ -536,14 +555,23 @@ icon_style=mixed      # Options: mixed, filled, outline
 
 ## Credits & Acknowledgements
 
-This configuration suite is curated, tuned, and maintained by **[Biraj2004](https://github.com/Biraj2004)**, built upon the exceptional work of the open-source multimedia community:
+### Author & Maintainer
+- **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
+  - **`sort_playlist.lua`**: Custom natural alphanumeric ascending playlist sorting engine with seamless background reordering and OSD feedback.
+  - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
+  - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
+  - **Performance & Subtitle Architecture**: 550MB demuxer seek buffer, `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
-- **[mpv](https://mpv.io/)** ([mpv-player/mpv](https://github.com/mpv-player/mpv)): The high-performance, ultra-customizable open-source media player engine.
-- **[ModernZ](https://github.com/Samillion/ModernZ)** by [Samillion](https://github.com/Samillion): Modern On-Screen Controller (OSC) replacement with fluent vector iconography and responsive layouts.
+### Upstream Open-Source Projects
+- **[mpv](https://mpv.io/)** ([mpv-player/mpv](https://github.com/mpv-player/mpv)): The core, high-performance open-source media player engine.
+- **[mpv-winbuild](https://github.com/zhongfly/mpv-winbuild/releases)** by [zhongfly](https://github.com/zhongfly): Cutting-edge, automated Windows builds of mpv with full `gpu-next`, `libplacebo`, and Vulkan/D3D11 support.
+- **[ModernZ](https://github.com/Samillion/ModernZ)** by [Samillion](https://github.com/Samillion): Modern On-Screen Controller (OSC) replacement with fluent vector iconography.
 - **[thumbfast](https://github.com/po5/thumbfast)** by [po5](https://github.com/po5): High-performance on-the-fly seekbar thumbnail generator for mpv.
-- **[pause_indicator_lite](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)** by [Samillion](https://github.com/Samillion): Lightweight, customizable center pause/resume visual indicator.
-- **[open-file](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)** maintained by [Samillion](https://github.com/Samillion) (fork of [mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog) by [rossy](https://github.com/rossy)): Seamless native Windows Open File / Add Track dialog integration via PowerShell & WPF.
+- **[pause_indicator_lite](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)** by [Samillion](https://github.com/Samillion): Lightweight center pause/resume indicator.
+- **[open-file](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)** maintained by [Samillion](https://github.com/Samillion) (fork of [mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog) by [rossy](https://github.com/rossy)): Seamless native Windows Open File dialog integration.
 - **[yt-dlp](https://github.com/yt-dlp/yt-dlp)**: High-speed video downloader and streaming backend.
+- **[FFmpeg](https://ffmpeg.org/)** & **[libplacebo](https://code.videolan.org/videolan/libplacebo)**: Foundational video decoding, debanding, and tone-mapping rendering engines.
 
 ---
 

@@ -55,6 +55,39 @@ html {
     scroll-behavior: smooth;
     color-scheme: dark;
     font-size: 16px;
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+    scrollbar-width: auto;
+    scrollbar-color: #2b3145 var(--bg-main);
+}
+
+/* Custom Medium-Thick Theme Scrollbar */
+::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #2a3044;
+    border-radius: 999px;
+    border: 2.5px solid var(--bg-main);
+    transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #434c6b;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: var(--primary);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--bg-main);
 }
 
 body {
@@ -65,6 +98,10 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+}
+
+body.modal-open {
+    overflow: hidden;
 }
 
 /* Fluid Container */
@@ -951,13 +988,28 @@ kbd {
     border-radius: var(--radius-lg);
     overflow-x: auto;
     box-shadow: var(--shadow-card);
+    min-height: 480px;
+    transition: var(--transition);
 }
 
 .shortcuts-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     text-align: left;
-    min-width: 600px;
+    min-width: 650px;
+}
+
+.shortcuts-table col.col-key {
+    width: 26%;
+}
+
+.shortcuts-table col.col-desc {
+    width: 56%;
+}
+
+.shortcuts-table col.col-cat {
+    width: 18%;
 }
 
 .shortcuts-table th {
@@ -975,6 +1027,12 @@ kbd {
     padding: 1rem clamp(1rem, 2vw, 1.5rem);
     border-bottom: 1px solid var(--border-subtle);
     font-size: 0.92rem;
+    vertical-align: middle;
+}
+
+.shortcuts-table th:nth-child(3),
+.shortcuts-table td:nth-child(3) {
+    text-align: right;
 }
 
 .shortcuts-table tr:last-child td {
@@ -1047,6 +1105,143 @@ kbd {
     font-size: 0.84rem;
     color: #cbd5e1;
     line-height: 1.6;
+}
+
+/* ==========================================================================
+   Credits & Acknowledgements Section
+   ========================================================================== */
+.credits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.credit-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.credit-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.creator-card {
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(22, 25, 34, 0.8) 100%);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.creator-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 12px 32px rgba(99, 102, 241, 0.18);
+}
+
+.credit-badge {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    margin-bottom: 1.25rem;
+}
+
+.creator-badge {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.community-badge {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--accent-emerald);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.credit-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.credit-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px var(--primary-glow);
+    flex-shrink: 0;
+}
+
+.credit-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.2rem;
+}
+
+.credit-handle {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--primary-light);
+}
+
+.credit-handle:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.credit-desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+.credit-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+}
+
+.credit-list li {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 1.25rem;
+}
+
+.credit-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--primary-light);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.community-card .credit-list li::before {
+    color: var(--accent-emerald);
 }
 
 /* ==========================================================================
@@ -1162,30 +1357,95 @@ kbd {
 }
 
 .lightbox-close {
-    position: absolute;
-    top: -45px;
-    right: 0;
-    background: rgba(255, 255, 255, 0.1);
+    position: fixed;
+    top: clamp(1rem, 3vw, 2.5rem);
+    right: clamp(1rem, 3vw, 2.5rem);
+    z-index: 2050;
+    background: rgba(22, 25, 34, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-close:hover {
     background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: scale(1.1);
 }
 
 .lightbox-close svg {
     width: 20px;
     height: 20px;
+}
+
+/* ==========================================================================
+   Scroll To Top Floating Button
+   ========================================================================== */
+.btn-scroll-top {
+    position: fixed;
+    bottom: clamp(1.25rem, 3.5vw, 2.25rem);
+    right: clamp(1.25rem, 3.5vw, 2.25rem);
+    z-index: 990;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(22, 25, 34, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(16px) scale(0.9);
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.btn-scroll-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.btn-scroll-top:hover {
+    background: rgba(99, 102, 241, 0.22);
+    border-color: var(--primary-light);
+    color: #ffffff;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 28px rgba(99, 102, 241, 0.35);
+}
+
+.btn-scroll-top:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.btn-scroll-top svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.2s ease;
+}
+
+.btn-scroll-top:hover svg {
+    transform: translateY(-2px);
 }
 
 /* Animations */
