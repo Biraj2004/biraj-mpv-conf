@@ -445,6 +445,24 @@ This configuration utilizes **`vo=gpu-next`** with mpv's **libplacebo** renderin
 2. **On Windows HDR Displays**:
    - `target-colorspace-hint=yes` automatically signals the Windows Display Subsystem to pass wide-gamut (BT.2020) and high-peak brightness metadata directly to your HDR monitor or TV.
 
+> [!IMPORTANT]
+> **Performance Note on Heavy 4K UHD Blu-ray REMUX (60GB+):**
+> - **Standard Content (SDR, HDR10, HDR10+, Web-DL Dolby Vision Profile 5/8)**: Plays flawlessly with **0 frame drops**, instant seeking, and real-time color tone-mapping.
+> - **Extreme High-Bitrate 4K UHD Blu-ray REMUX (60GB+ / 80–100+ Mbps)**: Very large 60GB+ Blu-ray REMUX files featuring dual-layer Dolby Vision (Profile 7 MEL/FEL) combined with heavy HEVC bitrates can occasionally experience minor initial buffering or a slight loss of frames (~150–200 dropped frames during heavy seek bursts or high-complexity scene initialization) depending on hardware decoder/SSD bandwidth. Normal playback stabilizes immediately thereafter. All other standard Dolby Vision, HDR10, HDR10+, and SDR files play smoothly with zero dropped frames.
+
+### Reference Test Hardware & Benchmark Environment
+All configurations, shader algorithms, and real-time playback benchmarks were profiled and verified on the following reference test system:
+
+| Component | Hardware Specification |
+| :--- | :--- |
+| **CPU** | Intel Core i5-10300H @ 2.50GHz (4 Cores / 8 Threads, up to 4.50GHz Turbo) |
+| **Dedicated GPU** | NVIDIA GeForce GTX 1650 Ti (4GB GDDR6 VRAM) |
+| **Integrated GPU** | Intel UHD Graphics 630 |
+| **System Memory (RAM)** | 16 GB DDR4 |
+| **Operating System** | Microsoft Windows 10 Home (64-bit) |
+| **Storage** | PCIe NVMe SSD |
+| **MPV Engine Build** | Windows git builds by [zhongfly](https://github.com/zhongfly/mpv-winbuild/releases) (`gpu-next`, `libplacebo`, `d3d11va`, `Vulkan`) |
+
 > [!NOTE]
 > **File Format vs. Screen Support**: The format badge indicates the **color format received from the video file itself** (e.g. `DV` indicates a Dolby Vision file stream), **not** that your physical display panel supports native Dolby Vision. On standard SDR monitors, mpv automatically decodes the DV/HDR stream and tone-maps it into vivid, accurate SDR in real-time.
 

@@ -1107,6 +1107,70 @@ kbd {
     line-height: 1.6;
 }
 
+/* Reference Benchmark Hardware Card */
+.benchmark-card {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    background: linear-gradient(180deg, rgba(22, 25, 34, 0.95) 0%, rgba(13, 15, 22, 0.98) 100%);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    box-shadow: var(--shadow-card);
+}
+
+.benchmark-header {
+    margin-bottom: 1.5rem;
+}
+
+.benchmark-title {
+    font-size: clamp(1.15rem, 2vw, 1.35rem);
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.benchmark-subtitle {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+}
+
+.benchmark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1rem;
+}
+
+.benchmark-item {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: var(--transition);
+}
+
+.benchmark-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(99, 102, 241, 0.25);
+}
+
+.benchmark-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary-light);
+}
+
+.benchmark-val {
+    font-size: 0.88rem;
+    color: #e2e8f0;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
 /* ==========================================================================
    Credits & Acknowledgements Section
    ========================================================================== */
