@@ -322,8 +322,8 @@
                             <line x1="1" y1="14" x2="4" y2="14"></line>
                         </svg>
                     </div>
-                    <h3 class="feature-title">550MB Fast Seek Buffer</h3>
-                    <p class="feature-desc">Expanded demuxer cache (550MB forward, 300MB back-buffer) ensures instantaneous seeking and scrubbing with zero lag on high-bitrate 4K media.</p>
+                    <h3 class="feature-title">650MB Fast Seek Buffer</h3>
+                    <p class="feature-desc">Expanded demuxer cache (650MB forward, 350MB back-buffer) ensures instantaneous seeking and scrubbing with zero lag on high-bitrate 4K media.</p>
                 </div>
             </div>
         </div>
@@ -734,8 +734,8 @@
 
                         <!-- Audio -->
                         <tr data-cat="audio">
-                            <td><kbd>b</kbd></td>
-                            <td>Cycle audio tracks <em>(VLC-style)</em></td>
+                            <td><kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd></td>
+                            <td>Cycle audio tracks forward / backward <em>(VLC-style, loops languages)</em></td>
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
                         <tr data-cat="audio">
@@ -868,10 +868,11 @@ tone-mapping=auto
 hdr-compute-peak=auto
 gamut-mapping-mode=auto
 
-### Cache (550MB buffer)
+### Cache (650MB buffer)
 cache=yes
-demuxer-max-bytes=550MiB
-demuxer-max-back-bytes=300MiB</code></pre>
+demuxer-max-bytes=650MiB
+demuxer-max-back-bytes=350MiB
+demuxer-readahead-secs=10</code></pre>
                 </div>
 
                 <!-- Subtitles Card -->
@@ -882,10 +883,11 @@ demuxer-max-back-bytes=300MiB</code></pre>
                     </div>
                     <pre><code>### Subtitles
 sub-auto=fuzzy
-blend-subtitles=yes
+blend-subtitles=no
+sub-hdr-peak=200
+image-subs-hdr-peak=200
 sid=no
-demuxer-mkv-subtitle-preroll=yes
-demuxer-mkv-subtitle-preroll-secs=2
+demuxer-mkv-subtitle-preroll=no
 
 embeddedfonts=yes
 sub-fix-timing=no
@@ -963,10 +965,11 @@ sub-margin-y=38</code></pre>
                     </div>
                     <p class="credit-desc">Original author, curator, and maintainer of this configuration suite. Custom developed features and scripts include:</p>
                     <ul class="credit-list">
+                        <li><strong><code>cycle_audio.lua</code></strong> — Custom VLC-style audio cycling script that loops strictly through valid audio languages without silent/disabled states.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — Natural ascending playlist sorter algorithm with zero-stutter background reordering and OSD notifications.</li>
                         <li><strong><code>hdr_badge.lua</code></strong> — Dynamic floating format badge overlay automatically detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
-                        <li><strong>Engine Architecture & Subtitles</strong> — 550MB demuxer fast-seeking cache, <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
+                        <li><strong>Engine Architecture & Subtitles</strong> — 650MB demuxer fast-seeking cache (with 350MB back-cache), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
                         <li><strong>Documentation & Web Experience</strong> — Complete responsive documentation website, cheatsheet guides, and user manuals.</li>
                     </ul>
                 </div>

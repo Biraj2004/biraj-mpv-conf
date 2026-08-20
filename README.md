@@ -222,8 +222,8 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Native Subtitle Dialog (<kbd>Ctrl</kbd> + <kbd>S</kbd>)**: Opens Windows Explorer to browse and attach subtitles.
 - **Native Audio Track Dialog (<kbd>Ctrl</kbd> + <kbd>A</kbd>)**: Opens Windows Explorer to add secondary audio tracks (e.g. commentary, alternative dubs).
 - **Quick Track Cycling**:
-  - Press <kbd>v</kbd> to cycle subtitle tracks *(VLC-style)*.
-  - Press <kbd>b</kbd> to cycle audio languages *(VLC-style)*.
+  - Press <kbd>v</kbd> to cycle subtitle tracks *(VLC-style, zero-lag)*.
+  - Press <kbd>b</kbd> to cycle audio languages forward or <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) backward *(VLC-style, loops languages only)*.
 
 ### 5. Essential Playback Controls
 - **Play / Pause**: <kbd>Space</kbd> or <kbd>Media Play/Pause</kbd>
@@ -371,7 +371,7 @@ biraj-mpv-conf/
 ### Audio & Night Mode
 | Shortcut | Action |
 | :--- | :--- |
-| <kbd>b</kbd> | Cycle audio tracks *(VLC-style)* |
+| <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) | Cycle audio tracks forward / backward *(VLC-style, loops languages)* |
 | <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Audio Normalization** (`dynaudnorm`) |
 | <kbd>↑</kbd> / <kbd>↓</kbd> *(or Media Vol Up/Down)* | Volume up / down (+5% / -5%) |
 | <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
@@ -565,10 +565,11 @@ icon_style=mixed      # Options: mixed, filled, outline
 
 ### Author & Maintainer
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
+  - **`cycle_audio.lua`**: Custom VLC-style audio cycling script that loops strictly through valid audio languages without silent/disabled states.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending playlist sorting engine with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
-  - **Performance & Subtitle Architecture**: 550MB demuxer seek buffer, `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Performance & Subtitle Architecture**: 650MB demuxer seek buffer (with 350MB back-cache), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
 ### Upstream Open-Source Projects
