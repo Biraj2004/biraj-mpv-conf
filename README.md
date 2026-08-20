@@ -274,8 +274,8 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Advanced Subtitle & Audio Management
-- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=48`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
-- **Consistent Heights & Margins (`sub-ass-override=strip`)**: Automatically strips conflicting internal ASS margins so that plain `.srt` movies and anime `.ass` subtitles share the exact same uniform bottom margin (`sub-margin-y=35`).
+- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=50`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
+- **Original Anime Typesetting & Positioning (`sub-ass-override=no`)**: Fully preserves author-intended ASS styling, top-screen song lyrics (`{\an8}`), signs, and typesetting for anime, while plain `.srt` and `.vtt` subtitles use your configured custom size and styling (`sub-margin-y=38`).
 - **Locked Subtitle Baseline**: Subtitles remain fixed to the video frame (`sub-use-margins=no`, `sub_margins=no`) and never jitter or jump when the seekbar/OSC appears.
 - **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, `ass/`, and `vtt/` subdirectories.
 - **Subtitle Preroll**: Avoids missing subtitle lines when seeking into the middle of an MKV subtitle block.
@@ -504,15 +504,15 @@ alang=hi,en,ja
 ### 4. Subtitle Typography & Positioning
 In [`mpv.conf`](mpv.conf):
 ```ini
-sub-font-size=48
+sub-font-size=50
 sub-color="#FFFFFF"
 sub-border-size=1.8
 sub-border-color="#000000"
-sub-shadow-offset=1.45
-sub-shadow-color=0/0/0/0.45
+sub-shadow-offset=1.5
+sub-shadow-color=0/0/0/0.5
 sub-border-style=outline-and-shadow
-sub-margin-y=37.5
-sub-ass-override=strip
+sub-margin-y=38
+sub-ass-override=no
 ```
 
 ### 5. Screenshot Directory & Format
