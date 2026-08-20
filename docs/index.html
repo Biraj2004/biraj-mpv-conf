@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biraj MPV Configuration | Next-Gen Video Playback & Tone-Mapping</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Biraj MPV Configuration | Next-Gen Video Playback & Tone-Mapping">
+    <meta name="description" content="Production-grade, high-performance mpv configuration optimized for Windows, Linux, and macOS. Features gpu-next libplacebo rendering, dynamic HDR10 & Dolby Vision tone-mapping, ModernZ Fluent OSC, seekbar thumbnails, and natural playlist sorting.">
+    <meta name="keywords" content="mpv, mpv configuration, mpv.conf, modernz, thumbfast, gpu-next, hdr10, dolby vision, tone-mapping, anime subtitles, libplacebo, video player">
+    <meta name="author" content="Biraj Sarkar">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://biraj2004.github.io/biraj-mpv-conf/">
+
+    <!-- Theme Color & Web App -->
+    <meta name="theme-color" content="#090a0f">
+    <meta name="color-scheme" content="dark">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://biraj2004.github.io/biraj-mpv-conf/">
+    <meta property="og:title" content="Biraj MPV Configuration | Next-Gen Video Playback">
+    <meta property="og:description" content="High-fidelity, production-grade mpv setup featuring gpu-next, HDR/DV tone-mapping, ModernZ OSC, seekbar thumbnails, and natural playlist sorting.">
+    <meta property="og:image" content="https://biraj2004.github.io/biraj-mpv-conf/screenshots/thumbfast-hover-preview-subtitles.jpg">
+    <meta property="og:site_name" content="Biraj MPV Configuration">
+
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://biraj2004.github.io/biraj-mpv-conf/">
+    <meta property="twitter:title" content="Biraj MPV Configuration | Next-Gen Video Playback">
+    <meta property="twitter:description" content="High-fidelity, production-grade mpv setup featuring gpu-next, HDR/DV tone-mapping, ModernZ OSC, seekbar thumbnails, and natural playlist sorting.">
+    <meta property="twitter:image" content="https://biraj2004.github.io/biraj-mpv-conf/screenshots/thumbfast-hover-preview-subtitles.jpg">
+
+    <!-- Fonts & Stylesheet -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Biraj MPV Configuration",
+      "operatingSystem": "Windows, Linux, macOS",
+      "applicationCategory": "MultimediaApplication",
+      "description": "Production-grade, high-performance mpv media player configuration with gpu-next, libplacebo tone-mapping, and ModernZ OSC.",
+      "url": "https://biraj2004.github.io/biraj-mpv-conf/",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Biraj Sarkar",
+        "url": "https://github.com/Biraj2004"
+      }
+    }
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="site-header" id="header">
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </span>
+                <span class="logo-text">biraj-mpv-conf</span>
+            </a>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#screenshots" class="nav-link">Screenshots</a>
+                <a href="#shortcuts" class="nav-link">Shortcuts</a>
+                <a href="#installation" class="nav-link">Installation</a>
+                <a href="#config" class="nav-link">Config</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="btn btn-download-nav" download>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Download ZIP</span>
+                </a>
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf" target="_blank" rel="noopener" class="btn btn-github" aria-label="GitHub Repository">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                </a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle navigation">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-bg-glow"></div>
+        <div class="container hero-container">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                <span>Optimized for MPV v0.40+ / v0.41+</span>
+            </div>
+            <h1 class="hero-title">
+                The Definitive, Next-Gen <br>
+                <span class="gradient-text">MPV Configuration</span>
+            </h1>
+            <p class="hero-description">
+                A high-fidelity, production-grade configuration for mpv. Featuring GPU-accelerated libplacebo rendering, dynamic HDR10 & Dolby Vision tone-mapping, ModernZ Fluent controller, real-time seekbar thumbnails, and natural playlist sorting.
+            </p>
+            
+            <div class="hero-buttons">
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="btn btn-primary" download>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Download Latest ZIP</span>
+                </a>
+                <a href="#installation" class="btn btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="4 17 10 11 4 5"></polyline>
+                        <line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                    <span>Quick Install Guide</span>
+                </a>
+            </div>
+
+            <!-- Quick Clone Code Box -->
+            <div class="hero-clone-box">
+                <span class="clone-label">Git Clone</span>
+                <code id="cloneCmd">git clone https://github.com/Biraj2004/biraj-mpv-conf.git</code>
+                <button class="btn-copy" onclick="copyCode('cloneCmd', this)" title="Copy command" aria-label="Copy clone command">
+                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Showcase Preview Card -->
+            <div class="hero-preview-frame">
+                <div class="frame-bar">
+                    <div class="frame-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="frame-title">mpv &bull; ModernZ Fluent OSC &bull; Seekbar Thumbnails</div>
+                    <div class="frame-action-tag">gpu-next active</div>
+                </div>
+                <div class="frame-image-wrapper">
+                    <img src="screenshots/thumbfast-hover-preview-subtitles.jpg" alt="ModernZ OSC interface with hover preview thumbnails and subtitle rendering" class="hero-image zoomable">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Feature Highlights -->
+    <section class="section features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Engine Architecture</div>
+                <h2 class="section-title">Engineered for Flawless Playback</h2>
+                <p class="section-subtitle">A balanced configuration combining cutting-edge video decoding, audio dynamics, and minimalist user experience.</p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Next-Gen GPU Rendering</h3>
+                    <p class="feature-desc">Powered by <code>vo=gpu-next</code> with libplacebo, Direct3D11 flip presentation (<code>d3d11-flip=yes</code>), and high-bitdepth debanding algorithms to eliminate color banding artifacts.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">HDR10 & Dolby Vision Tone-Mapping</h3>
+                    <p class="feature-desc">Dynamically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays without washed-out colors. Automatically passes HDR metadata on native HDR monitors.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 6h16M4 12h16M4 18h7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Natural Ascending Playlist Sort</h3>
+                    <p class="feature-desc">Dropping or opening multiple episodes automatically sorts them in natural alphanumeric sequence (<code>E1</code> &rarr; <code>E2</code> &rarr; <code>E10</code>). Preserves playback of the clicked episode seamlessly.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Fast Seekbar Hover Thumbnails</h3>
+                    <p class="feature-desc">Integrated with <code>thumbfast</code> to provide real-time, zero-lag visual preview thumbnails while hovering or scrubbing along the seekbar.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Refined Subtitle Typography</h3>
+                    <p class="feature-desc">Configured with 50px typography, 1.8px crisp outline, 1.5px translucent drop shadow, and <code>sub-ass-override=no</code> to preserve anime opening/ending top lyrics (<code>{\an8}</code>) and signs.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Night Mode Audio Normalization</h3>
+                    <p class="feature-desc">One-key dynamic audio normalizer (<code>dynaudnorm</code>) via <kbd>y</kbd> to balance quiet dialogue and loud explosion effects during late-night viewing.</p>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">2K/4K Online Streaming</h3>
+                    <p class="feature-desc">Integrated with <code>yt-dlp</code> prioritizing 1440p 2K &rarr; 1080p Full HD &rarr; 720p HD. Supports cookie authentication for full 1080p/1440p YouTube streaming.</p>
+                </div>
+
+                <!-- Feature 8 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                            <rect x="9" y="9" width="6" height="6"></rect>
+                            <line x1="9" y1="1" x2="9" y2="4"></line>
+                            <line x1="15" y1="1" x2="15" y2="4"></line>
+                            <line x1="9" y1="20" x2="9" y2="23"></line>
+                            <line x1="15" y1="20" x2="15" y2="23"></line>
+                            <line x1="20" y1="9" x2="23" y2="9"></line>
+                            <line x1="20" y1="14" x2="23" y2="14"></line>
+                            <line x1="1" y1="9" x2="4" y2="9"></line>
+                            <line x1="1" y1="14" x2="4" y2="14"></line>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">550MB Fast Seek Buffer</h3>
+                    <p class="feature-desc">Expanded demuxer cache (550MB forward, 300MB back-buffer) ensures instantaneous seeking and scrubbing with zero lag on high-bitrate 4K media.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Showcase / Screenshots Gallery -->
+    <section class="section screenshots-section" id="screenshots">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Visual Gallery</div>
+                <h2 class="section-title">Experience the Interface</h2>
+                <p class="section-subtitle">Click on any screenshot to view full resolution.</p>
+            </div>
+
+            <div class="gallery-grid">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-card zoomable-trigger" data-img="screenshots/modernz-osc-pause-indicator.jpg">
+                    <div class="gallery-image-box">
+                        <img src="screenshots/modernz-osc-pause-indicator.jpg" alt="ModernZ OSC & Center Pause Indicator" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span class="gallery-zoom-badge">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                </svg>
+                                <span>Enlarge</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <span class="gallery-tag">ModernZ OSC</span>
+                        <h4 class="gallery-title">Modern On-Screen Controller & Pause Indicator</h4>
+                        <p class="gallery-desc">Fluent vector icons, dark translucent seekbar, and minimalist center pause flash.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2 -->
+                <div class="gallery-card zoomable-trigger" data-img="screenshots/hdr10plus-badge-overlay.jpg">
+                    <div class="gallery-image-box">
+                        <img src="screenshots/hdr10plus-badge-overlay.jpg" alt="Dynamic HDR10+ Format Badge Overlay" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span class="gallery-zoom-badge">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                </svg>
+                                <span>Enlarge</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <span class="gallery-tag">Color Pipeline</span>
+                        <h4 class="gallery-title">Dynamic HDR / Dolby Vision Format Badge</h4>
+                        <p class="gallery-desc">Announces detected color format (DV, HDR10+, HDR, HLG, SDR) in the top-right corner.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3 -->
+                <div class="gallery-card zoomable-trigger" data-img="screenshots/stats-overlay-4k-hdr10plus.jpg">
+                    <div class="gallery-image-box">
+                        <img src="screenshots/stats-overlay-4k-hdr10plus.jpg" alt="Real-Time 4K HDR10+ Playback Statistics" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span class="gallery-zoom-badge">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                </svg>
+                                <span>Enlarge</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <span class="gallery-tag">Telemetry</span>
+                        <h4 class="gallery-title">Real-Time Performance & Dropped Frame Stats</h4>
+                        <p class="gallery-desc">Instant monitoring of decoder, framerates, target brightness nits, and cache status.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 4 -->
+                <div class="gallery-card zoomable-trigger" data-img="screenshots/interactive-console-stream-log.jpg">
+                    <div class="gallery-image-box">
+                        <img src="screenshots/interactive-console-stream-log.jpg" alt="Interactive Console with yt-dlp streaming logs" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span class="gallery-zoom-badge">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                </svg>
+                                <span>Enlarge</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <span class="gallery-tag">Terminal Console</span>
+                        <h4 class="gallery-title">Interactive Console & Stream Logger</h4>
+                        <p class="gallery-desc">Built-in command prompt to inspect yt-dlp format streams, codecs, and decoder status.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation & Setup Guide -->
+    <section class="section install-section" id="installation">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Setup & Deployment</div>
+                <h2 class="section-title">Installation Guide</h2>
+                <p class="section-subtitle">Follow the simple steps below for your operating system.</p>
+            </div>
+
+            <!-- OS Platform Tabs -->
+            <div class="os-tabs-container">
+                <div class="os-tabs">
+                    <button class="os-tab-btn active" data-os="windows">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+                        </svg>
+                        <span>Windows</span>
+                    </button>
+                    <button class="os-tab-btn" data-os="linux">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.01 0C5.378 0 0 5.378 0 12.01c0 6.633 5.378 12.01 12.01 12.01 6.633 0 12.01-5.377 12.01-12.01C24.02 5.378 18.643 0 12.01 0zm0 2.402c5.308 0 9.608 4.3 9.608 9.608 0 5.308-4.3 9.608-9.608 9.608-5.308 0-9.608-4.3-9.608-9.608 0-5.308 4.3-9.608 9.608-9.608z"/>
+                        </svg>
+                        <span>Linux</span>
+                    </button>
+                    <button class="os-tab-btn" data-os="macos">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-2 .6-2.65 1.35-.58.66-1.08 1.74-.95 2.76 1.01.08 2.06-.51 2.68-1.26"/>
+                        </svg>
+                        <span>macOS</span>
+                    </button>
+                </div>
+
+                <!-- Windows Installation Instructions -->
+                <div class="os-content active" id="content-windows">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-body">
+                            <h4 class="step-title">Download Configuration Archive</h4>
+                            <p class="step-desc">Download the latest configuration zip package and extract its contents.</p>
+                            <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="btn btn-primary btn-sm" download>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                <span>Download ZIP</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-body">
+                            <h4 class="step-title">Navigate to mpv Roaming Folder</h4>
+                            <p class="step-desc">Press <kbd>Win</kbd> + <kbd>R</kbd>, paste the following path into the Run box, and press <kbd>Enter</kbd>:</p>
+                            <div class="code-block">
+                                <code id="winPath">%APPDATA%\mpv</code>
+                                <button class="btn-copy" onclick="copyCode('winPath', this)" aria-label="Copy path">
+                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </div>
+                            <span class="path-hint">Resolved path: <code>C:\Users\&lt;YourUsername&gt;\AppData\Roaming\mpv</code></span>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-body">
+                            <h4 class="step-title">Paste Configuration Files</h4>
+                            <p class="step-desc">Copy all extracted files and folders (<code>mpv.conf</code>, <code>input.conf</code>, <code>menu.conf</code>, <code>scripts/</code>, <code>script-opts/</code>, <code>fonts/</code>) directly into that folder.</p>
+                            <div class="structure-preview">
+                                <pre>C:\Users\&lt;YourUsername&gt;\AppData\Roaming\mpv\
+├── mpv.conf
+├── input.conf
+├── menu.conf
+├── fonts\
+│   └── modernz-icons.ttf
+├── scripts\
+│   ├── hdr_badge.lua
+│   ├── modernz.lua
+│   ├── open-file.lua
+│   ├── pause_indicator_lite.lua
+│   ├── sort_playlist.lua
+│   └── thumbfast.lua
+└── script-opts\
+    ├── hdr_badge.conf
+    ├── modernz.conf
+    ├── pause_indicator_lite.conf
+    └── thumbfast.conf</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-body">
+                            <h4 class="step-title">Automated 1-Line PowerShell Install</h4>
+                            <p class="step-desc">Alternatively, open PowerShell and run this one-line command to install or update automatically:</p>
+                            <div class="code-block">
+                                <code id="winOneLiner">irm https://raw.githubusercontent.com/Biraj2004/biraj-mpv-conf/main/install.ps1 | iex</code>
+                                <button class="btn-copy" onclick="copyCode('winOneLiner', this)" aria-label="Copy command">
+                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linux Installation Instructions -->
+                <div class="os-content" id="content-linux">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-body">
+                            <h4 class="step-title">Clone to Config Directory</h4>
+                            <p class="step-desc">Run the following commands in your terminal:</p>
+                            <div class="code-block">
+                                <code id="linuxCmd">git clone https://github.com/Biraj2004/biraj-mpv-conf.git ~/.config/mpv</code>
+                                <button class="btn-copy" onclick="copyCode('linuxCmd', this)" aria-label="Copy command">
+                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- macOS Installation Instructions -->
+                <div class="os-content" id="content-macos">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-body">
+                            <h4 class="step-title">Clone to User Directory</h4>
+                            <p class="step-desc">Open Terminal and clone the repository directly into your user config folder:</p>
+                            <div class="code-block">
+                                <code id="macCmd">git clone https://github.com/Biraj2004/biraj-mpv-conf.git ~/.config/mpv</code>
+                                <button class="btn-copy" onclick="copyCode('macCmd', this)" aria-label="Copy command">
+                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Shortcuts Cheat Sheet -->
+    <section class="section shortcuts-section" id="shortcuts">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Quick Reference</div>
+                <h2 class="section-title">Keyboard & Mouse Controls</h2>
+                <p class="section-subtitle">Search or filter through all essential playback shortcuts.</p>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="shortcuts-search-wrapper">
+                <div class="search-input-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="shortcutSearch" placeholder="Filter shortcuts (e.g. sort, subtitle, quality, mute, stats)..." aria-label="Filter shortcuts">
+                </div>
+                <div class="shortcuts-filter-pills" id="shortcutFilterPills">
+                    <button class="filter-pill active" data-category="all">All</button>
+                    <button class="filter-pill" data-category="playback">Playback</button>
+                    <button class="filter-pill" data-category="playlist">Playlist</button>
+                    <button class="filter-pill" data-category="audio">Audio</button>
+                    <button class="filter-pill" data-category="subtitles">Subtitles</button>
+                    <button class="filter-pill" data-category="video">Video & Stream</button>
+                    <button class="filter-pill" data-category="window">Window & UI</button>
+                </div>
+            </div>
+
+            <!-- Shortcuts Table -->
+            <div class="table-container">
+                <table class="shortcuts-table" id="shortcutsTable">
+                    <thead>
+                        <tr>
+                            <th>Shortcut Key</th>
+                            <th>Action & Description</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Playback -->
+                        <tr data-cat="playback">
+                            <td><kbd>Space</kbd></td>
+                            <td>Toggle Play / Pause</td>
+                            <td><span class="badge-cat">Playback</span></td>
+                        </tr>
+                        <tr data-cat="playback">
+                            <td><kbd>&rarr;</kbd> / <kbd>&larr;</kbd></td>
+                            <td>Seek forward / backward 5 seconds (exact with OSD bar)</td>
+                            <td><span class="badge-cat">Playback</span></td>
+                        </tr>
+                        <tr data-cat="playback">
+                            <td><kbd>Media Fwd</kbd> / <kbd>Media Rew</kbd></td>
+                            <td>Seek forward / backward 15 seconds (exact)</td>
+                            <td><span class="badge-cat">Playback</span></td>
+                        </tr>
+                        <tr data-cat="playback">
+                            <td><kbd>Home</kbd></td>
+                            <td>Seek to beginning of media (0s)</td>
+                            <td><span class="badge-cat">Playback</span></td>
+                        </tr>
+                        <tr data-cat="playback">
+                            <td><kbd>.</kbd> / <kbd>,</kbd></td>
+                            <td>Frame-step forward / backward</td>
+                            <td><span class="badge-cat">Playback</span></td>
+                        </tr>
+                        <tr data-cat="playback">
+                            <td><kbd>n</kbd> / <kbd>p</kbd></td>
+                            <td>Next / Previous playlist item</td>
+                            <td><span class="badge-cat">Playback</span></td>
+                        </tr>
+                        <tr data-cat="playback">
+                            <td><kbd>k</kbd></td>
+                            <td><strong>Sort active playlist in natural alphanumeric ascending order</strong> (with OSD feedback)</td>
+                            <td><span class="badge-cat">Playlist</span></td>
+                        </tr>
+                        <tr data-cat="playback">
+                            <td><kbd>q</kbd></td>
+                            <td>Quit mpv (remembers watch history & playback position)</td>
+                            <td><span class="badge-cat">Playback</span></td>
+                        </tr>
+
+                        <!-- Audio -->
+                        <tr data-cat="audio">
+                            <td><kbd>b</kbd></td>
+                            <td>Cycle audio tracks <em>(VLC-style)</em></td>
+                            <td><span class="badge-cat">Audio</span></td>
+                        </tr>
+                        <tr data-cat="audio">
+                            <td><kbd>y</kbd></td>
+                            <td><strong>Toggle Night Mode Audio Normalization</strong> (<code>dynaudnorm</code>)</td>
+                            <td><span class="badge-cat">Audio</span></td>
+                        </tr>
+                        <tr data-cat="audio">
+                            <td><kbd>&uarr;</kbd> / <kbd>&darr;</kbd></td>
+                            <td>Volume up / down (&plusmn;5%)</td>
+                            <td><span class="badge-cat">Audio</span></td>
+                        </tr>
+                        <tr data-cat="audio">
+                            <td><kbd>m</kbd></td>
+                            <td>Toggle Mute on / off</td>
+                            <td><span class="badge-cat">Audio</span></td>
+                        </tr>
+                        <tr data-cat="audio">
+                            <td><kbd>Ctrl</kbd> + <kbd>a</kbd></td>
+                            <td>Open Native File Dialog to add secondary Audio track</td>
+                            <td><span class="badge-cat">Audio</span></td>
+                        </tr>
+
+                        <!-- Subtitles -->
+                        <tr data-cat="subtitles">
+                            <td><kbd>v</kbd></td>
+                            <td>Cycle subtitle tracks <em>(VLC-style)</em></td>
+                            <td><span class="badge-cat">Subtitles</span></td>
+                        </tr>
+                        <tr data-cat="subtitles">
+                            <td><kbd>r</kbd></td>
+                            <td>Raise subtitle position up (<code>sub-pos -1</code>)</td>
+                            <td><span class="badge-cat">Subtitles</span></td>
+                        </tr>
+                        <tr data-cat="subtitles">
+                            <td><kbd>t</kbd></td>
+                            <td>Move subtitle position down (<code>sub-pos +1</code>)</td>
+                            <td><span class="badge-cat">Subtitles</span></td>
+                        </tr>
+                        <tr data-cat="subtitles">
+                            <td><kbd>Ctrl</kbd> + <kbd>s</kbd></td>
+                            <td>Open Native File Dialog to attach Subtitle track</td>
+                            <td><span class="badge-cat">Subtitles</span></td>
+                        </tr>
+
+                        <!-- Video & Streaming -->
+                        <tr data-cat="video">
+                            <td><kbd>Ctrl</kbd> + <kbd>y</kbd></td>
+                            <td><strong>Cycle Stream Quality</strong> (720p &rarr; 1080p &rarr; 1440p &rarr; Best)</td>
+                            <td><span class="badge-cat">Streaming</span></td>
+                        </tr>
+                        <tr data-cat="video">
+                            <td><kbd>l</kbd></td>
+                            <td><strong>Toggle Dynamic HDR / DV Format Badge</strong></td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+                        <tr data-cat="video">
+                            <td><kbd>i</kbd></td>
+                            <td>Toggle Real-Time Performance & Dropped Frame Statistics</td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+                        <tr data-cat="video">
+                            <td><kbd>s</kbd></td>
+                            <td>Take Screenshot (saved to <code>~/Pictures/MPV-Screenshots/</code>)</td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+
+                        <!-- Window & Dialogs -->
+                        <tr data-cat="window">
+                            <td><kbd>f</kbd> / <kbd>Double Click</kbd></td>
+                            <td>Toggle Fullscreen</td>
+                            <td><span class="badge-cat">Window</span></td>
+                        </tr>
+                        <tr data-cat="window">
+                            <td><kbd>Esc</kbd></td>
+                            <td>Exit Fullscreen</td>
+                            <td><span class="badge-cat">Window</span></td>
+                        </tr>
+                        <tr data-cat="window">
+                            <td><kbd>Tab</kbd></td>
+                            <td>Toggle ModernZ OSC visibility</td>
+                            <td><span class="badge-cat">Window</span></td>
+                        </tr>
+                        <tr data-cat="window">
+                            <td><kbd>Right Click</kbd> / <kbd>g</kbd> <kbd>m</kbd></td>
+                            <td>Open Rich Context Menu</td>
+                            <td><span class="badge-cat">Window</span></td>
+                        </tr>
+                        <tr data-cat="window">
+                            <td><kbd>Ctrl</kbd> + <kbd>o</kbd></td>
+                            <td>Open Native Windows Media Picker (with natural ascending sort)</td>
+                            <td><span class="badge-cat">Window</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Configuration Highlights Code View -->
+    <section class="section config-section" id="config">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Core Specifications</div>
+                <h2 class="section-title">Configuration Breakdown</h2>
+                <p class="section-subtitle">Examine the exact parameter values configured in <code>mpv.conf</code>.</p>
+            </div>
+
+            <div class="code-showcase-grid">
+                <!-- Video & Cache Card -->
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <span class="code-card-title">Video & Cache Architecture</span>
+                        <span class="code-card-file">mpv.conf</span>
+                    </div>
+                    <pre><code>### Video Pipeline
+vo=gpu-next
+gpu-context=auto
+d3d11-flip=yes
+hwdec=auto-safe
+hwdec-extra-frames=16
+deband=yes
+temporal-dither=yes
+sigmoid-upscaling=yes
+correct-downscaling=yes
+
+### HDR & Dolby Vision
+target-colorspace-hint=yes
+tone-mapping=auto
+hdr-compute-peak=auto
+gamut-mapping-mode=auto
+
+### Cache (550MB buffer)
+cache=yes
+demuxer-max-bytes=550MiB
+demuxer-max-back-bytes=300MiB</code></pre>
+                </div>
+
+                <!-- Subtitles Card -->
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <span class="code-card-title">Subtitle Typography & Engine</span>
+                        <span class="code-card-file">mpv.conf</span>
+                    </div>
+                    <pre><code>### Subtitles
+sub-auto=fuzzy
+blend-subtitles=yes
+sid=no
+demuxer-mkv-subtitle-preroll=yes
+demuxer-mkv-subtitle-preroll-secs=2
+
+embeddedfonts=yes
+sub-fix-timing=no
+sub-use-margins=no
+sub-ass-force-margins=no
+sub-ass-override=no
+
+sub-font-size=50
+sub-color="#FFFFFF"
+sub-border-size=1.8
+sub-border-color="#000000"
+sub-shadow-offset=1.5
+sub-shadow-color=0/0/0/0.5
+sub-border-style=outline-and-shadow
+sub-margin-y=38</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </span>
+                <span class="footer-title">biraj-mpv-conf</span>
+                <p class="footer-desc">Crafted for pristine visual fidelity, performance, and seamless media playback.</p>
+            </div>
+
+            <div class="footer-links-group">
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf" target="_blank" rel="noopener" class="footer-link">GitHub Repository</a>
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="footer-link">Download Latest ZIP</a>
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/blob/main/LICENSE" target="_blank" rel="noopener" class="footer-link">Apache 2.0 License</a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear">2026</span> Biraj Sarkar. Open source under Apache 2.0 License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Lightbox Modal -->
+    <div class="lightbox-modal" id="lightboxModal" aria-hidden="true">
+        <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose" aria-label="Close modal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <img src="" alt="Full resolution preview" id="lightboxImg">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

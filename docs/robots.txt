@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://biraj2004.github.io/biraj-mpv-conf/sitemap.xml

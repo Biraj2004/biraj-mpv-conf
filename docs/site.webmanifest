@@ -1,0 +1,17 @@
+{
+  "name": "Biraj MPV Configuration",
+  "short_name": "biraj-mpv-conf",
+  "description": "Production-grade, high-performance mpv configuration with gpu-next, HDR/DV tone-mapping, and ModernZ OSC.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#090a0f",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
