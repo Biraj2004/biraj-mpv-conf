@@ -26,7 +26,12 @@ local function sort_playlist(silent)
     if is_sorting then return end
     
     local pl = mp.get_property_native("playlist", {})
-    if not pl or #pl <= 1 then return end
+    if not pl or #pl <= 1 then
+        if not silent then
+            mp.osd_message("Playlist: Only 1 item (no sorting needed)", 2)
+        end
+        return
+    end
 
     -- Check if already sorted
     local already_sorted = true
@@ -40,7 +45,12 @@ local function sort_playlist(silent)
         last_key = key
     end
 
-    if already_sorted then return end
+    if already_sorted then
+        if not silent then
+            mp.osd_message("Playlist already sorted (ascending)", 2)
+        end
+        return
+    end
 
     is_sorting = true
 
@@ -117,10 +127,13 @@ mp.register_event("start-file", function()
     end
 end)
 
-mp.add_key_binding(nil, "sort-playlist", function()
+local function manual_trigger()
     if sort_timer then
         sort_timer:kill()
         sort_timer = nil
     end
     sort_playlist(false)
-end)
+end
+
+mp.add_key_binding(nil, "sort-playlist", manual_trigger)
+mp.add_key_binding(nil, "sort_playlist", manual_trigger)
