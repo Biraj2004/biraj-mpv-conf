@@ -95,13 +95,17 @@ body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
 
 body.modal-open {
     overflow: hidden;
+}
+
+section[id] {
+    scroll-margin-top: clamp(4.5rem, 6vw, 5.5rem);
 }
 
 /* Fluid Container */

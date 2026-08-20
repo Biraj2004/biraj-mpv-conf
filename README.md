@@ -81,28 +81,24 @@
 
 ### Method 1: Standard Installation (Windows) — *Recommended*
 
-#### Option A: Quick Clone via PowerShell (Fastest)
-Open **PowerShell** and run:
+#### Option A: Quick Install via PowerShell (Fastest)
+Open **PowerShell** and run the following command to download and place only the necessary configuration files and scripts into `%APPDATA%\mpv`:
 ```powershell
-# Create the directory if it doesn't already exist and clone directly into Roaming
+$temp = "$env:TEMP\biraj-mpv-conf"
+git clone --depth 1 https://github.com/Biraj2004/biraj-mpv-conf.git $temp
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\mpv"
-git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
+Copy-Item "$temp\mpv.conf", "$temp\input.conf", "$temp\menu.conf" -Destination "$env:APPDATA\mpv\" -Force
+Copy-Item "$temp\fonts", "$temp\scripts", "$temp\script-opts" -Destination "$env:APPDATA\mpv\" -Recurse -Force
+Remove-Item -Recurse -Force $temp
 ```
 
 #### Option B: Manual Extraction (ZIP)
 1. Download this repository as a ZIP archive: [**Download ZIP**](https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip).
-2. Press <kbd>Win</kbd> + <kbd>R</kbd>, type `%APPDATA%\mpv`, and press **Enter** (or navigate to the full path `C:\Users\<YourUsername>\AppData\Roaming\mpv\`).
-3. Extract all files and folders from the ZIP directly into this folder so your directory looks like:
+2. Press <kbd>Win</kbd> + <kbd>R</kbd>, type `%APPDATA%\mpv`, and press **Enter** (or navigate to `C:\Users\<YourUsername>\AppData\Roaming\mpv\`).
+3. Copy **only the necessary configuration folders and files** (`fonts/`, `scripts/`, `script-opts/`, `mpv.conf`, `input.conf`, `menu.conf`) from the extracted folder directly into `%APPDATA%\mpv\`. *(You do not need to copy repository docs, screenshots, or license files into mpv).*
+4. Your resulting `%APPDATA%\mpv\` directory should look cleanly like this:
    ```plaintext
    C:\Users\<YourUsername>\AppData\Roaming\mpv\
-   ├── docs/                         # Live Documentation Website (GitHub Pages)
-   │   ├── index.html
-   │   ├── style.css
-   │   ├── script.js
-   │   ├── favicon.svg
-   │   ├── site.webmanifest
-   │   ├── robots.txt
-   │   └── sitemap.xml
    ├── fonts/
    │   └── modernz-icons.ttf
    ├── script-opts/
@@ -117,26 +113,11 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
    │   ├── pause_indicator_lite.lua
    │   ├── sort_playlist.lua
    │   └── thumbfast.lua
-   ├── screenshots/
-   │   ├── hdr10plus-badge-overlay.jpg
-   │   ├── interactive-console-stream-log.jpg
-   │   ├── modernz-osc-pause-indicator.jpg
-   │   ├── native-file-picker-dialog.jpg
-   │   ├── playlist-menu-ascending-sort.jpg
-   │   ├── stats-overlay-1080p-sdr.jpg
-   │   ├── stats-overlay-4k-hdr10plus.jpg
-   │   └── thumbfast-hover-preview-subtitles.jpg
-   ├── biraj-mpv-guide.pdf
-   ├── biraj-mpv-key-binding.pdf
-   ├── keybindings-chart.jpg
    ├── input.conf
    ├── menu.conf
-   ├── mpv.conf
-   ├── LICENSE
-   ├── README.md
-   └── SECURITY.md
+   └── mpv.conf
    ```
-4. **Install Icons Font**: Open `fonts/` inside your mpv directory, double-click `modernz-icons.ttf`, and click **Install**.
+5. **Install Icons Font**: Open `fonts/` inside your mpv directory, double-click `modernz-icons.ttf`, and click **Install**.
 
 ---
 
@@ -145,17 +126,26 @@ git clone https://github.com/Biraj2004/biraj-mpv-conf.git "$env:APPDATA\mpv"
 If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB drive):
 1. Navigate to your mpv root directory (where `mpv.exe` resides).
 2. Create a folder named `portable_config` if one does not exist.
-3. Extract/copy all files from this repository directly into:
+3. Copy **only the necessary configuration files and folders** directly into `portable_config`:
    ```plaintext
    C:\mpv\portable_config\
    ├── fonts/
+   │   └── modernz-icons.ttf
    ├── script-opts/
+   │   ├── hdr_badge.conf
+   │   ├── modernz.conf
+   │   ├── pause_indicator_lite.conf
+   │   └── thumbfast.conf
    ├── scripts/
+   │   ├── hdr_badge.lua
+   │   ├── modernz.lua
+   │   ├── open-file.lua
+   │   ├── pause_indicator_lite.lua
+   │   ├── sort_playlist.lua
+   │   └── thumbfast.lua
    ├── input.conf
    ├── menu.conf
-   ├── mpv.conf
-   ├── key-binding.pdf
-   └── ...
+   └── mpv.conf
    ```
 4. Install `fonts/modernz-icons.ttf` onto your system to enable vector icons.
 
