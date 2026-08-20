@@ -222,8 +222,8 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Native Subtitle Dialog (<kbd>Ctrl</kbd> + <kbd>S</kbd>)**: Opens Windows Explorer to browse and attach subtitles.
 - **Native Audio Track Dialog (<kbd>Ctrl</kbd> + <kbd>A</kbd>)**: Opens Windows Explorer to add secondary audio tracks (e.g. commentary, alternative dubs).
 - **Quick Track Cycling**:
-  - Press <kbd>v</kbd> to cycle subtitle tracks *(VLC-style, zero-lag)*.
-  - Press <kbd>b</kbd> to cycle audio languages forward or <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) backward *(VLC-style, loops languages only)*.
+  - Press <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) to cycle subtitle tracks forward / backward *(VLC-style, anti-spam debounced, zero-lag)*.
+  - Press <kbd>b</kbd> to cycle audio languages forward or <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) backward *(VLC-style, loops languages only, anti-spam debounced)*.
 
 ### 5. Essential Playback Controls
 - **Play / Pause**: <kbd>Space</kbd> or <kbd>Media Play/Pause</kbd>
@@ -240,14 +240,14 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Modern UI and Fluent On-Screen Controller
 - **[ModernZ](https://github.com/Samillion/ModernZ) OSC Interface**: Replaces the default interface with a clean, responsive On-Screen Controller styled with Fluent/Material vector icons.
-- **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography, eliminating disruptive double seekbars (`osd-bar=no`).
+- **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography (`osd-duration=2000` 2.0s readable duration, `osd-playing-msg-duration=2500` 2.5s startup filename duration), eliminating disruptive double seekbars (`osd-bar=no`).
 - **Sleek Pause / Play Indicator**: Minimalist, non-distracting center pause/unpause visual flash indicators ([`pause_indicator_lite`](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)).
 
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
-- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays, preserving highlight details and color saturation without washed-out tones. Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
+- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays, preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=200`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
-- **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms.
+- **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
 - **Debanding & Temporal Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `temporal-dither=yes`).
 - **High-Fidelity Scaling**: Sigmoid upscaling and correct color-space downscaling algorithms for sharp playback without ringing artifacts.
 
@@ -259,7 +259,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Rich Right-Click Context Menu
 - Full-featured **contextual GUI menu** (`menu.conf`) accessible on right-click or via <kbd>g</kbd> <kbd>m</kbd>:
-  - Toggle audio/subtitle streams, secondary subtitles, and audio devices.
+  - Toggle audio/subtitle streams with dedicated `Off / None` option, secondary subtitles, and audio devices.
   - Enable **Night Mode Audio Normalization** directly from the audio menu.
   - Choose HDR Tone-Mapping curves (*Auto libplacebo, BT.2390, Spline, Reinhard, Clip*).
   - Switch ModernZ layouts (*Default, Compact, Mini, Seekbar*) and icon styles (*Fluent, Material*).
@@ -277,17 +277,20 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Smart Dynamic Profiles & Audio Normalization
 - **Night Mode Audio Normalization (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time `dynaudnorm` filter balancing quiet dialogue and loud sound effects during late-night viewing.
+- **500ms Audio Headroom Buffer (`audio-buffer=0.5`)**: Prevents audio underruns and crackles during heavy CPU bursts or font indexing.
 - **Picture-in-Picture (`[Window-PiP]`)**: Automatically scales the OSC and enables a persistent progress bar when floating on-top in windowed mode.
 - **Auto-Pause on Minimize (`[Minimized]`)**: Automatically pauses video when the player window is minimized to conserve system resources.
 - **Windows Taskbar Progress Indicator (`[Video]`)**: Displays live playback completion progress directly on the Windows taskbar icon.
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Advanced Subtitle & Audio Management
-- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=50`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
+- **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant OSD response with 80ms decoder coalescing, preventing decoder thrashing during rapid key cycling.
+- **SIMD Subtitle Acceleration (`sub-ass-vsfilter-blur-compat=no`)**: Accelerates complex `.ass` styling and karaoke effects up to 5x using modern SIMD blur algorithms.
+- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=52`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
 - **Original Anime Typesetting & Positioning (`sub-ass-override=no`)**: Fully preserves author-intended ASS styling, top-screen song lyrics (`{\an8}`), signs, and typesetting for anime, while plain `.srt` and `.vtt` subtitles use your configured custom size and styling (`sub-margin-y=38`).
-- **Locked Subtitle Baseline**: Subtitles remain fixed to the video frame (`sub-use-margins=no`, `sub_margins=no`) and never jitter or jump when the seekbar/OSC appears.
+- **Locked Subtitle Baseline**: Subtitles remain fixed to the video frame (`sub-use-margins=no`, `sub-ass-force-margins=no`) and never jitter or jump when the seekbar/OSC appears.
+- **Zero-Lag Subtitle Switching (`demuxer-mkv-subtitle-preroll=no`)**: Prevents backward demuxer seeking on track changes for instant switching.
 - **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, `ass/`, and `vtt/` subdirectories.
-- **Subtitle Preroll**: Avoids missing subtitle lines when seeking into the middle of an MKV subtitle block.
 - **Subtitles Off by Default**: Clean view on launch (`sid=no`), easily enabled when needed via <kbd>v</kbd> or right-click menu.
 - **Multi-Language Priority**: Default subtitle matching priority for English (`slang=en,enm`) and audio stream selection for Hindi, English, and Japanese (`alang=hi,en,ja`).
 
@@ -308,6 +311,7 @@ biraj-mpv-conf/
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
+│   ├── cycle_audio.lua       # VLC-style audio & subtitle track cycler with anti-spam debouncing
 │   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)

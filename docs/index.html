@@ -278,8 +278,8 @@
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         </svg>
                     </div>
-                    <h3 class="feature-title">Refined Subtitle Typography</h3>
-                    <p class="feature-desc">Configured with 50px typography, 1.8px crisp outline, 1.5px translucent drop shadow, and <code>sub-ass-override=no</code> to preserve anime opening/ending top lyrics (<code>{\an8}</code>) and signs.</p>
+                    <h3 class="feature-title">Refined Subtitle Typography & SIMD Acceleration</h3>
+                    <p class="feature-desc">Configured with 52px typography, 1.8px crisp outline, 1.5px translucent drop shadow, SIMD blur acceleration (<code>sub-ass-vsfilter-blur-compat=no</code>), and <code>sub-ass-override=no</code> to preserve anime opening/ending top lyrics (<code>{\an8}</code>) and signs.</p>
                 </div>
 
                 <!-- Feature 6 -->
@@ -867,6 +867,11 @@ target-colorspace-hint=yes
 tone-mapping=auto
 hdr-compute-peak=auto
 gamut-mapping-mode=auto
+
+### Audio Pipeline (500ms Headroom)
+audio-buffer=0.5
+audio-stream-silence=yes
+audio-pitch-correction=yes
 
 ### Cache (650MB buffer)
 cache=yes
