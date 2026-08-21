@@ -322,8 +322,8 @@
                             <line x1="1" y1="14" x2="4" y2="14"></line>
                         </svg>
                     </div>
-                    <h3 class="feature-title">650MB Fast Seek Buffer</h3>
-                    <p class="feature-desc">Expanded demuxer cache (650MB forward, 350MB back-buffer) ensures instantaneous seeking and scrubbing with zero lag on high-bitrate 4K media.</p>
+                    <h3 class="feature-title">550MB Fast Seek Buffer</h3>
+                    <p class="feature-desc">Expanded demuxer cache (550MB forward, 300MB back-buffer) ensures instantaneous seeking and scrubbing with zero lag on high-bitrate 4K media.</p>
                 </div>
             </div>
         </div>
@@ -873,10 +873,10 @@ audio-buffer=0.5
 audio-stream-silence=yes
 audio-pitch-correction=yes
 
-### Cache (650MB buffer)
+### Cache (550MB buffer)
 cache=yes
-demuxer-max-bytes=650MiB
-demuxer-max-back-bytes=350MiB
+demuxer-max-bytes=550MiB
+demuxer-max-back-bytes=300MiB
 demuxer-readahead-secs=10</code></pre>
                 </div>
 
@@ -975,7 +975,7 @@ sub-margin-y=38</code></pre>
                         <li><strong><code>sort_playlist.lua</code></strong> — Natural ascending playlist sorter algorithm with zero-stutter background reordering and OSD notifications.</li>
                         <li><strong><code>hdr_badge.lua</code></strong> — Dynamic floating format badge overlay automatically detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
-                        <li><strong>Engine Architecture & Subtitles</strong> — 650MB demuxer fast-seeking cache (with 350MB back-cache), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
+                        <li><strong>Engine Architecture & Subtitles</strong> — 550MB demuxer fast-seeking cache (with 300MB back-cache), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
                         <li><strong>Documentation & Web Experience</strong> — Complete responsive documentation website, cheatsheet guides, and user manuals.</li>
                     </ul>
                 </div>
