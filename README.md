@@ -573,7 +573,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending playlist sorting engine with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
-  - **Performance & Subtitle Architecture**: 500MB demuxer seek buffer (with 250MB back-cache), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
 ### Upstream Open-Source Projects
