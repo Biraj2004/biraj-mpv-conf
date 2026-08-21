@@ -1,5 +1,5 @@
 -- cycle_audio.lua
--- High-performance VLC-style track cycler with instant OSD and anti-spam debouncing.
+-- High-performance VLC-style & MPV track cycler with instant OSD and anti-spam debouncing.
 -- Protects video/audio playback from micro-stutters even during rapid key spamming.
 
 local mp = require 'mp'
@@ -25,6 +25,9 @@ local function format_audio_osd(track, index, count)
     end
     if track.title and track.title ~= "" then
         table.insert(parts, "'" .. track.title .. "'")
+    end
+    if track.external then
+        table.insert(parts, "[ext]")
     end
     if track.codec and track.codec ~= "" then
         local details = track.codec
@@ -54,6 +57,12 @@ local function format_sub_osd(track, index, count)
     end
     if track.title and track.title ~= "" then
         table.insert(parts, "'" .. track.title .. "'")
+    end
+    if track.forced then
+        table.insert(parts, "[forced]")
+    end
+    if track.external then
+        table.insert(parts, "[ext]")
     end
     if track.codec and track.codec ~= "" then
         table.insert(parts, "(" .. track.codec .. ")")
@@ -85,6 +94,7 @@ local function apply_audio_switch()
         pending_aid = nil
     end
     audio_timer = nil
+    last_audio_idx = nil
 end
 
 local function cycle_audio(direction)
@@ -97,13 +107,21 @@ local function cycle_audio(direction)
     end
 
     local current_aid = pending_aid or mp.get_property_native("aid")
-    local current_index = last_audio_idx
+    local current_index = nil
+
+    if pending_aid ~= nil then
+        current_index = last_audio_idx
+    end
 
     if not current_index then
-        for i, track in ipairs(tracks) do
-            if track.id == current_aid or track.selected then
-                current_index = i
-                break
+        if current_aid == false or current_aid == "no" or not current_aid then
+            current_index = 1
+        else
+            for i, track in ipairs(tracks) do
+                if tostring(track.id) == tostring(current_aid) or track.selected then
+                    current_index = i
+                    break
+                end
             end
         end
     end
@@ -120,7 +138,7 @@ local function cycle_audio(direction)
     local step = (direction == "down" or direction == "prev") and -1 or 1
     local next_index
     if not current_index then
-        next_index = 1
+        next_index = (step == 1) and 1 or count
     else
         next_index = ((current_index - 1 + step) % count) + 1
     end
@@ -156,6 +174,7 @@ local function apply_sub_switch()
         pending_sid = nil
     end
     sub_timer = nil
+    last_sub_idx = nil
 end
 
 local function cycle_sub(direction)
@@ -167,18 +186,27 @@ local function cycle_sub(direction)
         return
     end
 
-    local current_sid = pending_sid or mp.get_property_native("sid")
-    local current_index = last_sub_idx
+    local current_sid = pending_sid
+    local current_index = nil
+
+    if pending_sid ~= nil then
+        current_index = last_sub_idx
+    else
+        current_sid = mp.get_property_native("sid")
+    end
 
     if not current_index then
         if current_sid == false or current_sid == "no" or not current_sid then
             current_index = 0 -- "none" state
         else
             for i, track in ipairs(tracks) do
-                if track.id == current_sid or track.selected then
+                if tostring(track.id) == tostring(current_sid) or track.selected then
                     current_index = i
                     break
                 end
+            end
+            if not current_index then
+                current_index = 0
             end
         end
     end
@@ -187,12 +215,7 @@ local function cycle_sub(direction)
     -- Total cycle states = count + 1
     local total_states = count + 1
     local step = (direction == "down" or direction == "prev") and -1 or 1
-    local next_state
-    if not current_index or current_index == 0 then
-        next_state = (step == 1) and 1 or count
-    else
-        next_state = (current_index + step) % total_states
-    end
+    local next_state = (current_index + step) % total_states
 
     last_sub_idx = next_state
 
@@ -210,15 +233,18 @@ local function cycle_sub(direction)
     sub_timer = mp.add_timeout(DEBOUNCE_DELAY, apply_sub_switch)
 end
 
--- Reset state on new file
-mp.register_event("end-file", function()
+-- Reset state on new file or playback stop
+local function reset_state()
     if audio_timer then audio_timer:kill(); audio_timer = nil end
     if sub_timer then sub_timer:kill(); sub_timer = nil end
     pending_aid = nil
     pending_sid = nil
     last_audio_idx = nil
     last_sub_idx = nil
-end)
+end
+
+mp.register_event("end-file", reset_state)
+mp.register_event("file-loaded", reset_state)
 
 -- Keybindings
 mp.add_key_binding(nil, "cycle-audio", function() cycle_audio("up") end)

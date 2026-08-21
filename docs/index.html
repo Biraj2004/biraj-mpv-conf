@@ -734,8 +734,8 @@
 
                         <!-- Audio -->
                         <tr data-cat="audio">
-                            <td><kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd></td>
-                            <td>Cycle audio tracks forward / backward <em>(VLC-style, loops languages)</em></td>
+                            <td><kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> <small class="text-muted">(or <kbd>_</kbd> / <kbd>#</kbd>)</small></td>
+                            <td>Cycle audio tracks forward / backward <em>(VLC & MPV standard, zero-lag debounced)</em></td>
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
                         <tr data-cat="audio">
@@ -761,8 +761,8 @@
 
                         <!-- Subtitles -->
                         <tr data-cat="subtitles">
-                            <td><kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd></td>
-                            <td>Cycle subtitle tracks forward / backward <em>(VLC-style, anti-spam)</em></td>
+                            <td><kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> <small class="text-muted">(or <kbd>j</kbd> / <kbd>J</kbd>)</small></td>
+                            <td>Cycle subtitle tracks forward / backward <em>(VLC & MPV standard, includes Off/None, zero-lag)</em></td>
                             <td><span class="badge-cat">Subtitles</span></td>
                         </tr>
                         <tr data-cat="subtitles">
@@ -971,7 +971,7 @@ sub-margin-y=38</code></pre>
                     </div>
                     <p class="credit-desc">Original author, curator, and maintainer of this configuration suite. Custom developed features and scripts include:</p>
                     <ul class="credit-list">
-                        <li><strong><code>cycle_audio.lua</code></strong> — Custom VLC-style audio cycling script that loops strictly through valid audio languages without silent/disabled states.</li>
+                        <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 80ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — Natural ascending playlist sorter algorithm with zero-stutter background reordering and OSD notifications.</li>
                         <li><strong><code>hdr_badge.lua</code></strong> — Dynamic floating format badge overlay automatically detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>

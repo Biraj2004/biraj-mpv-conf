@@ -222,8 +222,8 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Native Subtitle Dialog (<kbd>Ctrl</kbd> + <kbd>S</kbd>)**: Opens Windows Explorer to browse and attach subtitles.
 - **Native Audio Track Dialog (<kbd>Ctrl</kbd> + <kbd>A</kbd>)**: Opens Windows Explorer to add secondary audio tracks (e.g. commentary, alternative dubs).
 - **Quick Track Cycling**:
-  - Press <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) to cycle subtitle tracks forward / backward *(VLC-style, anti-spam debounced, zero-lag)*.
-  - Press <kbd>b</kbd> to cycle audio languages forward or <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) backward *(VLC-style, loops languages only, anti-spam debounced)*.
+  - Press <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) *(or standard mpv <kbd>j</kbd> / <kbd>J</kbd>)* to cycle subtitle tracks forward / backward *(VLC & MPV standard, anti-spam debounced, instant 0ms OSD, includes Off/None state)*.
+  - Press <kbd>b</kbd> to cycle audio languages forward or <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) backward *(or standard mpv <kbd>_</kbd> / <kbd>#</kbd>)* *(VLC & MPV standard, loops languages, anti-spam debounced, instant 0ms OSD)*.
 
 ### 5. Essential Playback Controls
 - **Play / Pause**: <kbd>Space</kbd> or <kbd>Media Play/Pause</kbd>
@@ -284,7 +284,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Advanced Subtitle & Audio Management
-- **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant OSD response with 80ms decoder coalescing, preventing decoder thrashing during rapid key cycling.
+- **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant visual OSD response with 80ms decoder coalescing, preventing decoder thrashing, audio pops, and video freezes during rapid key spamming. Features seamless GUI menu synchronization and type-safe track matching.
 - **SIMD Subtitle Acceleration (`sub-ass-vsfilter-blur-compat=no`)**: Accelerates complex `.ass` styling and karaoke effects up to 5x using modern SIMD blur algorithms.
 - **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=52`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
 - **Original Anime Typesetting & Positioning (`sub-ass-override=no`)**: Fully preserves author-intended ASS styling, top-screen song lyrics (`{\an8}`), signs, and typesetting for anime, while plain `.srt` and `.vtt` subtitles use your configured custom size and styling (`sub-margin-y=38`).
@@ -311,7 +311,7 @@ biraj-mpv-conf/
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
-│   ├── cycle_audio.lua       # VLC-style audio & subtitle track cycler with anti-spam debouncing
+│   ├── cycle_audio.lua       # Zero-lag VLC & MPV audio / subtitle cycler with anti-spam debouncing
 │   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)
@@ -375,7 +375,7 @@ biraj-mpv-conf/
 ### Audio & Night Mode
 | Shortcut | Action |
 | :--- | :--- |
-| <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) | Cycle audio tracks forward / backward *(VLC-style, loops languages)* |
+| <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) *(or <kbd>_</kbd> / <kbd>#</kbd>)* | Cycle audio tracks forward / backward *(VLC & MPV standard, zero-lag debounced)* |
 | <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Audio Normalization** (`dynaudnorm`) |
 | <kbd>↑</kbd> / <kbd>↓</kbd> *(or Media Vol Up/Down)* | Volume up / down (+5% / -5%) |
 | <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
@@ -384,7 +384,9 @@ biraj-mpv-conf/
 ---
 
 ### Subtitles
-| <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) | Cycle subtitle tracks forward / backward *(VLC-style, anti-spam)* |
+| Shortcut | Action |
+| :--- | :--- |
+| <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) *(or <kbd>j</kbd> / <kbd>J</kbd>)* | Cycle subtitle tracks forward / backward *(VLC & MPV standard, includes Off/None, zero-lag)* |
 | <kbd>r</kbd> | Raise subtitle position up (`sub-pos -1`) |
 | <kbd>t</kbd> | Move subtitle position down (`sub-pos +1`) |
 | <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
@@ -567,7 +569,7 @@ icon_style=mixed      # Options: mixed, filled, outline
 
 ### Author & Maintainer
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
-  - **`cycle_audio.lua`**: Custom VLC-style audio cycling script that loops strictly through valid audio languages without silent/disabled states.
+  - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 80ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending playlist sorting engine with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
