@@ -227,7 +227,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### 5. Essential Playback Controls
 - **Play / Pause**: <kbd>Space</kbd> or <kbd>Media Play/Pause</kbd>
-- **Exact Seeking**: <kbd>→</kbd> / <kbd>←</kbd> (5s exact) • <kbd>Media Forward/Rewind</kbd> (15s exact) • <kbd>Home</kbd> (beginning)
+- **Exact Seeking**: <kbd>→</kbd> / <kbd>←</kbd> (6s exact) • <kbd>Media Forward/Rewind</kbd> (15s exact) • <kbd>Home</kbd> (beginning)
 - **Volume & Mute**: <kbd>↑</kbd> / <kbd>↓</kbd> (±5%) • <kbd>m</kbd> (Mute)
 - **Toggle Fullscreen**: <kbd>f</kbd> or **Double Click Left Mouse**
 - **Context Menu**: <kbd>Right Click</kbd> or <kbd>g</kbd> <kbd>m</kbd>
@@ -365,12 +365,13 @@ biraj-mpv-conf/
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>Space</kbd> / <kbd>Media Play/Pause</kbd> | Toggle Play / Pause |
-| <kbd>→</kbd> / <kbd>←</kbd> | Seek forward / backward **5 seconds** (exact with OSD bar) |
+| <kbd>→</kbd> / <kbd>←</kbd> | Seek forward / backward **6 seconds** (exact with OSD bar) |
 | <kbd>Media Forward</kbd> / <kbd>Media Rewind</kbd> | Seek forward / backward **15 seconds** (exact with OSD bar) |
 | <kbd>Home</kbd> | Seek to beginning of media (0s) |
 | <kbd>.</kbd> / <kbd>,</kbd> | Frame step forward / backward |
 | <kbd>n</kbd> / <kbd>p</kbd> *(or Media Next/Prev)* | Next / Previous playlist item |
-| <kbd>k</kbd> | **Sort active playlist in natural ascending order** |
+| <kbd>k</kbd> | **Open interactive playlist selection menu** |
+| <kbd>Shift</kbd> + <kbd>k</kbd> (<kbd>K</kbd>) | Sort active playlist in natural ascending order |
 | <kbd>q</kbd> / <kbd>Alt+F4</kbd> | Quit mpv (remembers watch history & playback position) |
 
 ---
