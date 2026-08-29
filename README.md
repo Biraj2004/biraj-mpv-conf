@@ -242,6 +242,9 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **[ModernZ](https://github.com/Samillion/ModernZ) OSC Interface**: Replaces the default interface with a clean, responsive On-Screen Controller styled with Fluent/Material vector icons.
 - **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography (`osd-duration=2000` 2.0s readable duration, `osd-playing-msg-duration=2500` 2.5s startup filename duration), eliminating disruptive double seekbars (`osd-bar=no`).
 - **Sleek Pause / Play Indicator**: Minimalist, non-distracting center pause/unpause visual flash indicators ([`pause_indicator_lite`](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)).
+- **Action-Based Controls & State-Based Overlay Philosophy**:
+  - **Bottom OSC Control Bar (Action-Based — YouTube/VLC Standard)**: The interactive buttons follow the standard media player trigger philosophy, displaying the **action to be performed on click** (e.g. shows `▶` Play when paused to resume, and `||` Pause when playing to pause).
+  - **Center Canvas Overlay (State-Based)**: The center display functions as an immediate **status feedback indicator**, displaying the **current playback state** (e.g. shows `||` Pause icon when paused, and flashes `▶` Play triangle when playback starts/resumes).
 
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
