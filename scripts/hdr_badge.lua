@@ -86,8 +86,13 @@ local function detect_format()
     local media_title = (mp.get_property("media-title") or ""):lower()
     local title_str = filename .. " " .. media_title
 
+    -- Determine if technical color metadata is unpopulated / unknown
+    local params_unknown = (colormatrix == "" or colormatrix == "auto" or colormatrix == "unknown")
+        and (primaries == "" or primaries == "auto" or primaries == "unknown")
+        and (gamma == "" or gamma == "auto" or gamma == "unknown")
+
     -- 1. Dolby Vision
-    if colormatrix == "dolbyvision" or title_str:find("dolby.?vision") or title_str:find("dovi") then
+    if colormatrix == "dolbyvision" or title_str:find("%f[%a]dolby.?vision%f[%A]") or title_str:find("%f[%a]dovi%f[%A]") then
         if opts.badge_format == "full" then
             return "DOLBY VISION"
         else
@@ -96,12 +101,12 @@ local function detect_format()
     end
 
     -- 2. HDR10+ (Dynamic metadata)
-    if hdr10plus == true or title_str:find("hdr10%+") or title_str:find("hdr10plus") then
+    if hdr10plus == true or title_str:find("%f[%a]hdr10%+") or title_str:find("%f[%a]hdr10[%._%-]?plus%f[%A]") then
         return "HDR10+"
     end
 
     -- 3. Standard HDR10
-    if gamma == "pq" or (primaries == "bt.2020" and (sig_peak > 1 or max_cll > 0)) or title_str:find("hdr10") then
+    if gamma == "pq" or (primaries == "bt.2020" and (sig_peak > 1 or max_cll > 0)) or title_str:find("%f[%a]hdr10%f[%W]") then
         if opts.badge_format == "full" then
             return "HDR10"
         else
@@ -110,12 +115,12 @@ local function detect_format()
     end
 
     -- 4. HLG (Hybrid Log-Gamma)
-    if gamma == "hlg" or title_str:find("hlg") then
+    if gamma == "hlg" or title_str:find("%f[%a]hlg%f[%A]") then
         return "HLG"
     end
 
-    -- 5. Generic HDR
-    if primaries == "bt.2020" or sig_peak > 1 or title_str:find("hdr") then
+    -- 5. Generic HDR (only fall back to filename sniffing when stream metadata is unpopulated/unknown)
+    if primaries == "bt.2020" or sig_peak > 1 or (params_unknown and title_str:find("%f[%a]hdr%f[%A]")) then
         return "HDR"
     end
 
