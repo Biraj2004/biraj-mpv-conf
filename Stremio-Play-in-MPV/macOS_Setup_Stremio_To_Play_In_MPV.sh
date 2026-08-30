@@ -174,8 +174,9 @@ for target in "${TARGETS[@]}"; do
     if command -v node >/dev/null 2>&1; then
         PATCH_RESULT=$(node -e '
 const fs = require("fs");
-const filePath = process.argv[1];
-const mpvPath = process.argv[2] || "/usr/local/bin/mpv";
+const rawArgs = process.argv.slice(1).filter(a => a !== "[eval]" && a !== "-e");
+const filePath = rawArgs[0];
+const mpvPath = rawArgs[1] || "/usr/local/bin/mpv";
 
 try {
     let content = fs.readFileSync(filePath, "utf8");
@@ -195,7 +196,7 @@ try {
                     path: [ ${uniqueDarwin} ]
                 },
                 linux: {
-                    path: [ "/usr/bin/mpv" ]
+                    path: [ "/usr/bin/mpv", "/usr/local/bin/mpv", "/var/lib/flatpak/exports/bin/io.mpv.Mpv", "/snap/bin/mpv" ]
                 },
                 win32: {
                     path: [ "\"C:\\\\Program Files\\\\mpv\\\\mpv.exe\"", "\"C:\\\\Program Files (x86)\\\\mpv\\\\mpv.exe\"", "\"C:\\\\Program Files\\\\mpv.net\\\\mpvnet.exe\"", "\"C:\\\\Program Files (x86)\\\\mpv.net\\\\mpvnet.exe\"", "\"C:\\\\mpv\\\\mpv.exe\"" ]
@@ -236,8 +237,9 @@ try {
         PATCH_RESULT=$(python3 -c '
 import sys, re, datetime, shutil
 
-filePath = sys.argv[1]
-mpvPath = sys.argv[2] if len(sys.argv) > 2 else "/usr/local/bin/mpv"
+rawArgs = [a for a in sys.argv[1:] if a != "-c"]
+filePath = rawArgs[0] if len(rawArgs) > 0 else ""
+mpvPath = rawArgs[1] if len(rawArgs) > 1 else "/usr/local/bin/mpv"
 
 try:
     with open(filePath, "r", encoding="utf-8") as f:
@@ -261,7 +263,7 @@ try:
                     path: [ {uniqueDarwin} ]
                 }},
                 linux: {{
-                    path: [ "/usr/bin/mpv" ]
+                    path: [ "/usr/bin/mpv", "/usr/local/bin/mpv", "/var/lib/flatpak/exports/bin/io.mpv.Mpv", "/snap/bin/mpv" ]
                 }},
                 win32: {{
                     path: [ "\"C:\\\\Program Files\\\\mpv\\\\mpv.exe\"", "\"C:\\\\Program Files (x86)\\\\mpv\\\\mpv.exe\"", "\"C:\\\\Program Files\\\\mpv.net\\\\mpvnet.exe\"", "\"C:\\\\Program Files (x86)\\\\mpv.net\\\\mpvnet.exe\"", "\"C:\\\\mpv\\\\mpv.exe\"" ]
@@ -289,8 +291,8 @@ try:
         with open(filePath, "w", encoding="utf-8") as f:
             f.write(content)
         print("PATCHED:" + backup)
-except Exception as e:
-    print("ERROR:" + str(e))
+    except Exception as e:
+        print("ERROR:" + str(e))
 ' "$target" "$MPV_PATH")
     else
         PATCH_RESULT="ERROR:Neither Node.js nor Python3 was found to safely patch server.js"
