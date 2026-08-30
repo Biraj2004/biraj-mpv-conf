@@ -280,17 +280,18 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Smart Dynamic Profiles & Audio Normalization
 - **Night Mode Audio Normalization (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time `dynaudnorm` filter balancing quiet dialogue and loud sound effects during late-night viewing.
-- **500ms Audio Headroom Buffer (`audio-buffer=0.5`)**: Prevents audio underruns and crackles during heavy CPU bursts or font indexing.
+- **Fast 150ms WASAPI Audio Buffer (`audio-buffer=0.15`)**: Fast buffer fill time on track switches while remaining 100% immune to audio underruns and crackles.
+- **Zero-Delay Persistence Safeguards**: Any manual audio/subtitle delay applied to defective media is automatically isolated—never saved to resume files and reset to 0.000ms on the next video.
 - **Picture-in-Picture (`[Window-PiP]`)**: Automatically scales the OSC and enables a persistent progress bar when floating on-top in windowed mode.
 - **Auto-Pause on Minimize (`[Minimized]`)**: Automatically pauses video when the player window is minimized to conserve system resources.
 - **Windows Taskbar Progress Indicator (`[Video]`)**: Displays live playback completion progress directly on the Windows taskbar icon.
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Advanced Subtitle & Audio Management
-- **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant visual OSD response with 80ms decoder coalescing, preventing decoder thrashing, audio pops, and video freezes during rapid key spamming. Features seamless GUI menu synchronization and type-safe track matching.
-- **SIMD Subtitle Acceleration (`sub-ass-vsfilter-blur-compat=no`)**: Accelerates complex `.ass` styling and karaoke effects up to 5x using modern SIMD blur algorithms.
-- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=52`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
-- **Original Anime Typesetting & Positioning (`sub-ass-override=no`)**: Fully preserves author-intended ASS styling, top-screen song lyrics (`{\an8}`), signs, and typesetting for anime, while plain `.srt` and `.vtt` subtitles use your configured custom size and styling (`sub-margin-y=38`).
+- **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant visual OSD response with 25ms decoder coalescing, preventing decoder thrashing, audio pops, and video freezes during rapid key spamming. Features seamless GUI menu synchronization and type-safe track matching.
+- **Pixel-Perfect Subtitle Geometry (`sub-ass-use-video-data=all`)**: Modern mpv v0.39+ standard passing full video resolution and aspect ratio to `libass` for 100% accurate signs, rotations, and Gaussian blurs with 0 startup warnings.
+- **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=50`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
+- **Original Anime Typesetting & Positioning (`sub-ass-override=no`)**: Fully preserves author-intended ASS styling, top-screen song lyrics (`{\an8}`), signs, and typesetting for anime, while plain `.srt` and `.vtt` subtitles use your configured custom size and styling (`sub-margin-y=36`).
 - **Locked Subtitle Baseline**: Subtitles remain fixed to the video frame (`sub-use-margins=no`, `sub-ass-force-margins=no`) and never jitter or jump when the seekbar/OSC appears.
 - **Zero-Lag Subtitle Switching (`demuxer-mkv-subtitle-preroll=no`)**: Prevents backward demuxer seeking on track changes for instant switching.
 - **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, `ass/`, and `vtt/` subdirectories.
@@ -299,6 +300,8 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
+- **Golden Balance RAM Cache**: 500 MiB forward cache + 225 MiB back-cache + 20s readahead for smooth 4K REMUX and web streaming playback.
+- **Stremio & External Player Integration**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) inside `Stremio-Play-in-MPV/` to seamlessly add *"Play in MPV"* into Stremio desktop.
 - **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, or Best Fallback**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
 
@@ -311,6 +314,9 @@ biraj-mpv-conf/
 ├── mpv.conf                  # Core configuration (renderer, cache, audio, video, profiles)
 ├── input.conf                # Custom keybindings, mouse shortcuts, and script triggers
 ├── menu.conf                 # Right-click context menu definitions
+├── Stremio-Play-in-MPV/      # Automated "Play in MPV" integration installers for Stremio
+│   ├── Win_Setup_Stremio_To_Play_In_MPV.bat   # Windows Stremio external player setup script
+│   └── macOS_Setup_Stremio_To_Play_In_MPV.sh # macOS Stremio external player setup script
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
@@ -539,14 +545,14 @@ alang=hi,en,ja
 ### 4. Subtitle Typography & Positioning
 In [`mpv.conf`](mpv.conf):
 ```ini
-sub-font-size=52
+sub-font-size=50
 sub-color="#FFFFFF"
 sub-border-size=1.8
 sub-border-color="#000000"
 sub-shadow-offset=1.5
 sub-shadow-color=0/0/0/0.5
 sub-border-style=outline-and-shadow
-sub-margin-y=38
+sub-margin-y=36
 sub-ass-override=no
 ```
 
