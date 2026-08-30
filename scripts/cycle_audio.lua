@@ -4,7 +4,7 @@
 
 local mp = require 'mp'
 
-local DEBOUNCE_DELAY = 0.08 -- 80ms debounce window (perceptual instant threshold)
+local DEBOUNCE_DELAY = 0.025 -- 25ms debounce window (ultra-fast near-instant response while preventing decoder thrashing)
 local OSD_DURATION = 2.0     -- 2.0 seconds display time (VLC standard 2000ms)
 
 -- Audio State
