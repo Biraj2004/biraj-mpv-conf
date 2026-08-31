@@ -248,7 +248,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
-- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays, preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=200`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
+- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays, preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=150`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
 - **Debanding & Temporal Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `temporal-dither=yes`).
@@ -300,7 +300,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
-- **Golden Balance RAM Cache**: 500 MiB forward cache + 225 MiB back-cache + 20s readahead for smooth 4K REMUX and web streaming playback.
+- **Smart Stream & Seek Buffer**: 450 MiB forward cache + 225 MiB back-buffer + 30s deep readahead with disk caching (cache-on-disk=yes, demuxer-seekable-cache=yes, cache-pause=yes, cache-pause-wait=3) for smooth 4K REMUX, network streaming, and jitter-free auto-pause recovery.
 - **Stremio & External Player Integration**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) inside `Stremio-Play-in-MPV/` to seamlessly add *"Play in MPV"* into Stremio desktop.
 - **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, or Best Fallback**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
@@ -579,11 +579,11 @@ icon_style=mixed      # Options: mixed, filled, outline
 
 ### Author & Maintainer
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
-  - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 80ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
+  - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending playlist sorting engine with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
-  - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Performance & Subtitle Architecture**: 450MB demuxer seek buffer (with 225MB back-cache, 30s readahead, disk caching), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
 ### Upstream Open-Source Projects

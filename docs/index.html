@@ -225,7 +225,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">Next-Gen GPU Rendering</h3>
-                    <p class="feature-desc">Powered by <code>vo=gpu-next</code> with libplacebo, Direct3D11 flip presentation (<code>d3d11-flip=yes</code>), and high-bitdepth debanding algorithms to eliminate color banding artifacts.</p>
+                    <p class="feature-desc">Powered by <code>vo=gpu-next</code> with libplacebo, Direct3D11 flip presentation (<code>d3d11-flip=yes</code>), borderless fullscreen (<code>d3d11-exclusive-fs=no</code>) for flicker-free fixed refresh rate & 0ms instant Alt-Tab, and debanding.</p>
                 </div>
 
                 <!-- Feature 2 -->
@@ -322,8 +322,8 @@
                             <line x1="1" y1="14" x2="4" y2="14"></line>
                         </svg>
                     </div>
-                    <h3 class="feature-title">500MB Fast Seek Buffer</h3>
-                    <p class="feature-desc">Expanded demuxer cache (500MB forward, 225MB back-buffer) ensures instantaneous seeking and scrubbing with zero lag on high-bitrate 4K media.</p>
+                    <h3 class="feature-title">450MB Smart Cache & Readahead</h3>
+                    <p class="feature-desc">Optimized cache (450MB forward, 225MB back-buffer, 30s readahead, disk caching fallback, and auto-pause buffer recovery) ensures instantaneous seeking with zero lag on 4K media and network streams.</p>
                 </div>
             </div>
         </div>
@@ -575,6 +575,7 @@
 ├── fonts\
 │   └── modernz-icons.ttf
 ├── scripts\
+│   ├── cycle_audio.lua
 │   ├── hdr_badge.lua
 │   ├── modernz.lua
 │   ├── open-file.lua
@@ -860,6 +861,7 @@
 vo=gpu-next
 gpu-context=auto
 d3d11-flip=yes
+d3d11-exclusive-fs=no
 hwdec=auto-safe
 hwdec-extra-frames=16
 deband=yes
@@ -879,11 +881,16 @@ audio-stream-silence=yes
 audio-wait-open=0
 audio-pitch-correction=yes
 
-### Cache (500MB forward / 225MB back-buffer)
+### Cache (450MB forward / 225MB back-buffer / 30s readahead)
 cache=yes
-demuxer-max-bytes=500MiB
+cache-on-disk=yes
+demuxer-max-bytes=450MiB
 demuxer-max-back-bytes=225MiB
-demuxer-readahead-secs=20</code></pre>
+demuxer-readahead-secs=30
+demuxer-seekable-cache=yes
+cache-pause=yes
+cache-pause-initial=no
+cache-pause-wait=3</code></pre>
                 </div>
 
                 <!-- Subtitles Card -->
@@ -981,7 +988,7 @@ sub-margin-y=36</code></pre>
                         <li><strong><code>sort_playlist.lua</code></strong> — Natural ascending playlist sorter algorithm with zero-stutter background reordering and OSD notifications.</li>
                         <li><strong><code>hdr_badge.lua</code></strong> — Dynamic floating format badge overlay automatically detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
-                        <li><strong>Engine Architecture & Subtitles</strong> — 500MB demuxer fast-seeking cache (with 225MB back-cache), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
+                        <li><strong>Engine Architecture & Subtitles</strong> — 450MB demuxer fast-seeking cache (with 225MB back-cache, 30s readahead, disk caching), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
                         <li><strong>Documentation & Web Experience</strong> — Complete responsive documentation website, cheatsheet guides, and user manuals.</li>
                     </ul>
                 </div>
