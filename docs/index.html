@@ -322,8 +322,8 @@
                             <line x1="1" y1="14" x2="4" y2="14"></line>
                         </svg>
                     </div>
-                    <h3 class="feature-title">475MB Zero-Wear RAM Cache</h3>
-                    <p class="feature-desc">Pure in-memory caching (475MB forward, 225MB back-buffer, 30s deep readahead, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and network streams.</p>
+                    <h3 class="feature-title">400MB Zero-Wear RAM Cache</h3>
+                    <p class="feature-desc">Pure in-memory caching (400MB forward, 200MB back-buffer, 25s deep readahead, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and network streams.</p>
                 </div>
             </div>
         </div>
@@ -881,12 +881,12 @@ audio-stream-silence=yes
 audio-wait-open=0
 audio-pitch-correction=yes
 
-### Cache (475MB forward / 225MB back-buffer / Zero SSD Wear)
+### Cache (400MB forward / 200MB back-buffer / Zero SSD Wear)
 cache=yes
 cache-on-disk=no
-demuxer-max-bytes=475MiB
-demuxer-max-back-bytes=225MiB
-demuxer-readahead-secs=30
+demuxer-max-bytes=400MiB
+demuxer-max-back-bytes=200MiB
+demuxer-readahead-secs=25
 demuxer-seekable-cache=yes
 cache-pause=yes
 cache-pause-initial=no
@@ -989,7 +989,7 @@ sub-margin-y=36</code></pre>
                         <li><strong><code>hdr_badge.lua</code></strong> — Dynamic floating format badge overlay automatically detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
-                        <li><strong>Engine Architecture & Subtitles</strong> — 475MB demuxer fast-seeking cache (with 225MB back-cache, 30s readahead, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
+                        <li><strong>Engine Architecture & Subtitles</strong> — 400MB demuxer fast-seeking cache (with 200MB back-cache, 25s readahead, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
                         <li><strong>Documentation & Web Experience</strong> — Complete responsive documentation website, cheatsheet guides, and user manuals.</li>
                     </ul>
                 </div>
