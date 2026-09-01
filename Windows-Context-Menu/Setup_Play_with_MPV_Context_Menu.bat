@@ -64,22 +64,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "New-Item -Path $fk -Force | Out-Null;" ^
     "Set-ItemProperty -Path $fk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
     "Set-ItemProperty -Path $fk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
-    "Set-ItemProperty -Path $fk -Name 'AppliesTo' -Value 'System.ItemCount:1';" ^
     "New-Item -Path \"$fk\command\" -Force | Out-Null;" ^
     "Set-ItemProperty -Path \"$fk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%1\"');" ^
     "$foldk = 'HKCU:\Software\Classes\Folder\shell\PlayWithMPV';" ^
     "New-Item -Path $foldk -Force | Out-Null;" ^
     "Set-ItemProperty -Path $foldk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
     "Set-ItemProperty -Path $foldk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
-    "Set-ItemProperty -Path $foldk -Name 'AppliesTo' -Value 'System.ItemCount:1';" ^
     "New-Item -Path \"$foldk\command\" -Force | Out-Null;" ^
     "Set-ItemProperty -Path \"$foldk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%1\"');" ^
-    "$bgk = 'HKCU:\Software\Classes\Directory\Background\shell\PlayWithMPV';" ^
-    "New-Item -Path $bgk -Force | Out-Null;" ^
-    "Set-ItemProperty -Path $bgk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
-    "Set-ItemProperty -Path $bgk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
-    "New-Item -Path \"$bgk\command\" -Force | Out-Null;" ^
-    "Set-ItemProperty -Path \"$bgk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%V\"');" ^
     "$dk = 'HKCU:\Software\Classes\Drive\shell\PlayWithMPV';" ^
     "New-Item -Path $dk -Force | Out-Null;" ^
     "Set-ItemProperty -Path $dk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
