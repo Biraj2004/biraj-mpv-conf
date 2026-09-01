@@ -305,7 +305,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
 - **Smart Stream & Seek Buffer**: 400 MiB forward cache + 200 MiB back-buffer + 25s deep readahead with RAM caching (cache-on-disk=no, demuxer-seekable-cache=yes, cache-pause=yes, cache-pause-wait=3) for smooth 4K REMUX, network streaming, and jitter-free auto-pause recovery.
-- **Stremio & External Player Integration**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) inside `Stremio-Play-in-MPV/` to seamlessly add *"Play in MPV"* into Stremio desktop.
+- **Stremio & External Player Integration ([`Stremio-Play-in-MPV/`](Stremio-Play-in-MPV/))**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) and complete documentation in [`Stremio-Play-in-MPV/README.md`](Stremio-Play-in-MPV/README.md) to seamlessly add *"Play in MPV"* into Stremio desktop.
 - **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, or Best Fallback**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
 
@@ -325,7 +325,8 @@ biraj-mpv-conf/
 │   └── README.md                             # Context menu setup guide and behavior matrix
 ├── Stremio-Play-in-MPV/      # Automated "Play in MPV" integration installers for Stremio
 │   ├── Win_Setup_Stremio_To_Play_In_MPV.bat   # Windows Stremio external player setup script
-│   └── macOS_Setup_Stremio_To_Play_In_MPV.sh # macOS Stremio external player setup script
+│   ├── macOS_Setup_Stremio_To_Play_In_MPV.sh # macOS Stremio external player setup script
+│   └── README.md                             # Stremio desktop integration guide and architecture
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
