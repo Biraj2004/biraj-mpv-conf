@@ -7,9 +7,10 @@ Windows Registry Editor Version 5.00
 ; License     : Apache-2.0
 ; Description : Adds "Play with MPV as a Playlist" to the Windows File Explorer context menu.
 ;
-; Dual Behavior Architecture:
-; - Standard "Open" / Double-Click: Launches normal separate independent MPV windows.
-; - "Play with MPV as a Playlist": Batches files into 1 single unified MPV window as an ascending playlist.
+; Pure Native MPV Architecture:
+; - Directly invokes official standard mpv.exe (C:\Program Files\mpv\mpv.exe) with 0 external binaries.
+; - Single-Instance forwarding is handled seamlessly via internal lock-synchronized IPC.
+; - Standard "Open" / Double-Click: Retains normal independent multi-window behavior.
 ; =======================================================================================================
 
 ; -------------------------------------------------------------------------------------------------------

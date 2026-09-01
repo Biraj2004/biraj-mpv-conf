@@ -581,7 +581,6 @@
 │   ├── open-file.lua
 │   ├── pause_indicator_lite.lua
 │   ├── resume_indicator.lua
-│   ├── single_instance.lua
 │   ├── sort_playlist.lua
 │   └── thumbfast.lua
 └── script-opts\
@@ -987,7 +986,7 @@ sub-margin-y=36</code></pre>
                     <p class="credit-desc">Original author, curator, and maintainer of this configuration suite. Custom developed features and scripts include:</p>
                     <ul class="credit-list">
                         <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
-                        <li><strong><code>sort_playlist.lua</code> & <code>single_instance.lua</code></strong> — High-speed natural ascending video playlist sorter & single-instance IPC forwarder enabling seamless multi-select queueing into 1 window.</li>
+                        <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
                         <li><strong><code>hdr_badge.lua</code> & <code>resume_indicator.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR) and clean on-screen resume notifications ("Resuming at (14:22)").</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>

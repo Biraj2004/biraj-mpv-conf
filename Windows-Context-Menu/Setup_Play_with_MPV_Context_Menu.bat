@@ -8,6 +8,7 @@ cd /d "%~dp0"
 :: Developer   : Biraj Sarkar (@Biraj2004)
 :: License     : Apache-2.0
 :: Description : Adds or removes "Play with MPV as a Playlist" from Windows File Explorer context menu.
+::                - Uses the official default mpv.exe (C:\Program Files\mpv\mpv.exe).
 ::                - Standard "Open": Opens normal separate independent MPV windows.
 ::                - "Play with MPV as a Playlist": Batches files into 1 single unified MPV window.
 :: =======================================================================================================
@@ -33,9 +34,8 @@ goto :EXIT
 
 :INSTALL
 echo.
-echo [INFO] Searching for mpv.exe...
+echo [INFO] Searching for standard mpv.exe...
 set "MPV_EXE="
-
 if exist "C:\Program Files\mpv\mpv.exe" set "MPV_EXE=C:\Program Files\mpv\mpv.exe"
 if not defined MPV_EXE if exist "C:\mpv\mpv.exe" set "MPV_EXE=C:\mpv\mpv.exe"
 if not defined MPV_EXE if exist "%LOCALAPPDATA%\Programs\mpv\mpv.exe" set "MPV_EXE=%LOCALAPPDATA%\Programs\mpv\mpv.exe"

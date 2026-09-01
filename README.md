@@ -65,10 +65,32 @@
 
 ## Installation
 
-> [!TIP]
-> **Recommended Windows Build:** This configuration is built and tuned using the modern **[Windows builds by zhongfly (git)](https://github.com/zhongfly/mpv-winbuild/releases)** with `gpu-next`, `libplacebo`, `d3d11va`, and `Vulkan` support.
+### Step 0: Download & Set Up MPV on Windows (Standard Location)
+
+To ensure 100% plug-and-play compatibility across Windows File Explorer context menus ([`Windows-Context-Menu/`](Windows-Context-Menu/)), Stremio desktop player hooks ([`Stremio-Play-in-MPV/`](Stremio-Play-in-MPV/)), and batch scripts, set up MPV in the standard Windows directory:
+
+1. **Download MPV for Windows**:
+   - Download the latest 64-bit build from **[zhongfly mpv-winbuild releases](https://github.com/zhongfly/mpv-winbuild/releases)** (or [shinchiro builds](https://sourceforge.net/projects/mpv-player-windows/files/)).
+2. **Extract, Rename, and Place in `C:\Program Files\mpv\`**:
+   - Extract the downloaded archive (e.g. `mpv-x86_64-v3-*.7z` or `.zip`).
+   - Rename the extracted folder to **`mpv`** and move it directly to **`C:\Program Files\`**.
+   - Your primary executable will reside at:
+     ```plaintext
+     C:\Program Files\mpv\mpv.exe
+     ```
+3. **Register File Types & Protocols**:
+   - Inside `C:\Program Files\mpv\`, right-click **`mpv-register.bat`** &rarr; click **Run as administrator** to register video extensions and protocols with Windows.
+
+> [!IMPORTANT]
+> **Standard Paths Used Across This Suite:**
+> - **Player Executable:** `C:\Program Files\mpv\mpv.exe`
+> - **Configuration Directory:** `C:\Users\<YourUsername>\AppData\Roaming\mpv\` (accessible via `%APPDATA%\mpv`)
 > 
-> **Zero Setup Required:** You can use this entire configuration suite as-is by simply copying or extracting the repository contents directly into your mpv configuration directory.
+> *If you previously installed or extracted MPV into a different location (such as `C:\mpv\`, `%LOCALAPPDATA%\Programs\mpv\`, or a custom drive), simply move/rename that folder to `C:\Program Files\mpv\` so all context menus, registry scripts, and external tools work instantly without manual configuration.*
+
+---
+
+### Step 1: Install Configuration & Scripts
 
 ### Full Target Paths on Windows
 
@@ -105,12 +127,14 @@ Remove-Item -Recurse -Force $temp
    │   ├── hdr_badge.conf
    │   ├── modernz.conf
    │   ├── pause_indicator_lite.conf
+   │   ├── resume_indicator.conf
    │   └── thumbfast.conf
    ├── scripts/
    │   ├── hdr_badge.lua
    │   ├── modernz.lua
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
+   │   ├── resume_indicator.lua
    │   ├── sort_playlist.lua
    │   └── thumbfast.lua
    ├── input.conf
@@ -135,12 +159,14 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    │   ├── hdr_badge.conf
    │   ├── modernz.conf
    │   ├── pause_indicator_lite.conf
+   │   ├── resume_indicator.conf
    │   └── thumbfast.conf
    ├── scripts/
    │   ├── hdr_badge.lua
    │   ├── modernz.lua
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
+   │   ├── resume_indicator.lua
    │   ├── sort_playlist.lua
    │   └── thumbfast.lua
    ├── input.conf
@@ -322,6 +348,8 @@ biraj-mpv-conf/
 │   ├── Add_Play_with_MPV_Context_Menu.reg    # Registry script to add "Play with MPV as a Playlist"
 │   ├── Remove_Play_with_MPV_Context_Menu.reg # Registry script to remove the context menu
 │   ├── Setup_Play_with_MPV_Context_Menu.bat  # 1-click installer and path auto-detector
+│   ├── mpv-launcher.cs                       # C# source for mutex-synchronized multi-select IPC launcher
+│   ├── mpv-launcher.exe                      # Lightweight (~6KB) 0-overhead single-instance playlist forwarder
 │   └── README.md                             # Context menu setup guide and behavior matrix
 ├── Stremio-Play-in-MPV/      # Automated "Play in MPV" integration installers for Stremio
 │   ├── Win_Setup_Stremio_To_Play_In_MPV.bat   # Windows Stremio external player setup script
@@ -335,8 +363,7 @@ biraj-mpv-conf/
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
-│   ├── resume_indicator.lua  # Clean OSD notification when resuming files e.g. "Resuming at (14:22)"
-│   ├── single_instance.lua   # Single instance IPC forwarder & multi-select playlist builder
+│   ├── resume_indicator.lua  # Clean OSD notification when resuming files e.g. "Resuming: (14:22 / 24:00)"
 │   ├── sort_playlist.lua     # Natural alphanumeric ascending video playlist sorter & filter
 │   └── thumbfast.lua         # High-performance seekbar thumbnail engine
 ├── script-opts/

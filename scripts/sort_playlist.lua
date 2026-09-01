@@ -119,28 +119,34 @@ local function clean_and_sort_playlist(silent)
 
     is_sorting = true
 
-    -- Step 1: Scan and validate all entries in a single high-speed pass
+    -- Step 1: Scan, deduplicate, and validate all entries in a single high-speed pass
     local valid_videos = {}
-    local non_video_indices = {}
+    local purge_indices = {}
+    local seen_filenames = {}
 
     for i, entry in ipairs(pl) do
         if entry and entry.filename then
-            if is_valid_video(entry.filename) then
+            local norm_name = entry.filename:lower():gsub("\\", "/")
+            if seen_filenames[norm_name] then
+                -- Duplicate entry found, mark for removal
+                table.insert(purge_indices, i)
+            elseif is_valid_video(entry.filename) then
+                seen_filenames[norm_name] = true
                 table.insert(valid_videos, {
                     filename = entry.filename,
                     key = alphanum_key(entry.filename)
                 })
             else
-                table.insert(non_video_indices, i)
+                table.insert(purge_indices, i)
             end
         end
     end
 
-    -- If the batch contains at least 1 video, purge all non-video files backwards
+    -- If the batch contains at least 1 video, purge all non-video files and duplicates backwards
     local removed_any = false
     if #valid_videos > 0 then
-        for i = #non_video_indices, 1, -1 do
-            local idx = non_video_indices[i]
+        for i = #purge_indices, 1, -1 do
+            local idx = purge_indices[i]
             mp.commandv("playlist-remove", idx - 1)
             removed_any = true
         end
