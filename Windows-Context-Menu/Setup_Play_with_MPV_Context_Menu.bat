@@ -64,9 +64,16 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "New-Item -Path $fk -Force | Out-Null;" ^
     "Set-ItemProperty -Path $fk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
     "Set-ItemProperty -Path $fk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
-    "Set-ItemProperty -Path $fk -Name 'AppliesTo' -Value 'System.ItemCount:1';" ^
+    "Set-ItemProperty -Path $fk -Name 'MultiSelectModel' -Value 'Player';" ^
     "New-Item -Path \"$fk\command\" -Force | Out-Null;" ^
     "Set-ItemProperty -Path \"$fk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%1\"');" ^
+    "$foldk = 'HKCU:\Software\Classes\Folder\shell\PlayWithMPV';" ^
+    "New-Item -Path $foldk -Force | Out-Null;" ^
+    "Set-ItemProperty -Path $foldk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
+    "Set-ItemProperty -Path $foldk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
+    "Set-ItemProperty -Path $foldk -Name 'MultiSelectModel' -Value 'Player';" ^
+    "New-Item -Path \"$foldk\command\" -Force | Out-Null;" ^
+    "Set-ItemProperty -Path \"$foldk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%1\"');" ^
     "$bgk = 'HKCU:\Software\Classes\Directory\Background\shell\PlayWithMPV';" ^
     "New-Item -Path $bgk -Force | Out-Null;" ^
     "Set-ItemProperty -Path $bgk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
@@ -77,7 +84,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "New-Item -Path $dk -Force | Out-Null;" ^
     "Set-ItemProperty -Path $dk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
     "Set-ItemProperty -Path $dk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
-    "Set-ItemProperty -Path $dk -Name 'AppliesTo' -Value 'System.ItemCount:1';" ^
+    "Set-ItemProperty -Path $dk -Name 'MultiSelectModel' -Value 'Player';" ^
     "New-Item -Path \"$dk\command\" -Force | Out-Null;" ^
     "Set-ItemProperty -Path \"$dk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%1\"');" ^
     "$vk = 'HKCU:\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV';" ^
@@ -110,6 +117,7 @@ goto :EOF
 echo.
 echo [INFO] Removing context menu entries from registry...
 reg delete "HKCU\Software\Classes\Directory\shell\PlayWithMPV" /f >nul 2>&1
+reg delete "HKCU\Software\Classes\Folder\shell\PlayWithMPV" /f >nul 2>&1
 reg delete "HKCU\Software\Classes\Directory\Background\shell\PlayWithMPV" /f >nul 2>&1
 reg delete "HKCU\Software\Classes\Drive\shell\PlayWithMPV" /f >nul 2>&1
 reg delete "HKCU\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV" /f >nul 2>&1

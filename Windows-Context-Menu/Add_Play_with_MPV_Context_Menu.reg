@@ -14,14 +14,22 @@ Windows Registry Editor Version 5.00
 ; =======================================================================================================
 
 ; -------------------------------------------------------------------------------------------------------
-; 1. Single Folder in Windows File Explorer (Hidden if 2+ folders are selected)
+; 1. Single Folder & Folder Shortcuts in Windows File Explorer
 ; -------------------------------------------------------------------------------------------------------
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
-"AppliesTo"="System.ItemCount:1"
+"MultiSelectModel"="Player"
 
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+[HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV\command]
 @="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
 
 ; -------------------------------------------------------------------------------------------------------
