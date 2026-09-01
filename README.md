@@ -135,6 +135,7 @@ Remove-Item -Recurse -Force $temp
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
    │   ├── resume_indicator.lua
+   │   ├── single_instance.lua
    │   ├── sort_playlist.lua
    │   └── thumbfast.lua
    ├── input.conf
@@ -167,6 +168,7 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
    │   ├── resume_indicator.lua
+   │   ├── single_instance.lua
    │   ├── sort_playlist.lua
    │   └── thumbfast.lua
    ├── input.conf

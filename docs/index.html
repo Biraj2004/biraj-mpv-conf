@@ -517,16 +517,8 @@
                     <div class="step-card">
                         <div class="step-number">0</div>
                         <div class="step-body">
-                            <h4 class="step-title">Recommended MPV Build (Windows)</h4>
-                            <p class="step-desc">This configuration is tuned for modern <code>gpu-next</code>, <code>libplacebo</code>, and HDR tone-mapping features provided by <strong>zhongfly's Windows git builds</strong>.</p>
-                            <a href="https://github.com/zhongfly/mpv-winbuild/releases" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                    <polyline points="15 3 21 3 21 9"></polyline>
-                                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                                </svg>
-                                <span>Get zhongfly/mpv-winbuild Releases</span>
-                            </a>
+                            <h4 class="step-title">Download & Place MPV (Standard Location)</h4>
+                            <p class="step-desc">Download the latest 64-bit Windows build from <strong><a href="https://github.com/zhongfly/mpv-winbuild/releases" target="_blank" rel="noopener">zhongfly mpv-winbuild releases</a></strong>. Extract and rename the folder to <code>mpv</code> and place it in <code>C:\Program Files\mpv\</code> (so your player is at <code>C:\Program Files\mpv\mpv.exe</code>), then right-click <code>mpv-register.bat</code> &rarr; Run as administrator.</p>
                         </div>
                     </div>
 
@@ -566,7 +558,7 @@
                         <div class="step-number">3</div>
                         <div class="step-body">
                             <h4 class="step-title">Paste Configuration Files</h4>
-                            <p class="step-desc">Copy all extracted files and folders (<code>mpv.conf</code>, <code>input.conf</code>, <code>menu.conf</code>, <code>scripts/</code>, <code>script-opts/</code>, <code>fonts/</code>) directly into that folder.</p>
+                            <p class="step-desc">Copy all configuration folders and files directly into that folder.</p>
                             <div class="structure-preview">
                                 <pre>C:\Users\&lt;YourUsername&gt;\AppData\Roaming\mpv\
 ├── mpv.conf
@@ -581,12 +573,14 @@
 │   ├── open-file.lua
 │   ├── pause_indicator_lite.lua
 │   ├── resume_indicator.lua
+│   ├── single_instance.lua
 │   ├── sort_playlist.lua
 │   └── thumbfast.lua
 └── script-opts\
     ├── hdr_badge.conf
     ├── modernz.conf
     ├── pause_indicator_lite.conf
+    ├── resume_indicator.conf
     └── thumbfast.conf</pre>
                             </div>
                         </div>
