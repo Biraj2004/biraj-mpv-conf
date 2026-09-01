@@ -270,10 +270,12 @@ ytdl-raw-options-append=cookies-from-browser=firefox
   - View real-time playback statistics, drop frames, and media information.
   - Quick-copy media file paths, titles, or active subtitle text to the clipboard.
 
-### Multi-File Playlist Natural Ascending Sorting
-- **Natural Ascending Drag & Drop Sorting ([`sort_playlist.lua`](scripts/sort_playlist.lua))**: When multiple files are dropped or loaded into mpv to watch as a playlist, they are automatically organized in **natural alphanumeric ascending order** (`Episode 1`, `Episode 2` ... `Episode 10`), fixing out-of-order drag selection. Does **not** auto-scan or add unselected files from your folders.
+### Multi-File Playlist Natural Ascending Sorting & Video Filter
+- **Strictly Video-Only Drag & Drop Filtering ([`sort_playlist.lua`](scripts/sort_playlist.lua))**: When dragging & dropping multiple files, batches, or folders into mpv, non-video files (`.txt`, `.nfo`, `.srt`, `.mp3`, `.jpg`, `.png`, `.part`, etc.) are automatically filtered out so the playlist list contains only playable video episodes.
+- **Auto-Attached Subtitles**: Matching subtitle files (`.srt`, `.ass`, `.vtt`) are automatically detected and loaded directly into the active video's subtitle tracks via fuzzy matching (`sub-auto=fuzzy`) without cluttering the playlist list as separate entries.
+- **Natural Ascending Order**: All videos in the playlist are automatically organized in **natural alphanumeric ascending order** (`Episode 1`, `Episode 2` ... `Episode 10`, `Episode 21`), fixing out-of-order drag selections with seamless background reordering.
 - **Natural Ascending File Dialog Loading ([`open-file.lua`](scripts/open-file.lua))**: Selecting multiple files via <kbd>Ctrl</kbd>+<kbd>O</kbd> automatically sorts them in ascending order before adding them to the playlist.
-- **On-Demand Playlist Sorter (<kbd>k</kbd> / Context Menu)**: Instant shortcut (`sort_playlist/sort-playlist`) to re-sort any active playlist into natural ascending order on demand.
+- **On-Demand Playlist Sorter (<kbd>K</kbd> / Context Menu)**: Instant shortcut (`sort_playlist/sort-playlist`) to re-sort any active playlist into natural ascending order on demand.
 
 ### Native Windows File and Track Selectors
 - **PowerShell / WPF Native Dialogs** ([`open-file.lua`](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)): Seamlessly browse and open files (<kbd>Ctrl</kbd>+<kbd>O</kbd>), load external subtitles (<kbd>Ctrl</kbd>+<kbd>S</kbd>), or attach secondary audio tracks (<kbd>Ctrl</kbd>+<kbd>A</kbd>) using standard Windows File Explorer dialogs with natural ascending sort.
@@ -325,7 +327,7 @@ biraj-mpv-conf/
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
-│   ├── sort_playlist.lua     # Natural alphanumeric ascending playlist sorter
+│   ├── sort_playlist.lua     # Natural alphanumeric ascending video playlist sorter & filter
 │   └── thumbfast.lua         # High-performance seekbar thumbnail engine
 ├── script-opts/
 │   ├── hdr_badge.conf        # Configuration for dynamic format badge
@@ -580,7 +582,7 @@ icon_style=mixed      # Options: mixed, filled, outline
 ### Author & Maintainer
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
   - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
-  - **`sort_playlist.lua`**: Custom natural alphanumeric ascending playlist sorting engine with seamless background reordering and OSD feedback.
+  - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
   - **Performance & Subtitle Architecture**: 450MB demuxer seek buffer (with 225MB back-cache, 30s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
