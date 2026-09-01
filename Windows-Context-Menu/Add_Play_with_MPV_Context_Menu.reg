@@ -14,20 +14,13 @@ Windows Registry Editor Version 5.00
 ; =======================================================================================================
 
 ; -------------------------------------------------------------------------------------------------------
-; 1. Folders & Folder Shortcuts in Windows File Explorer
+; 1. Folders in Windows File Explorer
 ; -------------------------------------------------------------------------------------------------------
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
 
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV\command]
-@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
-
-[HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV]
-@="Play with MPV as a Playlist"
-"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
-
-[HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV\command]
 @="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
 
 ; -------------------------------------------------------------------------------------------------------
