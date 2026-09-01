@@ -14,21 +14,14 @@ Windows Registry Editor Version 5.00
 ; =======================================================================================================
 
 ; -------------------------------------------------------------------------------------------------------
-; 1. Folders & Desktop Folder Shortcuts in Windows File Explorer (Excludes Recycle Bin & Virtual Items)
+; 1. Folders in Windows File Explorer (Physical Media Directories)
 ; -------------------------------------------------------------------------------------------------------
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
 
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV\command]
-@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
-
-[HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV]
-@="Play with MPV as a Playlist"
-"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
-"AppliesTo"="System.ParsingName:<>\"\" AND System.ParsingName:<>\"\"::{645FF040-5081-101B-9F08-00AA002F954E}\"\" AND System.ParsingName:<>\"\"::{679f85cb-0220-4080-b29b-5540cc05aab6}\"\" AND System.ParsingName:<>\"\"::{26EE0668-A00A-44D7-9371-BEB064C98683}\"\" AND System.IsFolder:=System.StructuredQueryType.Boolean#True"
-
-[HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV\command]
 @="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
 
 ; -------------------------------------------------------------------------------------------------------
