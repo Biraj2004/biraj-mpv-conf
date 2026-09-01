@@ -18,8 +18,9 @@
 
 Just like VLC's *"Play with VLC media player"* context menu, this integration adds **"Play with MPV as a Playlist"** with the official MPV icon to Windows File Explorer. 
 
-Combined with [`sort_playlist.lua`](../scripts/sort_playlist.lua) and [`mpv.conf`](../mpv.conf), clicking this option immediately:
-- ✅ Automatically scans and queues all video files in natural ascending order (`01`, `02` ... `10` ... `40`).
+Combined with [`sort_playlist.lua`](../scripts/sort_playlist.lua) and [`single_instance.lua`](../scripts/single_instance.lua), this introduces clean **dual playback modes**:
+- 🗂️ **"Play with MPV as a Playlist"**: Batches all selected files or folder contents into **1 single unified MPV window** with an automated natural ascending playlist (`01`, `02` ... `40`).
+- 🪟 **Standard "Open" / Double-Click**: Retains normal independent multi-window behavior (each file opens in its own separate window).
 - ✅ Auto-detects and attaches matching `.srt`/`.ass` subtitle files in the background without showing them in the playlist list.
 - ✅ Excludes text notes (`command.txt`), metadata (`.nfo`), audios (`.mp3`), and images (`.jpg`).
 - ✅ Operates strictly in user scope (`HKEY_CURRENT_USER\Software\Classes`) — **no Administrator privileges required**.

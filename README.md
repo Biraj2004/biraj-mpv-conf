@@ -240,7 +240,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Modern UI and Fluent On-Screen Controller
 - **[ModernZ](https://github.com/Samillion/ModernZ) OSC Interface**: Replaces the default interface with a clean, responsive On-Screen Controller styled with Fluent/Material vector icons.
-- **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography (`osd-duration=2000` 2.0s readable duration, `osd-playing-msg-duration=2500` 2.5s startup filename duration), eliminating disruptive double seekbars (`osd-bar=no`).
+- **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography (`osd-duration=2500` 2.5s readable duration, `osd-playing-msg-duration=2500` 2.5s startup filename duration), eliminating disruptive double seekbars (`osd-bar=no`).
 - **Sleek Pause / Play Indicator**: Minimalist, non-distracting center pause/unpause visual flash indicators ([`pause_indicator_lite`](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)).
 - **Action-Based Controls & State-Based Overlay Philosophy**:
   - **Bottom OSC Control Bar (Action-Based — YouTube/VLC Standard)**: The interactive buttons follow the standard media player trigger philosophy, displaying the **action to be performed on click** (e.g. shows `▶` Play when paused to resume, and `||` Pause when playing to pause).
@@ -335,12 +335,15 @@ biraj-mpv-conf/
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
+│   ├── resume_indicator.lua  # Clean OSD notification when resuming files e.g. "Resuming at (14:22)"
+│   ├── single_instance.lua   # Single instance IPC forwarder & multi-select playlist builder
 │   ├── sort_playlist.lua     # Natural alphanumeric ascending video playlist sorter & filter
 │   └── thumbfast.lua         # High-performance seekbar thumbnail engine
 ├── script-opts/
 │   ├── hdr_badge.conf        # Configuration for dynamic format badge
 │   ├── modernz.conf          # Configuration for ModernZ UI theme, layout, fonts
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
+│   ├── resume_indicator.conf # Configuration for on-screen resume notifications
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
 ├── screenshots/
 │   ├── hdr10plus-badge-overlay.jpg         # Dynamic HDR10+ format badge overlay
@@ -591,7 +594,7 @@ icon_style=mixed      # Options: mixed, filled, outline
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
   - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
-  - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
+  - **`hdr_badge.lua` & `resume_indicator.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR) and clean on-screen resume notifications ("Resuming at (14:22)").
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
   - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.

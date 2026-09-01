@@ -7,47 +7,189 @@ Windows Registry Editor Version 5.00
 ; License     : Apache-2.0
 ; Description : Adds "Play with MPV as a Playlist" to the Windows File Explorer context menu.
 ;
-; Rules & Features:
-; - Single Folder              : Shows "Play with MPV as a Playlist"
-; - Multiple Folders Selected   : Hidden (AppliesTo System.ItemCount:1)
-; - Video Files (Single/Multi) : Shows "Play with MPV as a Playlist" (Batches into single MPV playlist)
-; - Audio Files (.mp3, .flac)  : Hidden (Reserved for dedicated music players)
-; - Images / Docs / Subtitles  : Hidden (.jpg, .png, .txt, .pdf, .srt, .nfo)
-; - Folder Background (Inside) : Shows "Play with MPV as a Playlist" (Plays current directory)
-; - Drives / Partitions        : Shows "Play with MPV as a Playlist" (Single drive)
+; Dual Behavior Architecture:
+; - Standard "Open" / Double-Click: Launches normal separate independent MPV windows.
+; - "Play with MPV as a Playlist": Batches files into 1 single unified MPV window as an ascending playlist.
 ; =======================================================================================================
 
+; -------------------------------------------------------------------------------------------------------
 ; 1. Single Folder in Windows File Explorer (Hidden if 2+ folders are selected)
+; -------------------------------------------------------------------------------------------------------
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
 "AppliesTo"="System.ItemCount:1"
 
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV\command]
-@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%1\""
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
 
+; -------------------------------------------------------------------------------------------------------
 ; 2. Folder Background (Empty space inside an open folder)
+; -------------------------------------------------------------------------------------------------------
 [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
 
 [HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\PlayWithMPV\command]
-@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%V\""
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%V\""
 
-; 3. Video Files Only (Single video or Multi-Select video files)
-[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV]
-@="Play with MPV as a Playlist"
-"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
-"MultiSelectModel"="Player"
-
-[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV\command]
-@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%1\""
-
-; 4. Drive / USB Partition (Single Drive only)
+; -------------------------------------------------------------------------------------------------------
+; 3. Drive / USB Partition (Single Drive only)
+; -------------------------------------------------------------------------------------------------------
 [HKEY_CURRENT_USER\Software\Classes\Drive\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
 "AppliesTo"="System.ItemCount:1"
 
 [HKEY_CURRENT_USER\Software\Classes\Drive\shell\PlayWithMPV\command]
-@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%1\""
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; -------------------------------------------------------------------------------------------------------
+; 4. Universal Video PerceivedType
+; -------------------------------------------------------------------------------------------------------
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; -------------------------------------------------------------------------------------------------------
+; 5. Specific Video File Extensions (Direct Association for Reliable Multi-Select on Desktop/Explorer)
+; -------------------------------------------------------------------------------------------------------
+
+; .mkv
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.mkv\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.mkv\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .mp4
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.mp4\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.mp4\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .avi
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.avi\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.avi\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .webm
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.webm\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.webm\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .mov
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.mov\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.mov\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .ts
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.ts\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.ts\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .m2ts
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.m2ts\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.m2ts\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .flv
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.flv\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.flv\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .wmv
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.wmv\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.wmv\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .m4v
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.m4v\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.m4v\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .3gp
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.3gp\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.3gp\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .ogv
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.ogv\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.ogv\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .vob
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.vob\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.vob\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .dav
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.dav\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.dav\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
+
+; .y4m
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.y4m\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.y4m\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
