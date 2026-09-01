@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+; =======================================================================================================
+; Project     : biraj-mpv-conf
+; Repository  : https://github.com/Biraj2004/biraj-mpv-conf
+; Developer   : Biraj Sarkar (@Biraj2004)
+; License     : Apache-2.0
+; Description : Removes "Play with MPV as a Playlist" from the Windows File Explorer context menu.
+; =======================================================================================================
+
+[-HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV]
+[-HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\PlayWithMPV]
+[-HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV]
+[-HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\audio\shell\PlayWithMPV]
+[-HKEY_CURRENT_USER\Software\Classes\Drive\shell\PlayWithMPV]

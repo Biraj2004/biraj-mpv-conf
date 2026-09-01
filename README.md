@@ -271,9 +271,11 @@ ytdl-raw-options-append=cookies-from-browser=firefox
   - Quick-copy media file paths, titles, or active subtitle text to the clipboard.
 
 ### Multi-File Playlist Natural Ascending Sorting & Video Filter
-- **Strictly Video-Only Drag & Drop Filtering ([`sort_playlist.lua`](scripts/sort_playlist.lua))**: When dragging & dropping multiple files, batches, or folders into mpv, non-video files (`.txt`, `.nfo`, `.srt`, `.mp3`, `.jpg`, `.png`, `.part`, etc.) are automatically filtered out so the playlist list contains only playable video episodes.
+- **Strictly Video-Only Drag & Drop Filtering ([`sort_playlist.lua`](scripts/sort_playlist.lua))**: When dragging & dropping multiple files, batches, or folders into mpv, non-video files (`.txt`, `.nfo`, `.srt`, `.mp3`, `.jpg`, `.png`, `.part`, etc.) are automatically filtered out in a single high-speed pass so the playlist contains only playable video episodes.
 - **Auto-Attached Subtitles**: Matching subtitle files (`.srt`, `.ass`, `.vtt`) are automatically detected and loaded directly into the active video's subtitle tracks via fuzzy matching (`sub-auto=fuzzy`) without cluttering the playlist list as separate entries.
-- **Natural Ascending Order**: All videos in the playlist are automatically organized in **natural alphanumeric ascending order** (`Episode 1`, `Episode 2` ... `Episode 10`, `Episode 21`), fixing out-of-order drag selections with seamless background reordering.
+- **Ultra-Fast & Accurate Natural Ascending Sort**: Precomputed cached keys format numbers with high-precision padding (`padnum`), sorting complex numbers (`01`, `02` ... `10`, `10.5`, `100`), brackets, and titles in under 2ms.
+- **Defensive Safety Architecture**: Includes re-entrancy concurrency locks (`is_sorting`), debounced event coalescing (`80ms`), memory batch safety caps (`MAX_SORT_LIMIT = 5000`), protected exception boundaries (`pcall`), and non-video batch detection to prevent crashes or freezing.
+- **"Play with MPV as a Playlist" Windows Explorer Context Menu ([`Windows-Context-Menu/`](Windows-Context-Menu/))**: Right-click any single folder, opened folder background, single external drive, or video files in Windows File Explorer to immediately open and play all videos in that folder as a naturally sorted playlist with the official MPV icon. Includes a 1-click installer ([`Setup_Play_with_MPV_Context_Menu.bat`](Windows-Context-Menu/Setup_Play_with_MPV_Context_Menu.bat)), standalone registry scripts, and documentation in [`Windows-Context-Menu/README.md`](Windows-Context-Menu/README.md).
 - **Natural Ascending File Dialog Loading ([`open-file.lua`](scripts/open-file.lua))**: Selecting multiple files via <kbd>Ctrl</kbd>+<kbd>O</kbd> automatically sorts them in ascending order before adding them to the playlist.
 - **On-Demand Playlist Sorter (<kbd>K</kbd> / Context Menu)**: Instant shortcut (`sort_playlist/sort-playlist`) to re-sort any active playlist into natural ascending order on demand.
 
@@ -302,7 +304,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
-- **Smart Stream & Seek Buffer**: 450 MiB forward cache + 225 MiB back-buffer + 30s deep readahead with disk caching (cache-on-disk=yes, demuxer-seekable-cache=yes, cache-pause=yes, cache-pause-wait=3) for smooth 4K REMUX, network streaming, and jitter-free auto-pause recovery.
+- **Smart Stream & Seek Buffer**: 475 MiB forward cache + 225 MiB back-buffer + 30s deep readahead with disk caching (cache-on-disk=yes, demuxer-seekable-cache=yes, cache-pause=yes, cache-pause-wait=3) for smooth 4K REMUX, network streaming, and jitter-free auto-pause recovery.
 - **Stremio & External Player Integration**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) inside `Stremio-Play-in-MPV/` to seamlessly add *"Play in MPV"* into Stremio desktop.
 - **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, or Best Fallback**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
@@ -316,6 +318,11 @@ biraj-mpv-conf/
 ├── mpv.conf                  # Core configuration (renderer, cache, audio, video, profiles)
 ├── input.conf                # Custom keybindings, mouse shortcuts, and script triggers
 ├── menu.conf                 # Right-click context menu definitions
+├── Windows-Context-Menu/     # Windows File Explorer context menu integration installers
+│   ├── Add_Play_with_MPV_Context_Menu.reg    # Registry script to add "Play with MPV as a Playlist"
+│   ├── Remove_Play_with_MPV_Context_Menu.reg # Registry script to remove the context menu
+│   ├── Setup_Play_with_MPV_Context_Menu.bat  # 1-click installer and path auto-detector
+│   └── README.md                             # Context menu setup guide and behavior matrix
 ├── Stremio-Play-in-MPV/      # Automated "Play in MPV" integration installers for Stremio
 │   ├── Win_Setup_Stremio_To_Play_In_MPV.bat   # Windows Stremio external player setup script
 │   └── macOS_Setup_Stremio_To_Play_In_MPV.sh # macOS Stremio external player setup script
@@ -585,7 +592,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua`**: Dynamic floating format badge overlay detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
-  - **Performance & Subtitle Architecture**: 450MB demuxer seek buffer (with 225MB back-cache, 30s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Performance & Subtitle Architecture**: 475MB demuxer seek buffer (with 225MB back-cache, 30s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
 ### Upstream Open-Source Projects

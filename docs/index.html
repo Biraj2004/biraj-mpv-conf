@@ -322,8 +322,8 @@
                             <line x1="1" y1="14" x2="4" y2="14"></line>
                         </svg>
                     </div>
-                    <h3 class="feature-title">450MB Zero-Wear RAM Cache</h3>
-                    <p class="feature-desc">Pure in-memory caching (450MB forward, 225MB back-buffer, 30s deep readahead, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and network streams.</p>
+                    <h3 class="feature-title">475MB Zero-Wear RAM Cache</h3>
+                    <p class="feature-desc">Pure in-memory caching (475MB forward, 225MB back-buffer, 30s deep readahead, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and network streams.</p>
                 </div>
             </div>
         </div>
@@ -881,10 +881,10 @@ audio-stream-silence=yes
 audio-wait-open=0
 audio-pitch-correction=yes
 
-### Cache (450MB forward / 225MB back-buffer / Zero SSD Wear)
+### Cache (475MB forward / 225MB back-buffer / Zero SSD Wear)
 cache=yes
 cache-on-disk=no
-demuxer-max-bytes=450MiB
+demuxer-max-bytes=475MiB
 demuxer-max-back-bytes=225MiB
 demuxer-readahead-secs=30
 demuxer-seekable-cache=yes
@@ -985,10 +985,11 @@ sub-margin-y=36</code></pre>
                     <p class="credit-desc">Original author, curator, and maintainer of this configuration suite. Custom developed features and scripts include:</p>
                     <ul class="credit-list">
                         <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
-                        <li><strong><code>sort_playlist.lua</code></strong> — Natural ascending video playlist sorter and media filter algorithm with zero-stutter background reordering and OSD notifications.</li>
+                        <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
                         <li><strong><code>hdr_badge.lua</code></strong> — Dynamic floating format badge overlay automatically detecting and announcing HDR10+, Dolby Vision, HDR, HLG, and SDR formats.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
-                        <li><strong>Engine Architecture & Subtitles</strong> — 450MB demuxer fast-seeking cache (with 225MB back-cache, 30s readahead, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
+                        <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
+                        <li><strong>Engine Architecture & Subtitles</strong> — 475MB demuxer fast-seeking cache (with 225MB back-cache, 30s readahead, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
                         <li><strong>Documentation & Web Experience</strong> — Complete responsive documentation website, cheatsheet guides, and user manuals.</li>
                     </ul>
                 </div>

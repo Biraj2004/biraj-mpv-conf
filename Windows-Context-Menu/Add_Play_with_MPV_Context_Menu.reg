@@ -1,0 +1,53 @@
+Windows Registry Editor Version 5.00
+
+; =======================================================================================================
+; Project     : biraj-mpv-conf
+; Repository  : https://github.com/Biraj2004/biraj-mpv-conf
+; Developer   : Biraj Sarkar (@Biraj2004)
+; License     : Apache-2.0
+; Description : Adds "Play with MPV as a Playlist" to the Windows File Explorer context menu.
+;
+; Rules & Features:
+; - Single Folder              : Shows "Play with MPV as a Playlist"
+; - Multiple Folders Selected   : Hidden (AppliesTo System.ItemCount:1)
+; - Video Files (Single/Multi) : Shows "Play with MPV as a Playlist" (Batches into single MPV playlist)
+; - Audio Files (.mp3, .flac)  : Hidden (Reserved for dedicated music players)
+; - Images / Docs / Subtitles  : Hidden (.jpg, .png, .txt, .pdf, .srt, .nfo)
+; - Folder Background (Inside) : Shows "Play with MPV as a Playlist" (Plays current directory)
+; - Drives / Partitions        : Shows "Play with MPV as a Playlist" (Single drive)
+; =======================================================================================================
+
+; 1. Single Folder in Windows File Explorer (Hidden if 2+ folders are selected)
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"AppliesTo"="System.ItemCount:1"
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%1\""
+
+; 2. Folder Background (Empty space inside an open folder)
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%V\""
+
+; 3. Video Files Only (Single video or Multi-Select video files)
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"MultiSelectModel"="Player"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\video\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%1\""
+
+; 4. Drive / USB Partition (Single Drive only)
+[HKEY_CURRENT_USER\Software\Classes\Drive\shell\PlayWithMPV]
+@="Play with MPV as a Playlist"
+"Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
+"AppliesTo"="System.ItemCount:1"
+
+[HKEY_CURRENT_USER\Software\Classes\Drive\shell\PlayWithMPV\command]
+@="\"C:\\Program Files\\mpv\\mpv.exe\" \"%1\""
