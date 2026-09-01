@@ -19,7 +19,7 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
-"MultiSelectModel"="Player"
+"AppliesTo"="System.ItemCount:1"
 
 [HKEY_CURRENT_USER\Software\Classes\Directory\shell\PlayWithMPV\command]
 @="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
@@ -27,7 +27,7 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV]
 @="Play with MPV as a Playlist"
 "Icon"="\"C:\\Program Files\\mpv\\mpv.exe\",0"
-"MultiSelectModel"="Player"
+"AppliesTo"="System.ItemCount:1"
 
 [HKEY_CURRENT_USER\Software\Classes\Folder\shell\PlayWithMPV\command]
 @="\"C:\\Program Files\\mpv\\mpv.exe\" --script-opts-append=single_instance-enabled=yes \"%1\""
