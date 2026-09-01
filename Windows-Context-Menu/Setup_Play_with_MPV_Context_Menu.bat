@@ -66,6 +66,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "Set-ItemProperty -Path $fk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
     "New-Item -Path \"$fk\command\" -Force | Out-Null;" ^
     "Set-ItemProperty -Path \"$fk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%1\"');" ^
+    "$foldk = 'HKCU:\Software\Classes\Folder\shell\PlayWithMPV';" ^
+    "New-Item -Path $foldk -Force | Out-Null;" ^
+    "Set-ItemProperty -Path $foldk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
+    "Set-ItemProperty -Path $foldk -Name 'Icon' -Value ('\"' + $mpv + '\",0');" ^
+    "Set-ItemProperty -Path $foldk -Name 'AppliesTo' -Value 'System.ParsingName:<>\"\" AND System.ParsingName:<>\"\"::{645FF040-5081-101B-9F08-00AA002F954E}\"\" AND System.ParsingName:<>\"\"::{679f85cb-0220-4080-b29b-5540cc05aab6}\"\" AND System.ParsingName:<>\"\"::{26EE0668-A00A-44D7-9371-BEB064C98683}\"\" AND System.IsFolder:=System.StructuredQueryType.Boolean#True';" ^
+    "New-Item -Path \"$foldk\command\" -Force | Out-Null;" ^
+    "Set-ItemProperty -Path \"$foldk\command\" -Name '(Default)' -Value ('\"' + $mpv + '\" --script-opts-append=single_instance-enabled=yes \"%1\"');" ^
     "$dk = 'HKCU:\Software\Classes\Drive\shell\PlayWithMPV';" ^
     "New-Item -Path $dk -Force | Out-Null;" ^
     "Set-ItemProperty -Path $dk -Name '(Default)' -Value 'Play with MPV as a Playlist';" ^
