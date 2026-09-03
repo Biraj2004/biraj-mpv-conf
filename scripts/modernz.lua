@@ -173,7 +173,7 @@ local user_opts = {
     button_hover_size = 115,               -- relative size of a hovered button if "size" effect is active
     button_held_size = 100,                -- relative size of a button when held/pressed. below 100 shrinks button when held down
     button_held_box_alpha = 18,            -- alpha of the hover background box when a button is held down
-    button_glow_amount = 5,                -- glow intensity when "glow" hover effect is active
+    button_glow_amount = 4,                -- glow intensity when "glow" hover effect is active
     slider_hover_size = 100,               -- relative size of a hovered slider handle
     tooltip_hints = true,                  -- enable tooltips for most buttons. seek and volume tooltips are always enabled
 
