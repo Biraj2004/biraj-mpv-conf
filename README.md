@@ -124,12 +124,15 @@ Remove-Item -Recurse -Force $temp
    ├── fonts/
    │   └── modernz-icons.ttf
    ├── script-opts/
+   │   ├── auto_exit_eof.conf
    │   ├── hdr_badge.conf
    │   ├── modernz.conf
    │   ├── pause_indicator_lite.conf
    │   ├── resume_indicator.conf
    │   └── thumbfast.conf
    ├── scripts/
+   │   ├── auto_exit_eof.lua
+   │   ├── cycle_audio.lua
    │   ├── hdr_badge.lua
    │   ├── modernz.lua
    │   ├── open-file.lua
@@ -157,12 +160,15 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    ├── fonts/
    │   └── modernz-icons.ttf
    ├── script-opts/
+   │   ├── auto_exit_eof.conf
    │   ├── hdr_badge.conf
    │   ├── modernz.conf
    │   ├── pause_indicator_lite.conf
    │   ├── resume_indicator.conf
    │   └── thumbfast.conf
    ├── scripts/
+   │   ├── auto_exit_eof.lua
+   │   ├── cycle_audio.lua
    │   ├── hdr_badge.lua
    │   ├── modernz.lua
    │   ├── open-file.lua
@@ -319,6 +325,12 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Windows Taskbar Progress Indicator (`[Video]`)**: Displays live playback completion progress directly on the Windows taskbar icon.
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
+### Graceful Auto-Exit at End of Media ([`auto_exit_eof.lua`](scripts/auto_exit_eof.lua))
+- **5-Second Grace Period**: When a video or playlist finishes, mpv pauses cleanly on the last frame for 5 seconds instead of quitting abruptly or remaining indefinitely on a black screen.
+- **Top-Left Native OSD Warning**: During the final 2 seconds, displays a native pillbox OSD prompt (**`Exiting...`**) styled to match `mpv.conf`, alerting you before closure.
+- **Instant Abort on Interaction**: Pressing <kbd>←</kbd> (rewind), scrubbing backwards, unpausing (<kbd>Space</kbd>), or loading new media immediately aborts the countdown and wipes the warning.
+- **Multi-File & Loop Awareness**: Never exits between playlist episodes (only triggers on the final file), respects `loop-file` / `loop-playlist`, and ignores idle launches. Configurable via [`script-opts/auto_exit_eof.conf`](script-opts/auto_exit_eof.conf).
+
 ### Advanced Subtitle & Audio Management
 - **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant visual OSD response with 25ms decoder coalescing, preventing decoder thrashing, audio pops, and video freezes during rapid key spamming. Features seamless GUI menu synchronization and type-safe track matching.
 - **Pixel-Perfect Subtitle Geometry (`sub-ass-use-video-data=all`)**: Modern mpv v0.39+ standard passing full video resolution and aspect ratio to `libass` for 100% accurate signs, rotations, and Gaussian blurs with 0 startup warnings.
@@ -360,15 +372,18 @@ biraj-mpv-conf/
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
+│   ├── auto_exit_eof.lua     # Graceful auto-exit at end of media with 5s grace & 2s OSD warning
 │   ├── cycle_audio.lua       # Zero-lag VLC & MPV audio / subtitle cycler with anti-spam debouncing
 │   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
 │   ├── resume_indicator.lua  # Clean OSD notification when resuming files e.g. "Resuming: (14:22 / 24:00)"
+│   ├── single_instance.lua   # Single-instance process forwarder
 │   ├── sort_playlist.lua     # Natural alphanumeric ascending video playlist sorter & filter
 │   └── thumbfast.lua         # High-performance seekbar thumbnail engine
 ├── script-opts/
+│   ├── auto_exit_eof.conf    # Configuration for graceful EOF auto-exit
 │   ├── hdr_badge.conf        # Configuration for dynamic format badge
 │   ├── modernz.conf          # Configuration for ModernZ UI theme, layout, fonts
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
@@ -624,6 +639,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua` & `resume_indicator.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR) and clean on-screen resume notifications ("Resuming at (14:22)").
+  - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 5s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
   - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
