@@ -20,8 +20,8 @@ local options = require 'mp.options'
 
 local opts = {
     enable = true,                  -- Enable or disable auto-exit at EOF
-    delay = 5.0,                    -- Total grace period in seconds before exiting
-    warning_time = 2.0,             -- Time in seconds before exit to show the OSD warning
+    delay = 6.0,                    -- Total grace period in seconds before exiting
+    warning_time = 2.5,             -- Time in seconds before exit to show the OSD warning
     warning_text = "Exiting...",     -- Text to display on OSD
     show_warning = true,            -- Show the OSD warning message
     only_fullscreen = false,        -- Only auto-exit if mpv is in fullscreen mode
