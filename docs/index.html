@@ -336,7 +336,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">Graceful Auto-Exit at End of Media</h3>
-                    <p class="feature-desc">Pauses at EOF with a 5s grace period. Renders a native top-left <code>Exiting...</code> OSD warning during the final 2s before quitting. Instantly aborts if you seek back (<kbd>&larr;</kbd>), unpause, or load media.</p>
+                    <p class="feature-desc">Pauses at EOF with a 6s grace period. Renders a native top-left <code>Exiting...</code> OSD warning during the final 2.5s before quitting. Instantly aborts if you seek back (<kbd>&larr;</kbd>), unpause, or load media.</p>
                 </div>
             </div>
         </div>
@@ -997,7 +997,7 @@ sub-margin-y=36</code></pre>
                         <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
                         <li><strong><code>hdr_badge.lua</code> & <code>resume_indicator.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR) and clean on-screen resume notifications ("Resuming at (14:22)").</li>
-                        <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 5s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.</li>
+                        <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 6s grace period, 2.5s native OSD warning, and instant seek/playback abort safeguards.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
                         <li><strong>Engine Architecture & Subtitles</strong> — 400MB demuxer fast-seeking cache (with 200MB back-cache, 25s readahead, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>

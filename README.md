@@ -326,8 +326,8 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Graceful Auto-Exit at End of Media ([`auto_exit_eof.lua`](scripts/auto_exit_eof.lua))
-- **5-Second Grace Period**: When a video or playlist finishes, mpv pauses cleanly on the last frame for 5 seconds instead of quitting abruptly or remaining indefinitely on a black screen.
-- **Top-Left Native OSD Warning**: During the final 2 seconds, displays a native pillbox OSD prompt (**`Exiting...`**) styled to match `mpv.conf`, alerting you before closure.
+- **6-Second Grace Period**: When a video or playlist finishes, mpv pauses cleanly on the last frame for 6 seconds instead of quitting abruptly or remaining indefinitely on a black screen.
+- **Top-Left Native OSD Warning**: During the final 2.5 seconds, displays a native pillbox OSD prompt (**`Exiting...`**) styled to match `mpv.conf`, alerting you before closure.
 - **Instant Abort on Interaction**: Pressing <kbd>←</kbd> (rewind), scrubbing backwards, unpausing (<kbd>Space</kbd>), or loading new media immediately aborts the countdown and wipes the warning.
 - **Multi-File & Loop Awareness**: Never exits between playlist episodes (only triggers on the final file), respects `loop-file` / `loop-playlist`, and ignores idle launches. Configurable via [`script-opts/auto_exit_eof.conf`](script-opts/auto_exit_eof.conf).
 
@@ -372,7 +372,7 @@ biraj-mpv-conf/
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
-│   ├── auto_exit_eof.lua     # Graceful auto-exit at end of media with 5s grace & 2s OSD warning
+│   ├── auto_exit_eof.lua     # Graceful auto-exit at end of media with 6s grace & 2.5s OSD warning
 │   ├── cycle_audio.lua       # Zero-lag VLC & MPV audio / subtitle cycler with anti-spam debouncing
 │   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
@@ -639,7 +639,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua` & `resume_indicator.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR) and clean on-screen resume notifications ("Resuming at (14:22)").
-  - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 5s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.
+  - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 6s grace period, 2.5s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
   - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
