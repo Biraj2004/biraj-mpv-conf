@@ -4,9 +4,8 @@
 
 local mp = require 'mp'
 
-local AUDIO_DEBOUNCE_DELAY = 0.1 -- 100ms debounce window for audio track switching
-local SUB_DEBOUNCE_DELAY   = 0.1 -- 100ms debounce window for subtitle track cycling (prevents stream re-demuxing & cache flushing)
-local OSD_DURATION         = 2.5  -- 2.5 seconds display time (universal OSD duration)
+local DEBOUNCE_DELAY = 0.05 -- 50ms debounce window (ultra-fast near-instant response while preventing decoder thrashing)
+local OSD_DURATION = 2.5     -- 2.5 seconds display time (universal OSD duration)
 
 -- Audio State
 local pending_aid = nil
@@ -132,7 +131,7 @@ local function cycle_audio(direction)
         pending_aid = tracks[1].id
         mp.osd_message(format_audio_osd(tracks[1], 1, 1), OSD_DURATION)
         if audio_timer then audio_timer:kill() end
-        audio_timer = mp.add_timeout(AUDIO_DEBOUNCE_DELAY, apply_audio_switch)
+        audio_timer = mp.add_timeout(DEBOUNCE_DELAY, apply_audio_switch)
         return
     end
 
@@ -153,7 +152,7 @@ local function cycle_audio(direction)
 
     -- Debounce heavy decoder initialization
     if audio_timer then audio_timer:kill() end
-    audio_timer = mp.add_timeout(AUDIO_DEBOUNCE_DELAY, apply_audio_switch)
+    audio_timer = mp.add_timeout(DEBOUNCE_DELAY, apply_audio_switch)
 end
 
 -- ==================== SUBTITLE CYCLING ====================
@@ -231,7 +230,7 @@ local function cycle_sub(direction)
 
     -- Debounce libass font-loading and demuxer switches
     if sub_timer then sub_timer:kill() end
-    sub_timer = mp.add_timeout(SUB_DEBOUNCE_DELAY, apply_sub_switch)
+    sub_timer = mp.add_timeout(DEBOUNCE_DELAY, apply_sub_switch)
 end
 
 -- Reset state on new file or playback stop
