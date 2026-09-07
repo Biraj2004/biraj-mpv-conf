@@ -371,7 +371,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=50`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
 - **Original Anime Typesetting & Positioning (`sub-ass-override=no`)**: Fully preserves author-intended ASS styling, top-screen song lyrics (`{\an8}`), signs, and typesetting for anime, while plain `.srt` and `.vtt` subtitles use your configured custom size and styling (`sub-margin-y=36`).
 - **Locked Subtitle Baseline**: Subtitles remain fixed to the video frame (`sub-use-margins=no`, `sub-ass-force-margins=no`) and never jitter or jump when the seekbar/OSC appears.
-- **Zero-Lag Subtitle Switching (`demuxer-mkv-subtitle-preroll=no`, preroll-secs=0)**: Prevents backward demuxer seeking and preroll indexing delays on track changes for instantaneous stutter-free switching.
+- **Zero-Lag Subtitle Switching (`demuxer-mkv-subtitle-preroll=no`)**: Prevents backward demuxer seeking on track changes for instantaneous stutter-free switching.
 - **Smart Directory Search**: Automatically scans `sub/`, `subs/`, `subtitles/`, `srt/`, `ass/`, and `vtt/` subdirectories.
 - **Subtitles Off by Default**: Clean view on launch (`sid=no`), easily enabled when needed via <kbd>v</kbd> or right-click menu.
 - **Multi-Language Priority**: Default subtitle matching priority for English (`slang=en,enm`) and audio stream selection for Hindi, English, and Japanese (`alang=hi,en,ja`).
