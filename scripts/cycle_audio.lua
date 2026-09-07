@@ -4,7 +4,7 @@
 
 local mp = require 'mp'
 
-local DEBOUNCE_DELAY = 0.05 -- 50ms debounce window (ultra-fast near-instant response while preventing decoder thrashing)
+local DEBOUNCE_DELAY = 0.03 -- 30ms debounce window (ultra-fast near-instant response while preventing decoder thrashing)
 local OSD_DURATION = 2.5     -- 2.5 seconds display time (universal OSD duration)
 
 -- Audio State
