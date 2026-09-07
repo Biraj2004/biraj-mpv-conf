@@ -300,7 +300,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
 - **Hardware Direct3D 11 Flip Presentation (`d3d11-flip=yes`)**: Bypasses legacy DWM composition layers for tear-free, flicker-free presentation with 0 dropped frames and instant Alt-Tab.
-- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays with optimal dynamic range (`target-contrast=auto`), preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=150`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
+- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays with optimal dynamic range (`target-contrast=auto`), preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=145`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
 - **Debanding & Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `dither-depth=auto`, `temporal-dither=yes`). Toggle on-the-fly with <kbd>g</kbd>.
@@ -336,7 +336,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 
 ### Smart Dynamic Profiles & Audio Normalization
 - **Night Mode Audio Normalization (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time `dynaudnorm` filter balancing quiet dialogue and loud sound effects during late-night viewing.
-- **Fast 150ms WASAPI Audio Buffer (`audio-buffer=0.15`)**: Fast buffer fill time on track switches while remaining 100% immune to audio underruns and crackles.
+- **Ultra-Fast 100ms WASAPI Audio Buffer (`audio-buffer=0.10`)**: Fast buffer fill time on track switches while remaining 100% immune to audio underruns and crackles.
 - **Zero-Delay Persistence Safeguards**: Any manual audio/subtitle delay applied to defective media is automatically isolated—never saved to resume files and reset to 0.000ms on the next video.
 - **Picture-in-Picture (`[Window-PiP]`)**: Automatically scales the OSC and enables a persistent progress bar when floating on-top in windowed mode.
 - **Auto-Pause on Minimize (`[Minimized]`)**: Automatically pauses video when the player window is minimized to conserve system resources.
@@ -378,7 +378,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook with dedicated [`yt-dlp.conf`](yt-dlp.conf) for 99% reliable YouTube and web streaming (client spoofing, network retries, segment acceleration, and optional browser cookie authentication).
-- **Dynamic Protocol Caching & Smart Stream Buffer**: 650 MiB forward network cache + 200 MiB back-buffer + 25s deep readahead for online streams (HTTPS/HTTP/yt-dlp/Stremio), alongside 300 MiB / 150 MiB local zero-wear RAM caching (`cache-on-disk=no`, `demuxer-seekable-cache=yes`, `cache-pause=yes`, `cache-pause-wait=2.5`) for instantaneous seek responsiveness and jitter-free auto-pause recovery.
+- **Dynamic Protocol Caching & Smart Stream Buffer**: 500 MiB forward network cache + 200 MiB back-buffer + 25s deep readahead for online streams (HTTPS/HTTP/yt-dlp/Stremio), alongside 260 MiB / 110 MiB local zero-wear RAM caching (`cache-on-disk=no`, `demuxer-seekable-cache=yes`, `cache-pause=yes`, `cache-pause-wait=2.5`) for instantaneous seek responsiveness and jitter-free auto-pause recovery.
 - **Stremio & External Player Integration ([`Stremio-Play-in-MPV/`](Stremio-Play-in-MPV/))**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) and complete documentation in [`Stremio-Play-in-MPV/README.md`](Stremio-Play-in-MPV/README.md) to seamlessly add *"Play in MPV"* into Stremio desktop.
 - **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, 2160p 4K UHD, or Uncapped Best**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-2160p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
@@ -606,7 +606,7 @@ In [`mpv.conf`](mpv.conf), you can activate optional profiles on-demand:
 ```
 
 ### 2. Dynamic Protocol Caching (Online Streaming & Stremio)
-Online streams (`https://`, `http://`, and `ytdl://`) automatically inherit the `[protocol.https]` profile, expanding the demuxer buffer to **650 MiB** with **25 seconds of readahead** and **10s hysteresis**, ensuring uninterrupted streaming even during network fluctuations. Local media remains lean (300 MiB) to conserve system RAM.
+Online streams (`https://`, `http://`, and `ytdl://`) automatically inherit the `[protocol.https]` profile, expanding the demuxer buffer to **500 MiB** with **25 seconds of readahead** and **10s hysteresis**, ensuring uninterrupted streaming even during network fluctuations. Local media remains lean (260 MiB) to conserve system RAM.
 
 ### 3. Changing Hardware Acceleration
 In [`mpv.conf`](mpv.conf):
@@ -679,7 +679,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`hdr_badge.lua`, `resume_indicator.lua`, & `pause_notify.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart file-duration hour formatting.
   - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
-  - **Performance & Subtitle Architecture**: 300MB–650MB dynamic RAM seek buffer (with up to 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Performance & Subtitle Architecture**: 260MB–500MB dynamic RAM seek buffer (with up to 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
 ### Upstream Open-Source Projects

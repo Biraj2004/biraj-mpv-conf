@@ -323,7 +323,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">Dynamic Zero-Wear RAM Cache</h3>
-                    <p class="feature-desc">Pure in-memory caching (300MB local, up to 650MB network buffer, 200MB back-buffer, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and online streams.</p>
+                    <p class="feature-desc">Pure in-memory caching (260MB local, up to 500MB network buffer, 200MB back-buffer, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and online streams.</p>
                 </div>
 
                 <!-- Feature 9 -->
@@ -949,8 +949,8 @@ hdr-compute-peak=auto
 gamut-mapping-mode=auto
 hwdec-codecs=all
 
-### Audio Pipeline (150ms WASAPI Lock)
-audio-buffer=0.15
+### Audio Pipeline (100ms WASAPI Lock)
+audio-buffer=0.10
 audio-stream-silence=yes
 audio-wait-open=0
 audio-pitch-correction=yes
@@ -958,9 +958,9 @@ audio-pitch-correction=yes
 ### Cache (System RAM & Zero SSD Wear)
 cache=yes
 cache-on-disk=no
-demuxer-max-bytes=300MiB
-demuxer-max-back-bytes=150MiB
-demuxer-readahead-secs=15
+demuxer-max-bytes=260MiB
+demuxer-max-back-bytes=110MiB
+demuxer-readahead-secs=13
 demuxer-seekable-cache=yes
 cache-pause=yes
 cache-pause-initial=no
@@ -968,7 +968,7 @@ cache-pause-wait=2.5
 
 ### Dynamic Protocol Caching (Streaming & Stremio)
 [protocol.https]
-demuxer-max-bytes=650MiB
+demuxer-max-bytes=500MiB
 demuxer-max-back-bytes=200MiB
 demuxer-readahead-secs=25
 demuxer-hysteresis-secs=10</code></pre>
@@ -983,8 +983,8 @@ demuxer-hysteresis-secs=10</code></pre>
                     <pre><code>### Subtitles
 sub-auto=fuzzy
 blend-subtitles=no
-sub-hdr-peak=150
-image-subs-hdr-peak=150
+sub-hdr-peak=145
+image-subs-hdr-peak=145
 sid=no
 demuxer-mkv-subtitle-preroll=no
 
@@ -1103,7 +1103,7 @@ sub-margin-y=36</code></pre>
                         <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
-                        <li><strong>Engine Architecture & Subtitles</strong> — Dynamic RAM fast-seeking cache (300MB local, up to 650MB streaming buffer, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
+                        <li><strong>Engine Architecture & Subtitles</strong> — Dynamic RAM fast-seeking cache (260MB local, up to 500MB streaming buffer, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
                         <li><strong>Documentation & Web Experience</strong> — Complete responsive documentation website, cheatsheet guides, and user manuals.</li>
                     </ul>
                 </div>
