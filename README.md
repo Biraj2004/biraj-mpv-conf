@@ -128,6 +128,7 @@ Remove-Item -Recurse -Force $temp
    │   ├── hdr_badge.conf
    │   ├── modernz.conf
    │   ├── pause_indicator_lite.conf
+   │   ├── pause_notify.conf
    │   ├── resume_indicator.conf
    │   └── thumbfast.conf
    ├── scripts/
@@ -137,6 +138,7 @@ Remove-Item -Recurse -Force $temp
    │   ├── modernz.lua
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
+   │   ├── pause_notify.lua
    │   ├── resume_indicator.lua
    │   ├── single_instance.lua
    │   ├── sort_playlist.lua
@@ -164,6 +166,7 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    │   ├── hdr_badge.conf
    │   ├── modernz.conf
    │   ├── pause_indicator_lite.conf
+   │   ├── pause_notify.conf
    │   ├── resume_indicator.conf
    │   └── thumbfast.conf
    ├── scripts/
@@ -173,6 +176,7 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    │   ├── modernz.lua
    │   ├── open-file.lua
    │   ├── pause_indicator_lite.lua
+   │   ├── pause_notify.lua
    │   ├── resume_indicator.lua
    │   ├── single_instance.lua
    │   ├── sort_playlist.lua
@@ -331,6 +335,13 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Instant Abort on Interaction**: Pressing <kbd>←</kbd> (rewind), scrubbing backwards, unpausing (<kbd>Space</kbd>), or loading new media immediately aborts the countdown and wipes the warning.
 - **Multi-File & Loop Awareness**: Never exits between playlist episodes (only triggers on the final file), respects `loop-file` / `loop-playlist`, and ignores idle launches. Configurable via [`script-opts/auto_exit_eof.conf`](script-opts/auto_exit_eof.conf).
 
+### Persistent On-Screen Pause Notification ([`pause_notify.lua`](scripts/pause_notify.lua))
+- **Theme-Matched Native OSD Notification**: Displays a clean, non-intrusive top-left OSD badge (**`Paused at hr:min:sec / total time`**) styled with MPV's native dark translucent background box (`osd-border-style=background-box`, `osd-back-color=0/0.5`, `osd-font-size=26`, `osd-shadow-offset=4`).
+- **Smart Duration Formatting**: Automatically formats as `HH:MM:SS` for videos 1 hour or longer (e.g. `Paused at 00:08:27 / 01:23:20`), and `MM:SS` for videos under 1 hour (e.g. `Paused at 08:27 / 43:40`). Live streams cleanly display elapsed time.
+- **Continuous Persistence on Pause**: Unlike MPV's default 2.5-second transient pause message, `pause_notify` remains visible continuously for as long as playback is paused, and dynamically updates if you seek while paused.
+- **Instant Clean Dismissal on Resume**: The exact millisecond playback resumes, the OSD message vanishes with zero lingering delay or play icon flash.
+- **Flexible User Preference**: Independent on/off switches in [`script-opts/pause_notify.conf`](script-opts/pause_notify.conf) (`enable=yes/no`) and [`script-opts/pause_indicator_lite.conf`](script-opts/pause_indicator_lite.conf) (`enable=yes/no`) let users choose between the top-left OSD notification, the center overlay rectangles, both, or neither.
+
 ### Advanced Subtitle & Audio Management
 - **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant visual OSD response with 25ms decoder coalescing, preventing decoder thrashing, audio pops, and video freezes during rapid key spamming. Features seamless GUI menu synchronization and type-safe track matching.
 - **Pixel-Perfect Subtitle Geometry (`sub-ass-use-video-data=all`)**: Modern mpv v0.39+ standard passing full video resolution and aspect ratio to `libass` for 100% accurate signs, rotations, and Gaussian blurs with 0 startup warnings.
@@ -378,6 +389,7 @@ biraj-mpv-conf/
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
 │   ├── open-file.lua         # Native Windows open file/subtitle/audio dialogs (with ascending sorting)
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
+│   ├── pause_notify.lua      # Persistent native OSD pause notification ("Paused at hr:min:sec / total time")
 │   ├── resume_indicator.lua  # Clean OSD notification when resuming files e.g. "Resuming: (14:22 / 24:00)"
 │   ├── single_instance.lua   # Single-instance process forwarder
 │   ├── sort_playlist.lua     # Natural alphanumeric ascending video playlist sorter & filter
@@ -387,6 +399,7 @@ biraj-mpv-conf/
 │   ├── hdr_badge.conf        # Configuration for dynamic format badge
 │   ├── modernz.conf          # Configuration for ModernZ UI theme, layout, fonts
 │   ├── pause_indicator_lite.conf # Configuration for pause visual effects
+│   ├── pause_notify.conf     # Configuration for on-screen pause notification
 │   ├── resume_indicator.conf # Configuration for on-screen resume notifications
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
 ├── screenshots/
@@ -638,7 +651,7 @@ icon_style=mixed      # Options: mixed, filled, outline
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
   - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
-  - **`hdr_badge.lua` & `resume_indicator.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR) and clean on-screen resume notifications ("Resuming at (14:22)").
+  - **`hdr_badge.lua`, `resume_indicator.lua`, & `pause_notify.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart file-duration hour formatting.
   - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 6s grace period, 2.5s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
   - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.

@@ -338,6 +338,18 @@
                     <h3 class="feature-title">Graceful Auto-Exit at End of Media</h3>
                     <p class="feature-desc">Pauses at EOF with a 6s grace period. Renders a native top-left <code>Exiting...</code> OSD warning during the final 2.5s before quitting. Instantly aborts if you seek back (<kbd>&larr;</kbd>), unpause, or load media.</p>
                 </div>
+
+                <!-- Feature 10 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Native OSD Pause Notification</h3>
+                    <p class="feature-desc">Persistent top-left badge (<code>Paused at hr:min:sec / total time</code>) styled to match MPV's native dark translucent OSD box. Features smart hour/minute duration formatting and instant dismissal on resume.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -586,6 +598,7 @@
 │   ├── modernz.lua
 │   ├── open-file.lua
 │   ├── pause_indicator_lite.lua
+│   ├── pause_notify.lua
 │   ├── resume_indicator.lua
 │   ├── single_instance.lua
 │   ├── sort_playlist.lua
@@ -595,6 +608,7 @@
     ├── hdr_badge.conf
     ├── modernz.conf
     ├── pause_indicator_lite.conf
+    ├── pause_notify.conf
     ├── resume_indicator.conf
     └── thumbfast.conf</pre>
                             </div>
@@ -996,7 +1010,7 @@ sub-margin-y=36</code></pre>
                     <ul class="credit-list">
                         <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
-                        <li><strong><code>hdr_badge.lua</code> & <code>resume_indicator.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR) and clean on-screen resume notifications ("Resuming at (14:22)").</li>
+                        <li><strong><code>hdr_badge.lua</code>, <code>resume_indicator.lua</code>, & <code>pause_notify.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart duration formatting.</li>
                         <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 6s grace period, 2.5s native OSD warning, and instant seek/playback abort safeguards.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
