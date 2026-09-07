@@ -64,7 +64,7 @@ By default, Stremio only includes an option for *"Play in VLC"*. This integratio
 2. Click the **Player Settings (gear / 3-dots icon)** in the bottom right corner (or right-click the video).
 3. Select **"Play in MPV"** (listed next to *"Play in VLC"*).
 4. MPV will immediately launch the stream with:
-   - Full 400MB forward RAM cache + 25s readahead.
+   - Full 425MB forward RAM cache + 20s readahead.
    - Dynamic HDR10+ / Dolby Vision tone-mapping.
    - Anti-spam audio & subtitle track cycling (<kbd>v</kbd> / <kbd>j</kbd> / <kbd>b</kbd>).
    - High-contrast 50px styled subtitles.
