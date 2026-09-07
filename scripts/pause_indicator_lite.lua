@@ -6,6 +6,7 @@
 --]]
 
 local options = {
+    enable = true,                        -- enable/disable pause indicator lite
     -- indicator icon type
     indicator_icon = "pause",             -- indicator icon type. "pause", "play"
     indicator_stay = true,                -- keep indicator visibile during pause
@@ -349,6 +350,10 @@ end
 
 mp.register_event("file-loaded", function()
     unobserve()
+    if not options.enable then
+        shutdown()
+        return
+    end
     if is_video() then
         local _, _, aspect = mp.get_osd_size()
         state.aspect = aspect
