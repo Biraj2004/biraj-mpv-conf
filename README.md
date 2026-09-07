@@ -103,16 +103,13 @@ To ensure 100% plug-and-play compatibility across Windows File Explorer context 
 
 ### Method 1: Standard Installation (Windows) — *Recommended*
 
-#### Option A: Quick Install via PowerShell (Fastest)
-Open **PowerShell** and run the following command to download and place only the necessary configuration files and scripts into `%APPDATA%\mpv`:
+#### Option A: 1-Click Install via PowerShell (Recommended & Fastest)
+Open **PowerShell** and run the one-line command below to automatically download, back up any existing configuration, and deploy all required files into `%APPDATA%\mpv`:
 ```powershell
-$temp = "$env:TEMP\biraj-mpv-conf"
-git clone --depth 1 https://github.com/Biraj2004/biraj-mpv-conf.git $temp
-New-Item -ItemType Directory -Force -Path "$env:APPDATA\mpv"
-Copy-Item "$temp\mpv.conf", "$temp\input.conf", "$temp\menu.conf" -Destination "$env:APPDATA\mpv\" -Force
-Copy-Item "$temp\fonts", "$temp\scripts", "$temp\script-opts" -Destination "$env:APPDATA\mpv\" -Recurse -Force
-Remove-Item -Recurse -Force $temp
+irm https://raw.githubusercontent.com/Biraj2004/biraj-mpv-conf/main/install.ps1 | iex
 ```
+
+*(Alternatively, if you already cloned or downloaded this repository, simply double-click `install.bat` in the repository folder).*
 
 #### Option B: Manual Extraction (ZIP)
 1. Download this repository as a ZIP archive: [**Download ZIP**](https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip).
@@ -291,7 +288,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
 - **Debanding & Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `dither-depth=auto`, `temporal-dither=yes`). Toggle on-the-fly with <kbd>g</kbd>.
-- **High-Fidelity Scaling**: Sigmoid upscaling and correct color-space downscaling algorithms for sharp playback without ringing artifacts.
+- **Reference-Grade Precision Scalers**: Configured with `scale=spline36` and `cscale=spline36` for crisp, ringing-free upscaling, `dscale=mitchell` for artifact-free downscaling, and `scale-antiring=0.6` with sigmoid upscaling.
 
 > [!NOTE]
 > **File Format vs. Screen Support**: The badge indicates the **color format received from the video file itself** (e.g. `DV` indicates a Dolby Vision file stream), **not** that your physical display panel supports native Dolby Vision. On standard SDR monitors, mpv automatically decodes the DV/HDR stream and tone-maps it into vivid, accurate SDR in real-time.
@@ -585,17 +582,17 @@ graph TD
 
 ## Customization & Optional Profiles
 
-### 1. Optional Profiles (High-End GPUs & Night Audio)
+### 1. Optional Profiles (Night Audio)
 In [`mpv.conf`](mpv.conf), you can activate optional profiles on-demand:
 ```ini
-# To launch mpv with high-end EWA Lanczos scaling (for dedicated GPUs):
-# mpv --profile=high-quality "video.mkv"
-
 # To launch mpv with dynamic audio normalizer active:
 # mpv --profile=night-audio "movie.mkv"
 ```
 
-### 2. Changing Hardware Acceleration
+### 2. Dynamic Protocol Caching (Online Streaming & Stremio)
+Online streams (`https://`, `http://`, and `ytdl://`) automatically inherit the `[protocol.https]` profile, expanding the demuxer buffer to **650 MiB** with **25 seconds of readahead** and **10s hysteresis**, ensuring uninterrupted streaming even during network fluctuations. Local media remains lean (300 MiB) to conserve system RAM.
+
+### 3. Changing Hardware Acceleration
 In [`mpv.conf`](mpv.conf):
 ```ini
 # Default: Auto-Safe (Automatically picks best stable hardware decoder)
@@ -614,7 +611,7 @@ hwdec=auto-safe
 # hwdec=videotoolbox
 ```
 
-### 3. Audio & Subtitle Language Priorities
+### 4. Audio & Subtitle Language Priorities
 In [`mpv.conf`](mpv.conf):
 ```ini
 # Prioritize subtitle language (comma separated):
@@ -624,7 +621,7 @@ slang=en,enm
 alang=hi,en,ja
 ```
 
-### 4. Subtitle Typography & Positioning
+### 5. Subtitle Typography & Positioning
 In [`mpv.conf`](mpv.conf):
 ```ini
 sub-font-size=50
@@ -638,7 +635,7 @@ sub-margin-y=36
 sub-ass-override=no
 ```
 
-### 5. Screenshot Directory & Format
+### 6. Screenshot Directory & Format
 In [`mpv.conf`](mpv.conf):
 ```ini
 screenshot-format=jpeg
@@ -647,7 +644,7 @@ screenshot-directory=~/Pictures/MPV-Screenshots
 screenshot-template=%F-(%P)-%n
 ```
 
-### 6. ModernZ OSC Layout & Theme
+### 7. ModernZ OSC Layout & Theme
 You can change the OSC theme directly from the right-click context menu or by editing [`script-opts/modernz.conf`](script-opts/modernz.conf):
 ```ini
 layout=default        # Options: default, compact, mini, seekbar

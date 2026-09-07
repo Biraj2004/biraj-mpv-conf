@@ -548,9 +548,24 @@
                     </div>
 
                     <div class="step-card">
+                        <div class="step-number">⚡</div>
+                        <div class="step-body">
+                            <h4 class="step-title">1-Click Auto Install & Update via PowerShell (Fastest)</h4>
+                            <p class="step-desc">Open <strong>PowerShell</strong> and run this command to automatically install or update everything into <code>%APPDATA%\mpv</code> (includes automated backup and safety prompt):</p>
+                            <div class="code-block">
+                                <code id="psInstallCmd">irm https://raw.githubusercontent.com/Biraj2004/biraj-mpv-conf/main/install.ps1 | iex</code>
+                                <button class="btn-copy" onclick="copyCode('psInstallCmd', this)" aria-label="Copy command">
+                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
                         <div class="step-number">1</div>
                         <div class="step-body">
-                            <h4 class="step-title">Download Configuration Archive</h4>
+                            <h4 class="step-title">Or Manual Install: Download Configuration Archive</h4>
                             <p class="step-desc">Download the latest configuration zip package and extract its contents.</p>
                             <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="btn btn-primary btn-sm" download>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -769,7 +784,7 @@
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
                         <tr data-cat="audio">
-                            <td><kbd>y</kbd></td>
+                            <td><kbd>N</kbd> / <kbd>y</kbd></td>
                             <td><strong>Toggle Night Mode Audio Normalization</strong> (<code>dynaudnorm</code>)</td>
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
@@ -848,6 +863,11 @@
                             <td><span class="badge-cat">Video</span></td>
                         </tr>
                         <tr data-cat="video">
+                            <td><kbd>Alt</kbd> + <kbd>h</kbd></td>
+                            <td>Cycle HDR Tone-Mapping curves <em>(Auto, BT.2390, Spline, Reinhard, Clip)</em></td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+                        <tr data-cat="video">
                             <td><kbd>s</kbd></td>
                             <td>Take Screenshot (saved to <code>~/Pictures/MPV-Screenshots/</code>)</td>
                             <td><span class="badge-cat">Video</span></td>
@@ -913,11 +933,16 @@ d3d11-flip=yes
 d3d11-exclusive-fs=no
 hwdec=auto-safe
 hwdec-extra-frames=16
+video-sync=audio
 deband=yes
 dither-depth=auto
 temporal-dither=yes
 sigmoid-upscaling=yes
 correct-downscaling=yes
+scale=spline36
+cscale=spline36
+dscale=mitchell
+scale-antiring=0.6
 
 ### HDR & Dolby Vision
 target-colorspace-hint=yes
