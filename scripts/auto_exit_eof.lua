@@ -4,9 +4,10 @@
     Developed by : Biraj Sarkar (@Biraj2004)
 
     Features:
-    - Waits for a configurable grace period (default: 5.0s) after a video/playlist finishes.
+    - Waits for a configurable grace period (default: 4.0s) after a video/playlist finishes.
     - Gives user time to seek backwards (e.g., Left Arrow) or unpause to keep mpv open.
     - Displays a native top-left OSD warning ("Exiting...") during the final moments (default: last 2.0s).
+    - Automatically clears watch-later resume state when reaching the end (final 10s) so re-opening starts from 0:00.
     - Intelligently handles edge cases:
         * Multi-file playlists (only exits on the final file).
         * Looping modes (loop-file / loop-playlist are respected).
@@ -20,11 +21,13 @@ local options = require 'mp.options'
 
 local opts = {
     enable = true,                  -- Enable or disable auto-exit at EOF
-    delay = 6.0,                    -- Total grace period in seconds before exiting
-    warning_time = 2.5,             -- Time in seconds before exit to show the OSD warning
+    delay = 4.0,                    -- Total grace period in seconds before exiting
+    warning_time = 2.0,             -- Time in seconds before exit to show the OSD warning
     warning_text = "Exiting...",     -- Text to display on OSD
     show_warning = true,            -- Show the OSD warning message
     only_fullscreen = false,        -- Only auto-exit if mpv is in fullscreen mode
+    reset_watch_later = true,       -- Reset watch-later position when reaching the end of media
+    eof_threshold = 10.0,            -- Seconds before duration to treat video as completed (starts fresh from 0:00)
 }
 
 options.read_options(opts, "auto_exit_eof")
@@ -32,6 +35,9 @@ options.read_options(opts, "auto_exit_eof")
 local warning_timer = nil
 local exit_timer = nil
 local is_showing_warning = false
+local initial_save_pos = true
+local is_eof_cleaned = false
+local has_checked_startup = false
 
 -- Check if active item is the last file in the playlist
 local function is_last_file()
@@ -96,6 +102,24 @@ local function cancel_exit()
     end
 end
 
+-- Clean watch-later config and prevent saving position at EOF
+local function clean_watch_later()
+    if not opts.reset_watch_later then return end
+    if not is_eof_cleaned then
+        is_eof_cleaned = true
+        mp.commandv("delete-watch-later-config")
+        mp.set_property_bool("save-position-on-quit", false)
+    end
+end
+
+-- Restore save-position-on-quit when seeking backwards away from EOF
+local function restore_save_pos()
+    if is_eof_cleaned then
+        is_eof_cleaned = false
+        mp.set_property_bool("save-position-on-quit", initial_save_pos)
+    end
+end
+
 -- Start the graceful exit countdown
 local function start_exit_countdown()
     if not opts.enable then return end
@@ -135,6 +159,7 @@ end
 -- Observe EOF state
 mp.observe_property("eof-reached", "bool", function(_, eof)
     if eof then
+        clean_watch_later()
         start_exit_countdown()
     else
         cancel_exit()
@@ -148,12 +173,39 @@ mp.observe_property("pause", "bool", function(_, paused)
     end
 end)
 
--- Observe playback position: if user seeks back from EOF, cancel immediately
+-- Observe playback position: handle completion threshold and exit cancellation
 mp.observe_property("time-pos", "number", function(_, time_pos)
-    if exit_timer and time_pos then
-        local duration = mp.get_property_number("duration", 0)
-        if duration > 0 and (duration - time_pos) > 1.0 then
-            cancel_exit()
+    if not time_pos then return end
+    local duration = mp.get_property_number("duration", 0)
+
+    -- Reset watch-later when within the final completion threshold (default: 10.0s)
+    if duration > opts.eof_threshold then
+        if time_pos >= (duration - opts.eof_threshold) then
+            clean_watch_later()
+        else
+            restore_save_pos()
+        end
+    end
+
+    if exit_timer and duration > 0 and (duration - time_pos) > 1.0 then
+        cancel_exit()
+    end
+end)
+
+-- If a previously completed file is loaded at near-EOF, start over fresh from 0:00
+mp.register_event("playback-restart", function()
+    if not opts.reset_watch_later or has_checked_startup then return end
+    has_checked_startup = true
+
+    local duration = mp.get_property_number("duration", 0)
+    local time_pos = mp.get_property_number("time-pos", 0)
+    if duration > opts.eof_threshold and time_pos >= (duration - opts.eof_threshold) then
+        mp.commandv("seek", 0, "absolute", "exact")
+        mp.commandv("delete-watch-later-config")
+        mp.set_property_bool("save-position-on-quit", initial_save_pos)
+        is_eof_cleaned = false
+        if mp.get_property_bool("pause", false) then
+            mp.set_property_bool("pause", false)
         end
     end
 end)
@@ -172,9 +224,12 @@ mp.observe_property("fullscreen", "bool", function(_, fs)
     end
 end)
 
--- Clear timers on file transitions
+-- Clear timers on file transitions and track initial save-position-on-quit
 mp.register_event("start-file", function()
     cancel_exit()
+    has_checked_startup = false
+    is_eof_cleaned = false
+    initial_save_pos = mp.get_property_bool("save-position-on-quit", true)
 end)
 
 mp.register_event("end-file", function(event)

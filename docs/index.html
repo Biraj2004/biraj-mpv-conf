@@ -336,7 +336,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">Graceful Auto-Exit at End of Media</h3>
-                    <p class="feature-desc">Pauses at EOF with a 6s grace period. Renders a native top-left <code>Exiting...</code> OSD warning during the final 2.5s before quitting. Instantly aborts if you seek back (<kbd>&larr;</kbd>), unpause, or load media.</p>
+                    <p class="feature-desc">Pauses at EOF with a snappy 4s grace period. Renders a native top-left <code>Exiting...</code> OSD warning during the final 2.0s before quitting. Automatically clears watch-later resume state upon completion (starts fresh from <code>0:00</code>), and instantly aborts if you seek back (<kbd>&larr;</kbd>), unpause, or load media.</p>
                 </div>
 
                 <!-- Feature 10 -->
@@ -348,7 +348,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">Native OSD Pause Notification</h3>
-                    <p class="feature-desc">Persistent top-left badge (<code>Paused at hr:min:sec / total time</code>) styled to match MPV's native dark translucent OSD box. Features smart hour/minute duration formatting and instant dismissal on resume.</p>
+                    <p class="feature-desc">Persistent top-left badge (<code>Paused at hr:min:sec / total time</code>) matching MPV's native dark translucent OSD box. Features dynamic collision avoidance (shifts down cleanly for other OSD messages), proportional multi-line clearance, cross-state seek tracking, live seeking timestamps, and automatic repositioning.</p>
                 </div>
             </div>
         </div>
@@ -774,6 +774,11 @@
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
                         <tr data-cat="audio">
+                            <td><kbd>Ctrl</kbd> + <kbd>[</kbd> / <kbd>Ctrl</kbd> + <kbd>]</kbd></td>
+                            <td>Adjust Audio delay (&minus;100ms / +100ms)</td>
+                            <td><span class="badge-cat">Audio</span></td>
+                        </tr>
+                        <tr data-cat="audio">
                             <td><kbd>&uarr;</kbd> / <kbd>&darr;</kbd></td>
                             <td>Volume up / down (&plusmn;5%)</td>
                             <td><span class="badge-cat">Audio</span></td>
@@ -793,6 +798,11 @@
                         <tr data-cat="subtitles">
                             <td><kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> <small class="text-muted">(or <kbd>j</kbd> / <kbd>J</kbd>)</small></td>
                             <td>Cycle subtitle tracks forward / backward <em>(VLC & MPV standard, includes Off/None, zero-lag)</em></td>
+                            <td><span class="badge-cat">Subtitles</span></td>
+                        </tr>
+                        <tr data-cat="subtitles">
+                            <td><kbd>z</kbd> / <kbd>Shift</kbd> + <kbd>z</kbd> <small class="text-muted">(or <kbd>Z</kbd>)</small></td>
+                            <td>Adjust Subtitle delay (&minus;100ms / +100ms)</td>
                             <td><span class="badge-cat">Subtitles</span></td>
                         </tr>
                         <tr data-cat="subtitles">
@@ -820,6 +830,16 @@
                         <tr data-cat="video">
                             <td><kbd>l</kbd></td>
                             <td><strong>Toggle Dynamic HDR / DV Format Badge</strong></td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+                        <tr data-cat="video">
+                            <td><kbd>g</kbd></td>
+                            <td><strong>Toggle Debanding filter on/off (with OSD status)</strong></td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+                        <tr data-cat="video">
+                            <td><kbd>A</kbd></td>
+                            <td><strong>Cycle Video Aspect Ratio override</strong> (16:9 &rarr; 4:3 &rarr; 2.35:1 &rarr; Original)</td>
                             <td><span class="badge-cat">Video</span></td>
                         </tr>
                         <tr data-cat="video">
@@ -852,6 +872,11 @@
                         <tr data-cat="window">
                             <td><kbd>Right Click</kbd> / <kbd>g</kbd> <kbd>m</kbd></td>
                             <td>Open Rich Context Menu</td>
+                            <td><span class="badge-cat">Window</span></td>
+                        </tr>
+                        <tr data-cat="window">
+                            <td><kbd>Alt</kbd> + <kbd>p</kbd> / <kbd>F9</kbd></td>
+                            <td>Open Profile Selector interactive menu</td>
                             <td><span class="badge-cat">Window</span></td>
                         </tr>
                         <tr data-cat="window">
@@ -888,13 +913,16 @@ d3d11-flip=yes
 d3d11-exclusive-fs=no
 hwdec=auto-safe
 hwdec-extra-frames=16
+video-sync=display-resample
 deband=yes
+dither-depth=auto
 temporal-dither=yes
 sigmoid-upscaling=yes
 correct-downscaling=yes
 
 ### HDR & Dolby Vision
 target-colorspace-hint=yes
+target-contrast=auto
 tone-mapping=auto
 hdr-compute-peak=auto
 gamut-mapping-mode=auto
@@ -1011,7 +1039,7 @@ sub-margin-y=36</code></pre>
                         <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
                         <li><strong><code>hdr_badge.lua</code>, <code>resume_indicator.lua</code>, & <code>pause_notify.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart duration formatting.</li>
-                        <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 6s grace period, 2.5s native OSD warning, and instant seek/playback abort safeguards.</li>
+                        <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
                         <li><strong>Engine Architecture & Subtitles</strong> — 400MB demuxer fast-seeking cache (with 200MB back-cache, 25s readahead, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>

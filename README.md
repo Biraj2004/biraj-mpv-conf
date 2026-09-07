@@ -286,10 +286,11 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
-- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays, preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=150`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
+- **Display Frame Pacing & Smooth Motion (`video-sync=display-resample`)**: Resamples audio to match display refresh rate timings, completely eliminating judder, frame drops, and micro-stutters during camera pans.
+- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays with optimal dynamic range (`target-contrast=auto`), preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=150`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
-- **Debanding & Temporal Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `temporal-dither=yes`).
+- **Debanding & Dithering**: Eliminates color banding artifacts and gradient compression in dark scenes, anime, and compressed web video streams (`deband=yes`, `dither-depth=auto`, `temporal-dither=yes`). Toggle on-the-fly with <kbd>g</kbd>.
 - **High-Fidelity Scaling**: Sigmoid upscaling and correct color-space downscaling algorithms for sharp playback without ringing artifacts.
 
 > [!NOTE]
@@ -330,15 +331,24 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Dedicated Image Viewer Mode (`[Image]`)**: Automatically converts mpv into an image viewer with cursor-centric mouse zoom (<kbd>Wheel Up/Down</kbd>), image recentering (<kbd>0</kbd>), and infinite display duration.
 
 ### Graceful Auto-Exit at End of Media ([`auto_exit_eof.lua`](scripts/auto_exit_eof.lua))
-- **6-Second Grace Period**: When a video or playlist finishes, mpv pauses cleanly on the last frame for 6 seconds instead of quitting abruptly or remaining indefinitely on a black screen.
-- **Top-Left Native OSD Warning**: During the final 2.5 seconds, displays a native pillbox OSD prompt (**`Exiting...`**) styled to match `mpv.conf`, alerting you before closure.
+- **4-Second Grace Period**: When a video or playlist finishes, mpv pauses cleanly on the last frame for a snappy 4 seconds instead of quitting abruptly or remaining indefinitely on a black screen.
+- **Top-Left Native OSD Warning**: During the final 2.0 seconds, displays a native pillbox OSD prompt (**`Exiting...`**) styled to match `mpv.conf`, alerting you before closure.
+- **Automatic Watch-Later Reset**: Reaching media completion (within the final 10.0 seconds or at EOF) automatically clears the watch-later resume point, ensuring that re-opening a finished video starts fresh from `0:00` instead of reopening at a frozen black screen.
 - **Instant Abort on Interaction**: Pressing <kbd>←</kbd> (rewind), scrubbing backwards, unpausing (<kbd>Space</kbd>), or loading new media immediately aborts the countdown and wipes the warning.
 - **Multi-File & Loop Awareness**: Never exits between playlist episodes (only triggers on the final file), respects `loop-file` / `loop-playlist`, and ignores idle launches. Configurable via [`script-opts/auto_exit_eof.conf`](script-opts/auto_exit_eof.conf).
 
+### On-Screen Resume Notification ([`resume_indicator.lua`](scripts/resume_indicator.lua))
+- **Theme-Matched Native OSD Notification**: Displays a clean, non-intrusive OSD badge (**`Resuming: (14:22 / 24:00)`**) whenever an unfinished video is opened and resumed from where you left off.
+- **Smart Startup Filtering**: Automatically suppresses notifications for fresh starts within the first 5 seconds (`min_resume_time = 5.0`), and suppresses notifications when restoring near the very end of media (within 10 seconds of duration). Configurable via [`script-opts/resume_indicator.conf`](script-opts/resume_indicator.conf).
+
 ### Persistent On-Screen Pause Notification ([`pause_notify.lua`](scripts/pause_notify.lua))
 - **Theme-Matched Native OSD Notification**: Displays a clean, non-intrusive top-left OSD badge (**`Paused at hr:min:sec / total time`**) styled with MPV's native dark translucent background box (`osd-border-style=background-box`, `osd-back-color=0/0.5`, `osd-font-size=26`, `osd-shadow-offset=4`).
+- **Dynamic Collision Avoidance (Zero Overlapping)**: Uses a dedicated ASS overlay channel (`ass-events`) so that mpv's native OSD channel remains completely free. Whenever another native or script message appears (volume adjustment, mute, seek timeline, audio/subtitle tracks, audio filter toggles like `cycle-values af`, speed, screenshot, ab-loop), that message takes mpv's standard top position (`y=16`), and "Paused at..." dynamically shifts down underneath it.
+- **Proportional Multi-Line Spacing**: Instead of an oversized 2.0x gap, each extra line adds `fs + 4` (30px), shifting down by 70px for 2-line messages (e.g. subtitles, audio filters) with an exact, uniform ~8px visual gap, completely eliminating overlapping without awkward voids.
+- **Cross-State Lifetime Tracking ("Seek Then Pause")**: Seeking during active playback and immediately pausing renders the pause notification shifted cleanly underneath the lingering seek message, then smoothly returns to the top once that message fades away.
+- **Live Dynamic Timestamp While Seeking**: Seeking via arrow keys while paused dynamically updates the timestamp in real time (`00:15 / 00:24`) while staying shifted below the seekbar.
+- **Automatic Repositioning Back to Top**: As soon as any active top OSD message expires (plus a 0.10s safety buffer), the pause notification smoothly returns to the top slot (`y=16`).
 - **Smart Duration Formatting**: Automatically formats as `HH:MM:SS` for videos 1 hour or longer (e.g. `Paused at 00:08:27 / 01:23:20`), and `MM:SS` for videos under 1 hour (e.g. `Paused at 08:27 / 43:40`). Live streams cleanly display elapsed time.
-- **Continuous Persistence on Pause**: Unlike MPV's default 2.5-second transient pause message, `pause_notify` remains visible continuously for as long as playback is paused, and dynamically updates if you seek while paused.
 - **Instant Clean Dismissal on Resume**: The exact millisecond playback resumes, the OSD message vanishes with zero lingering delay or play icon flash.
 - **Flexible User Preference**: Independent on/off switches in [`script-opts/pause_notify.conf`](script-opts/pause_notify.conf) (`enable=yes/no`) and [`script-opts/pause_indicator_lite.conf`](script-opts/pause_indicator_lite.conf) (`enable=yes/no`) let users choose between the top-left OSD notification, the center overlay rectangles, both, or neither.
 
@@ -383,7 +393,7 @@ biraj-mpv-conf/
 ├── fonts/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
-│   ├── auto_exit_eof.lua     # Graceful auto-exit at end of media with 6s grace & 2.5s OSD warning
+│   ├── auto_exit_eof.lua     # Graceful auto-exit at end of media with 4s grace & 2s OSD warning
 │   ├── cycle_audio.lua       # Zero-lag VLC & MPV audio / subtitle cycler with anti-spam debouncing
 │   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
@@ -457,6 +467,7 @@ biraj-mpv-conf/
 | :--- | :--- |
 | <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) *(or <kbd>_</kbd> / <kbd>#</kbd>)* | Cycle audio tracks forward / backward *(VLC & MPV standard, zero-lag debounced)* |
 | <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Audio Normalization** (`dynaudnorm`) |
+| <kbd>Ctrl</kbd> + <kbd>[</kbd> / <kbd>Ctrl</kbd> + <kbd>]</kbd> | Adjust Audio delay (&minus;100ms / +100ms) |
 | <kbd>↑</kbd> / <kbd>↓</kbd> *(or Media Vol Up/Down)* | Volume up / down (+5% / -5%) |
 | <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
 | <kbd>Ctrl</kbd> + <kbd>a</kbd> | Open Native File Dialog to add Audio track |
@@ -467,6 +478,7 @@ biraj-mpv-conf/
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) *(or <kbd>j</kbd> / <kbd>J</kbd>)* | Cycle subtitle tracks forward / backward *(VLC & MPV standard, includes Off/None, zero-lag)* |
+| <kbd>z</kbd> / <kbd>Shift</kbd> + <kbd>z</kbd> (<kbd>Z</kbd>) | Adjust Subtitle delay (&minus;100ms / +100ms) |
 | <kbd>r</kbd> | Raise subtitle position up (`sub-pos -1`) |
 | <kbd>t</kbd> | Move subtitle position down (`sub-pos +1`) |
 | <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
@@ -478,7 +490,8 @@ biraj-mpv-conf/
 | :--- | :--- |
 | <kbd>l</kbd> | **Toggle Dynamic Format Badge (DV / HDR10+ / HDR / SDR)** |
 | <kbd>Ctrl</kbd> + <kbd>y</kbd> | **Cycle Streaming Quality (*720p → 1080p → 1440p → Best*)** |
-| <kbd>d</kbd> | Toggle Debanding filter on/off |
+| <kbd>g</kbd> | **Toggle Debanding filter on/off (with OSD status)** |
+| <kbd>A</kbd> | **Cycle Video Aspect Ratio override (*16:9 → 4:3 → 2.35:1 → Original*)** |
 | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
 | <kbd>Alt</kbd> + <kbd>h</kbd> | Cycle HDR Tone-Mapping curves (*Auto, BT.2390, Spline, Reinhard, Clip*) |
 | <kbd>s</kbd> | Take Screenshot (saved to `~/Pictures/MPV-Screenshots/`) |
@@ -493,8 +506,7 @@ biraj-mpv-conf/
 | <kbd>Esc</kbd> | Exit Fullscreen |
 | <kbd>Tab</kbd> | Cycle ModernZ OSC visibility |
 | <kbd>g</kbd> <kbd>m</kbd> | Open GUI menu |
-| <kbd>Ctrl</kbd> + <kbd>p</kbd> | **Open Profile Selector interactive menu** |
-| <kbd>Alt</kbd> + <kbd>p</kbd> | **Apply `[high-quality]` EWA Lanczos scaling profile** |
+| <kbd>Alt</kbd> + <kbd>p</kbd> / <kbd>F9</kbd> | **Open Profile Selector interactive menu** |
 | <kbd>Ctrl</kbd> + <kbd>o</kbd> | Open Native File Dialog to load Media file(s) |
 
 ---
@@ -652,7 +664,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 25ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
   - **`hdr_badge.lua`, `resume_indicator.lua`, & `pause_notify.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart file-duration hour formatting.
-  - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 6s grace period, 2.5s native OSD warning, and instant seek/playback abort safeguards.
+  - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
   - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.

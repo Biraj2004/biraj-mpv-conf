@@ -6,7 +6,7 @@
     Features:
     - Follows the exact native OSD styling of biraj-mpv-conf (Subtitles/Audio/Playlist format).
     - Displays: "Resuming: (14:22 / 24:00)" or "Resuming: (14:22)"
-    - Automatically ignores fresh file starts (0:00 to 0:02).
+    - Automatically ignores fresh file starts (first 5 seconds).
     - Only triggers once on initial file load restoration; never triggers during manual seeks.
 --]]
 
@@ -16,7 +16,7 @@ local options = require 'mp.options'
 local opts = {
     enable = true,
     duration = 2.5,          -- OSD display duration in seconds (matches osd-duration)
-    min_resume_time = 3.0,   -- Minimum position in seconds to be considered a resume (ignores starts from beginning)
+    min_resume_time = 5.0,   -- Minimum position in seconds to be considered a resume (ignores starts from beginning)
     show_duration = true,    -- Include total duration e.g. "Resuming: (14:22 / 24:00)"
 }
 
@@ -44,7 +44,8 @@ local function check_and_notify_resume()
     if duration <= 0 then return end
 
     local time_pos = mp.get_property_number("time-pos", 0)
-    if time_pos >= opts.min_resume_time then
+    -- Ignore fresh starts and ignore files restoring near the very end (last 10 seconds)
+    if time_pos >= opts.min_resume_time and (duration - time_pos) > 10.0 then
         has_checked_resume = true
         local cur_str = format_time(time_pos)
         local msg_text
