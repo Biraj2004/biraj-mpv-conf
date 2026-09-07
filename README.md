@@ -286,7 +286,7 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
-- **Display Frame Pacing & Smooth Motion (`video-sync=display-resample`)**: Resamples audio to match display refresh rate timings, completely eliminating judder, frame drops, and micro-stutters during camera pans.
+- **Hardware Direct3D 11 Flip Presentation (`d3d11-flip=yes`)**: Bypasses legacy DWM composition layers for tear-free, flicker-free presentation with 0 dropped frames and instant Alt-Tab.
 - **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays with optimal dynamic range (`target-contrast=auto`), preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=150`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
