@@ -378,7 +378,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 
 ### High-Speed Streaming & Extended Format Support
 - Integrated **`yt-dlp`** hook with dedicated [`yt-dlp.conf`](yt-dlp.conf) for 99% reliable YouTube and web streaming (client spoofing, network retries, segment acceleration, and optional browser cookie authentication).
-- **Dynamic Protocol Caching & Smart Stream Buffer**: 500 MiB forward network cache + 200 MiB back-buffer + 25s deep readahead for online streams (HTTPS/HTTP/yt-dlp/Stremio), alongside 260 MiB / 110 MiB local zero-wear RAM caching (`cache-on-disk=no`, `demuxer-seekable-cache=yes`, `cache-pause=yes`, `cache-pause-wait=2.5`) for instantaneous seek responsiveness and jitter-free auto-pause recovery.
+- **Dynamic Protocol Caching & Smart Stream Buffer**: 425 MiB forward network cache + 175 MiB back-buffer + 20s deep readahead for online streams (HTTPS/HTTP/yt-dlp/Stremio), alongside 250 MiB / 100 MiB local zero-wear RAM caching (`cache-on-disk=no`, `demuxer-seekable-cache=yes`, `cache-pause=yes`, `cache-pause-wait=2.5`) for instantaneous seek responsiveness and jitter-free auto-pause recovery.
 - **Stremio & External Player Integration ([`Stremio-Play-in-MPV/`](Stremio-Play-in-MPV/))**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) and complete documentation in [`Stremio-Play-in-MPV/README.md`](Stremio-Play-in-MPV/README.md) to seamlessly add *"Play in MPV"* into Stremio desktop.
 - **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, 2160p 4K UHD, or Uncapped Best**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-2160p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
@@ -606,7 +606,7 @@ In [`mpv.conf`](mpv.conf), you can activate optional profiles on-demand:
 ```
 
 ### 2. Dynamic Protocol Caching (Online Streaming & Stremio)
-Online streams (`https://`, `http://`, and `ytdl://`) automatically inherit the `[protocol.https]` profile, expanding the demuxer buffer to **500 MiB** with **25 seconds of readahead** and **10s hysteresis**, ensuring uninterrupted streaming even during network fluctuations. Local media remains lean (260 MiB) to conserve system RAM.
+Online streams (`https://`, `http://`, and `ytdl://`) automatically inherit the `[protocol.https]` profile, expanding the demuxer buffer to **425 MiB** with **20 seconds of readahead** and **8s hysteresis**, ensuring uninterrupted streaming even during network fluctuations. Local media remains lean (250 MiB) to conserve system RAM.
 
 ### 3. Changing Hardware Acceleration
 In [`mpv.conf`](mpv.conf):
@@ -679,7 +679,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`hdr_badge.lua`, `resume_indicator.lua`, & `pause_notify.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart file-duration hour formatting.
   - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
-  - **Performance & Subtitle Architecture**: 260MB–500MB dynamic RAM seek buffer (with up to 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Performance & Subtitle Architecture**: 250MB–425MB dynamic RAM seek buffer (with up to 175MB back-cache, 20s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
 ### Upstream Open-Source Projects
