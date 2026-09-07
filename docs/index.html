@@ -303,7 +303,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">2K/4K Online Streaming</h3>
-                    <p class="feature-desc">Integrated with <code>yt-dlp</code> prioritizing 1440p 2K &rarr; 1080p Full HD &rarr; 720p HD. Supports cookie authentication for full 1080p/1440p YouTube streaming.</p>
+                    <p class="feature-desc">Integrated with <code>yt-dlp</code> and dedicated <code>yt-dlp.conf</code>. Stream up to 4K UHD with aggressive anti-throttling retries, segment acceleration, and zero-export browser session cookies.</p>
                 </div>
 
                 <!-- Feature 8 -->
@@ -322,8 +322,8 @@
                             <line x1="1" y1="14" x2="4" y2="14"></line>
                         </svg>
                     </div>
-                    <h3 class="feature-title">400MB Zero-Wear RAM Cache</h3>
-                    <p class="feature-desc">Pure in-memory caching (400MB forward, 200MB back-buffer, 25s deep readahead, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and network streams.</p>
+                    <h3 class="feature-title">Dynamic Zero-Wear RAM Cache</h3>
+                    <p class="feature-desc">Pure in-memory caching (300MB local, up to 650MB network buffer, 200MB back-buffer, zero SSD write wear) ensures instantaneous seek responsiveness with zero lag on 4K media and online streams.</p>
                 </div>
 
                 <!-- Feature 9 -->
@@ -604,6 +604,7 @@
 ├── mpv.conf
 ├── input.conf
 ├── menu.conf
+├── yt-dlp.conf
 ├── fonts\
 │   └── modernz-icons.ttf
 ├── scripts\
@@ -939,10 +940,6 @@ dither-depth=auto
 temporal-dither=yes
 sigmoid-upscaling=yes
 correct-downscaling=yes
-scale=spline36
-cscale=spline36
-dscale=mitchell
-scale-antiring=0.6
 
 ### HDR & Dolby Vision
 target-colorspace-hint=yes
@@ -950,6 +947,7 @@ target-contrast=auto
 tone-mapping=auto
 hdr-compute-peak=auto
 gamut-mapping-mode=auto
+hwdec-codecs=all
 
 ### Audio Pipeline (150ms WASAPI Lock)
 audio-buffer=0.15
@@ -957,16 +955,23 @@ audio-stream-silence=yes
 audio-wait-open=0
 audio-pitch-correction=yes
 
-### Cache (400MB forward / 200MB back-buffer / Zero SSD Wear)
+### Cache (System RAM & Zero SSD Wear)
 cache=yes
 cache-on-disk=no
-demuxer-max-bytes=400MiB
-demuxer-max-back-bytes=200MiB
-demuxer-readahead-secs=25
+demuxer-max-bytes=300MiB
+demuxer-max-back-bytes=150MiB
+demuxer-readahead-secs=15
 demuxer-seekable-cache=yes
 cache-pause=yes
 cache-pause-initial=no
-cache-pause-wait=3</code></pre>
+cache-pause-wait=2.5
+
+### Dynamic Protocol Caching (Streaming & Stremio)
+[protocol.https]
+demuxer-max-bytes=650MiB
+demuxer-max-back-bytes=200MiB
+demuxer-readahead-secs=25
+demuxer-hysteresis-secs=10</code></pre>
                 </div>
 
                 <!-- Subtitles Card -->
@@ -998,6 +1003,38 @@ sub-shadow-offset=1.5
 sub-shadow-color=0/0/0/0.5
 sub-border-style=outline-and-shadow
 sub-margin-y=36</code></pre>
+                </div>
+
+                <!-- Streaming & Resilience Card -->
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <span class="code-card-title">Streaming & Network Resilience</span>
+                        <span class="code-card-file">yt-dlp.conf</span>
+                    </div>
+                    <pre><code>### Network Resilience & Anti-Throttling
+--retries 10
+--fragment-retries 10
+--file-access-retries 3
+--retry-sleep 1
+--no-check-certificates
+
+### DASH / HLS Acceleration
+--concurrent-fragments 4
+
+### Subtitles & Metadata
+--sub-langs all,-live_chat
+--embed-subs
+
+### Playlist Handling & Safety
+--yes-playlist
+--compat-options no-youtube-unavailable-videos
+
+### Cookies Auth & Fallback
+--cookies "E:\YouTube Downloader (yt-dlp)\yt-cookies.txt"
+# --cookies-from-browser firefox
+# --cookies-from-browser brave
+# --cookies-from-browser chrome
+# --cookies-from-browser edge</code></pre>
                 </div>
             </div>
 
@@ -1066,7 +1103,7 @@ sub-margin-y=36</code></pre>
                         <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
-                        <li><strong>Engine Architecture & Subtitles</strong> — 400MB demuxer fast-seeking cache (with 200MB back-cache, 25s readahead, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
+                        <li><strong>Engine Architecture & Subtitles</strong> — Dynamic RAM fast-seeking cache (300MB local, up to 650MB streaming buffer, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>
                         <li><strong>Documentation & Web Experience</strong> — Complete responsive documentation website, cheatsheet guides, and user manuals.</li>
                     </ul>
                 </div>

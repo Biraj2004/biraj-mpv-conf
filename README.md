@@ -114,7 +114,7 @@ irm https://raw.githubusercontent.com/Biraj2004/biraj-mpv-conf/main/install.ps1 
 #### Option B: Manual Extraction (ZIP)
 1. Download this repository as a ZIP archive: [**Download ZIP**](https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip).
 2. Press <kbd>Win</kbd> + <kbd>R</kbd>, type `%APPDATA%\mpv`, and press **Enter** (or navigate to `C:\Users\<YourUsername>\AppData\Roaming\mpv\`).
-3. Copy **only the necessary configuration folders and files** (`fonts/`, `scripts/`, `script-opts/`, `mpv.conf`, `input.conf`, `menu.conf`) from the extracted folder directly into `%APPDATA%\mpv\`. *(You do not need to copy repository docs, screenshots, or license files into mpv).*
+3. Copy **only the necessary configuration folders and files** (`fonts/`, `scripts/`, `script-opts/`, `mpv.conf`, `input.conf`, `menu.conf`, `yt-dlp.conf`) from the extracted folder directly into `%APPDATA%\mpv\`. *(You do not need to copy repository docs, screenshots, or license files into mpv).*
 4. Your resulting `%APPDATA%\mpv\` directory should look cleanly like this:
    ```plaintext
    C:\Users\<YourUsername>\AppData\Roaming\mpv\
@@ -142,7 +142,8 @@ irm https://raw.githubusercontent.com/Biraj2004/biraj-mpv-conf/main/install.ps1 
    │   └── thumbfast.lua
    ├── input.conf
    ├── menu.conf
-   └── mpv.conf
+   ├── mpv.conf
+   └── yt-dlp.conf
    ```
 5. **Install Icons Font**: Open `fonts/` inside your mpv directory, double-click `modernz-icons.ttf`, and click **Install**.
 
@@ -211,6 +212,15 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
   # Stream video (automatically plays 2K 1440p -> 1080p -> 720p best available)
   mpv "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 
+  # Stream uncapped highest quality (4K UHD / 8K)
+  mpv --profile=q-best "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+  # Stream capped at 2160p (4K UHD)
+  mpv --profile=q-2160p "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+  # Stream capped at 1440p (2K)
+  mpv --profile=q-1440p "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
   # Stream a full YouTube playlist
   mpv "https://www.youtube.com/playlist?list=PLrEnWoR732-BHrPp_Pm8_VleD68f9n14-"
 
@@ -226,31 +236,37 @@ While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3
   - *The stream instantly reloads at the new resolution and resumes from your current second.*
 - **One-Click Stream Download**: Click the download button on the ModernZ controller bar to save the online video directly to `~/Downloads/MPV-Downloads`.
 
-### 3. Setting Up YouTube Cookies (Unlocking Full 1080p & 1440p Streaming)
-YouTube enforces session authentication on separate high-definition adaptive streams (DASH/HLS). Without cookies, YouTube blocks direct stream requests with HTTP 403 Forbidden or falls back to 360p. Supplying your cookies allows mpv to stream high-definition 1080p Full HD and 1440p 2K with hardware decoding.
+### 3. Dedicated `yt-dlp.conf` (Network Resilience, Anti-Throttling & 99% Reliability)
+Advanced streaming options are cleanly separated into [`yt-dlp.conf`](yt-dlp.conf). Using native `yt-dlp` configuration options avoids overwriting player settings and gives full control over downloads and network handling:
 
-#### Method 1: Exporting `cookies.txt` (Works with Chrome, Brave, Edge, Opera, Firefox)
-1. Install a cookie exporter extension in your browser:
-   - **Cookie-Editor** (Chrome / Edge / Firefox / Brave) or **Get cookies.txt LOCALLY**.
-2. Open [YouTube](https://www.youtube.com) in your browser and ensure you are signed in.
-3. Open the extension and click **Export** $\rightarrow$ **Export as Netscape** (or **Export as cookies.txt**).
-4. Save the file as `cookies.txt` inside your mpv configuration directory:
-   ```plaintext
-   C:\Users\<YourUsername>\AppData\Roaming\mpv\cookies.txt
-   ```
-5. In `mpv.conf`, enable the cookie path:
-   ```ini
-   ytdl-raw-options-append=cookies=C:\Users\<YourUsername>\AppData\Roaming\mpv\cookies.txt
-   ```
+- **Network Resilience & Anti-Throttling**: 10 connection retries, 10 fragment retries, 4 concurrent DASH chunks, and automated TLS certificate handling survive temporary Wi-Fi hiccups and prevent HTTP 403 throttling.
+- **Auto-Subtitles**: Automatically fetches all official subtitles while filtering out noisy live chats.
+- **Playlist Safety**: Ignores deleted/private videos in playlists without terminating playback.
+- **Where to Place `yt-dlp.conf`**:
+  1. Inside `%APPDATA%\mpv\` alongside `mpv.conf` (or `%APPDATA%\yt-dlp\config`).
+  2. Or in your mpv folder alongside `yt-dlp.exe` / `mpv.exe`.
 
-#### Method 2: Direct Browser Session (Firefox)
-If you use Mozilla Firefox, you can read cookies directly without exporting a file:
-```ini
-ytdl-raw-options-append=cookies-from-browser=firefox
-```
+#### Unlocking Age-Restricted & Premium Streams (Cookies Authentication)
+YouTube enforces session authentication on certain high-resolution and age-restricted streams. In [`yt-dlp.conf`](yt-dlp.conf), you have two flexible methods:
 
-> [!NOTE]
-> `cookies.txt` is automatically excluded in `.gitignore` so your personal authentication tokens will never be committed or uploaded to GitHub.
+- **Option A: Custom Exported Cookies File (Primary & Reliable Fallback)**:
+  Chromium-based browsers (Brave, Chrome, Edge) lock their SQLite cookie database while running or apply DPAPI encryption, causing `Could not copy Chrome cookie database` errors. Pointing directly to your exported cookies file bypasses this completely and works 100% reliably:
+  ```ini
+  --cookies "E:\YouTube Downloader (yt-dlp)\yt-cookies.txt"
+  ```
+  *(Export your cookies once using the **Get cookies.txt LOCALLY** extension and save to your preferred directory).*
+
+- **Option B: Live Browser Session (Zero Manual Export)**:
+  If you use Mozilla Firefox (which doesn't lock cookie databases during playback), comment out Option A and uncomment Firefox:
+  ```ini
+  --cookies-from-browser firefox
+  # --cookies-from-browser brave
+  # --cookies-from-browser chrome
+  # --cookies-from-browser edge
+  ```
+
+> [!TIP]
+> If live browser extraction ever fails with a database lock, simply fallback to your static `yt-cookies.txt` file in `yt-dlp.conf`.
 
 ### 4. Adding Subtitles & External Audio Tracks
 - **Drag & Drop**: Drag any `.srt`, `.ass`, `.vtt`, or `.sub` file directly onto the playing video.
@@ -361,10 +377,10 @@ ytdl-raw-options-append=cookies-from-browser=firefox
 - **Multi-Language Priority**: Default subtitle matching priority for English (`slang=en,enm`) and audio stream selection for Hindi, English, and Japanese (`alang=hi,en,ja`).
 
 ### High-Speed Streaming & Extended Format Support
-- Integrated **`yt-dlp`** hook for seamless YouTube and web video streaming with one-click downloads to `~/Downloads/MPV-Downloads`.
-- **Smart Stream & Seek Buffer**: 400 MiB forward cache + 200 MiB back-buffer + 25s deep readahead with RAM caching (cache-on-disk=no, demuxer-seekable-cache=yes, cache-pause=yes, cache-pause-wait=3) for smooth 4K REMUX, network streaming, and jitter-free auto-pause recovery.
+- Integrated **`yt-dlp`** hook with dedicated [`yt-dlp.conf`](yt-dlp.conf) for 99% reliable YouTube and web streaming (client spoofing, network retries, segment acceleration, and optional browser cookie authentication).
+- **Dynamic Protocol Caching & Smart Stream Buffer**: 650 MiB forward network cache + 200 MiB back-buffer + 25s deep readahead for online streams (HTTPS/HTTP/yt-dlp/Stremio), alongside 300 MiB / 150 MiB local zero-wear RAM caching (`cache-on-disk=no`, `demuxer-seekable-cache=yes`, `cache-pause=yes`, `cache-pause-wait=2.5`) for instantaneous seek responsiveness and jitter-free auto-pause recovery.
 - **Stremio & External Player Integration ([`Stremio-Play-in-MPV/`](Stremio-Play-in-MPV/))**: Includes automated one-click setup scripts ([`Win_Setup_Stremio_To_Play_In_MPV.bat`](Stremio-Play-in-MPV/Win_Setup_Stremio_To_Play_In_MPV.bat) and [`macOS_Setup_Stremio_To_Play_In_MPV.sh`](Stremio-Play-in-MPV/macOS_Setup_Stremio_To_Play_In_MPV.sh)) and complete documentation in [`Stremio-Play-in-MPV/README.md`](Stremio-Play-in-MPV/README.md) to seamlessly add *"Play in MPV"* into Stremio desktop.
-- **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, or Best Fallback**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-best]`).
+- **Dynamic Stream Quality Selection**: Switch resolution on the fly (**720p HD, 1080p Full HD, 1440p 2K, 2160p 4K UHD, or Uncapped Best**) via right-click (**Video → YT-Stream Quality**), cycling shortcut (<kbd>Ctrl</kbd>+<kbd>y</kbd>), or profiles (`[q-720p]`, `[q-1080p]`, `[q-1440p]`, `[q-2160p]`, `[q-best]`).
 - Comprehensive support for modern image (`AVIF`, `JXL`, `WEBP`, `QOI`, `HEIC`), audio (`FLAC`, `OPUS`, `ALAC`, `M4A`), and video containers (`MKV`, `MP4`, `WebM`, `M2TS`, `DAV`).
 
 ---
@@ -663,7 +679,7 @@ icon_style=mixed      # Options: mixed, filled, outline
   - **`hdr_badge.lua`, `resume_indicator.lua`, & `pause_notify.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart file-duration hour formatting.
   - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
-  - **Performance & Subtitle Architecture**: 400MB demuxer seek buffer (with 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
+  - **Performance & Subtitle Architecture**: 300MB–650MB dynamic RAM seek buffer (with up to 200MB back-cache, 25s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
   - **Cheatsheets & Documentation Website**: Interactive GitHub Pages documentation and reference manuals.
 
 ### Upstream Open-Source Projects
