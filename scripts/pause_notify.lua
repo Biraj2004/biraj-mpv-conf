@@ -151,6 +151,69 @@ local function trigger_shift(duration, lines)
     end
 end
 
+-- Estimate visual lines occupied by text in mpv's native OSD,
+-- accurately accounting for both explicit newlines (\n, \N) and libass word-wrapping based on window width.
+local function estimate_text_lines(text)
+    if not text or #text == 0 then return 1 end
+
+    local osd_w, _ = mp.get_osd_size()
+    if not osd_w or osd_w <= 0 then
+        local dims = mp.get_property_native("osd-dimensions")
+        osd_w = dims and dims.w or 1280
+    end
+    local mx = mp.get_property_number("osd-margin-x", 16)
+    local usable_w = math.max(200, osd_w - (mx * 2))
+    local fs = mp.get_property_number("osd-font-size", 26)
+
+    -- In libass / mpv native OSD, character width averages ~0.55 * fs for proportional fonts.
+    local char_w = fs * 0.55
+    local max_line_chars = math.max(20, math.floor(usable_w / char_w))
+
+    -- Normalize explicit linebreaks (\N, \n, \r\n)
+    local clean_text = text:gsub("\\N", "\n"):gsub("\\n", "\n"):gsub("\r\n", "\n")
+    local total_lines = 0
+
+    for paragraph in clean_text:gmatch("([^\n]*)\n?") do
+        if #paragraph > 0 then
+            local cur_line_len = 0
+            local p_lines = 1
+            for token in paragraph:gmatch("%S+%s*") do
+                local t_len = #token
+                if cur_line_len + t_len <= max_line_chars then
+                    cur_line_len = cur_line_len + t_len
+                else
+                    if cur_line_len > 0 then
+                        p_lines = p_lines + 1
+                        cur_line_len = 0
+                    end
+                    while t_len > max_line_chars do
+                        p_lines = p_lines + 1
+                        t_len = t_len - max_line_chars
+                    end
+                    cur_line_len = t_len
+                end
+            end
+            total_lines = total_lines + p_lines
+        end
+    end
+
+    return math.max(1, total_lines)
+end
+
+-- Predictively estimate screenshot lines before the file is finished writing to disk.
+-- Screenshot notifications print "Screenshot: '<full_path>'", which almost universally
+-- wraps to 2+ lines on standard desktop/laptop displays.
+local function estimate_screenshot_lines()
+    local path = mp.get_property("path") or ""
+    local title = mp.get_property("media-title") or mp.get_property("filename") or ""
+    local dir = mp.get_property("screenshot-directory") or "~/Pictures/MPV-Screenshots"
+    local dir_expanded = dir:gsub("^~", "C:/Users/user")
+    local name = (#title > 0) and title or ((#path > 0) and path or "Screenshot")
+    local predicted_text = string.format("Screenshot: '%s/%s-(00_00_00.000)-0001.jpg'", dir_expanded, name)
+    local lines = estimate_text_lines(predicted_text)
+    return math.max(2, lines)
+end
+
 -- Listen for cplayer log messages to detect show-text, screenshot, show-progress, and native OSD commands
 mp.enable_messages("trace")
 
@@ -158,19 +221,23 @@ mp.register_event("log-message", function(e)
     if not opts.enable then return end
     if e.prefix ~= "cplayer" then return end
 
+    -- Detect screenshot completion or progress log: "Screenshot: '...'" or "Starting screenshot: '...'"
+    local shot_path = e.text:match("^Screenshot: '(.-)'") or e.text:match("^Starting screenshot: '(.-)'")
+    if shot_path then
+        local full_msg = "Screenshot: '" .. shot_path .. "'"
+        local lines = math.max(2, estimate_text_lines(full_msg))
+        trigger_shift(nil, lines)
+        return
+    end
+
     -- Detect show-text (e.g., from mp.osd_message in scripts or user show-text commands)
     if e.text:find("Run command: show%-text") then
         local dur_str = e.text:match('duration="(%d+)"')
         local duration = dur_str and (tonumber(dur_str) / 1000.0) or nil
 
-        -- Count multi-line text to shift accurately without excessive gap
+        -- Count visual lines accounting for explicit newlines and word wrapping
         local text = e.text:match('text="(.-)"') or e.text:match('text="([^"]*)"')
-        local lines = 1
-        if text then
-            for _ in text:gmatch("\\n") do lines = lines + 1 end
-            for _ in text:gmatch("\n") do lines = lines + 1 end
-            for _ in text:gmatch("\\N") do lines = lines + 1 end
-        end
+        local lines = estimate_text_lines(text)
         trigger_shift(duration, lines)
         return
     end
@@ -181,9 +248,10 @@ mp.register_event("log-message", function(e)
         return
     end
 
-    -- Detect screenshot command
+    -- Detect screenshot command invocation (immediate anticipatory shift)
     if e.text:find("Run command: screenshot") then
-        trigger_shift()
+        local lines = estimate_screenshot_lines()
+        trigger_shift(nil, lines)
         return
     end
 
@@ -213,9 +281,10 @@ mp.register_event("log-message", function(e)
             cmd == "chapter-seek" or cmd == "playlist-play-index" or cmd == "playlist-shuffle"
         )) then
             local lines = 1
-            -- cycle-values on filters (af, vf) formats as 2 lines in mpv native OSD: "Audio filters:\n..."
+            -- cycle-values on filters (af, vf) formats as 2+ lines in mpv native OSD: "Audio filters:\n..."
             if cmd == "cycle-values" and (e.text:find('arg0="af"') or e.text:find('arg0="vf"')) then
-                lines = 2
+                local filter_val = e.text:match('arg1="([^"]*)"') or ""
+                lines = math.max(2, estimate_text_lines("Audio filters:\n" .. filter_val))
             end
             trigger_shift(nil, lines)
         end
