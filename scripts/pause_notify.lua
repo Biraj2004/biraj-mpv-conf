@@ -81,6 +81,7 @@ local function get_shift_amount(lines)
         return lines * opts.shift_offset
     end
     local fs = mp.get_property_number("osd-font-size", 26)
+    fs = (fs and fs > 0) and fs or 26
     -- Native mpv OSD with background-box occupies:
     -- line_height = font-size * 1.35 (libass line spacing) + 8px (background-box padding & separation gap)
     local line_height = math.floor(fs * 1.50) + 4
@@ -176,6 +177,7 @@ local function estimate_text_lines(text)
     local mx = mp.get_property_number("osd-margin-x", 16)
     local usable_w = math.max(400, osd_w - (mx * 2))
     local fs = mp.get_property_number("osd-font-size", 26)
+    fs = (fs and fs > 0) and fs or 26
 
     -- In libass / mpv native OSD, character width averages ~0.50 * fs for proportional fonts.
     local char_w = fs * 0.50
@@ -185,8 +187,10 @@ local function estimate_text_lines(text)
     local clean_text = text:gsub("\\N", "\n"):gsub("\\n", "\n"):gsub("\r\n", "\n")
     local total_lines = 0
 
-    for paragraph in clean_text:gmatch("([^\n]*)\n?") do
-        if #paragraph > 0 then
+    for paragraph in (clean_text .. "\n"):gmatch("(.-)\n") do
+        if #paragraph == 0 then
+            total_lines = total_lines + 1
+        else
             local cur_line_len = 0
             local p_lines = 1
             for token in paragraph:gmatch("%S+%s*") do
@@ -219,7 +223,8 @@ local function estimate_screenshot_lines()
     local path = mp.get_property("path") or ""
     local title = mp.get_property("media-title") or mp.get_property("filename") or ""
     local dir = mp.get_property("screenshot-directory") or "~/Pictures/MPV-Screenshots"
-    local dir_expanded = dir:gsub("^~", "C:/Users/user")
+    local home = os.getenv("USERPROFILE") or os.getenv("HOME") or "C:/Users/user"
+    local dir_expanded = dir:gsub("^~", home)
     local name = (#title > 0) and title or ((#path > 0) and path or "Screenshot")
     local predicted_text = string.format("Screenshot: '%s/%s-(00_00_00.000)-0001.jpg'", dir_expanded, name)
     local lines = estimate_text_lines(predicted_text)
