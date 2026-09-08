@@ -446,6 +446,9 @@ biraj-mpv-conf/
 
 ## Keyboard & Mouse Shortcuts
 
+> [!TIP]
+> **Keyboard Shortcuts Note**: In mpv, uppercase shortcuts (such as <kbd>N</kbd>, <kbd>K</kbd>, <kbd>A</kbd>, <kbd>B</kbd>, <kbd>V</kbd>) represent holding <kbd>Shift</kbd> while pressing that letter key (e.g. <kbd>Shift</kbd> + <kbd>n</kbd>).
+
 <div align="center">
 
 ![Keyboard & Mouse Shortcuts Cheat Sheet](keybindings-chart.jpg)
@@ -481,7 +484,7 @@ biraj-mpv-conf/
 | Shortcut | Action |
 | :--- | :--- |
 | <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) | Cycle audio tracks forward / backward *(VLC & MPV standard, zero-lag debounced)* |
-| <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Dialogue Clarity & Normalization** |
+| <kbd>y</kbd> / <kbd>Shift</kbd> + <kbd>n</kbd> (<kbd>N</kbd>) | **Toggle Night Mode Dialogue Clarity & Normalization** |
 | <kbd>Ctrl</kbd> + <kbd>[</kbd> / <kbd>Ctrl</kbd> + <kbd>]</kbd> | Adjust Audio delay (&minus;100ms / +100ms) |
 | <kbd>↑</kbd> / <kbd>↓</kbd> *(or Scroll Wheel)* | Volume up / down (+5% / -5%) |
 | <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
@@ -506,7 +509,7 @@ biraj-mpv-conf/
 | <kbd>l</kbd> | **Toggle Dynamic Format Badge (DV / HDR10+ / HDR / SDR)** |
 | <kbd>Ctrl</kbd> + <kbd>y</kbd> | **Cycle Streaming Quality (*720p → 1080p → 1440p → Best*)** |
 | <kbd>g</kbd> | **Toggle Debanding filter on/off (with OSD status)** |
-| <kbd>A</kbd> | **Cycle Video Aspect Ratio override (*16:9 → 4:3 → 2.35:1 → Original*)** |
+| <kbd>Shift</kbd> + <kbd>a</kbd> (<kbd>A</kbd>) | **Cycle Video Aspect Ratio override (*16:9 → 4:3 → 2.35:1 → Original*)** |
 | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
 | <kbd>Alt</kbd> + <kbd>h</kbd> | Cycle HDR Tone-Mapping curves (*Auto, BT.2390, Spline, Reinhard, Clip*) |
 | <kbd>s</kbd> | Take Screenshot (saved to `~/Pictures/MPV-Screenshots/`) |
@@ -600,10 +603,10 @@ graph TD
 
 ## Customization & Optional Profiles
 
-### 1. Optional Profiles (Night Audio)
-In [`mpv.conf`](mpv.conf), you can activate optional profiles on-demand:
+### 1. Optional Profiles (Night Audio & Dialogue Clarity)
+In [`mpv.conf`](mpv.conf), you can activate the dialogue clarity & night normalizer on-demand (or toggle on-the-fly via <kbd>N</kbd> / <kbd>y</kbd>):
 ```ini
-# To launch mpv with dynamic audio normalizer active:
+# To launch mpv with dialogue clarity & dynamic normalizer active:
 # mpv --profile=night-audio "movie.mkv"
 ```
 

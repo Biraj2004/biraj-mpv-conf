@@ -692,7 +692,7 @@
             <div class="section-header">
                 <div class="section-tag">Quick Reference</div>
                 <h2 class="section-title">Keyboard & Mouse Controls</h2>
-                <p class="section-subtitle">Search or filter through all essential playback shortcuts.</p>
+                <p class="section-subtitle">Search or filter through all essential playback shortcuts. <em>Note: Uppercase shortcuts (like <kbd>N</kbd>, <kbd>A</kbd>, <kbd>K</kbd>) indicate holding <kbd>Shift</kbd> + key.</em></p>
             </div>
 
             <!-- Search & Filter Controls -->
@@ -785,7 +785,7 @@
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
                         <tr data-cat="audio">
-                            <td><kbd>N</kbd> / <kbd>y</kbd></td>
+                            <td><kbd>y</kbd> / <kbd>Shift</kbd> + <kbd>n</kbd> <small class="text-muted">(or <kbd>N</kbd>)</small></td>
                             <td><strong>Toggle Night Mode Dialogue Clarity & Normalization</strong> (<code>highpass</code> + <code>equalizer</code> + <code>dynaudnorm</code>)</td>
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
@@ -854,7 +854,7 @@
                             <td><span class="badge-cat">Video</span></td>
                         </tr>
                         <tr data-cat="video">
-                            <td><kbd>A</kbd></td>
+                            <td><kbd>Shift</kbd> + <kbd>a</kbd> <small class="text-muted">(or <kbd>A</kbd>)</small></td>
                             <td><strong>Cycle Video Aspect Ratio override</strong> (16:9 &rarr; 4:3 &rarr; 2.35:1 &rarr; Original)</td>
                             <td><span class="badge-cat">Video</span></td>
                         </tr>
@@ -984,7 +984,12 @@ cache-pause-wait=0.5
 demuxer-max-bytes=425MiB
 demuxer-max-back-bytes=175MiB
 demuxer-readahead-secs=20
-demuxer-hysteresis-secs=4</code></pre>
+demuxer-hysteresis-secs=4
+
+### Night Mode & Dialogue Clarity Profile
+[night-audio]
+profile-desc=Dialogue Clarity & Dynamic Normalizer
+af=lavfi=[highpass=f=75,equalizer=f=2500:t=q:w=1.2:g=3.5,dynaudnorm=f=75:g=25:p=0.55]</code></pre>
                 </div>
 
                 <!-- Subtitles Card -->
