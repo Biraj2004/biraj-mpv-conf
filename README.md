@@ -337,8 +337,8 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - **PowerShell / WPF Native Dialogs** ([`open-file.lua`](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)): Seamlessly browse and open files (<kbd>Ctrl</kbd>+<kbd>O</kbd>), load external subtitles (<kbd>Ctrl</kbd>+<kbd>S</kbd>), or attach secondary audio tracks (<kbd>Ctrl</kbd>+<kbd>A</kbd>) using standard Windows File Explorer dialogs with natural ascending sort.
 
 ### Smart Dynamic Profiles & Audio Normalization
-- **Night Mode Audio Normalization (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time `dynaudnorm` filter balancing quiet dialogue and loud sound effects during late-night viewing.
-- **Ultra-Fast 100ms WASAPI Audio Buffer (`audio-buffer=0.10`)**: Fast buffer fill time on track switches while remaining 100% immune to audio underruns and crackles.
+- **Night Mode Audio Normalization & Dialogue Clarity (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time vocal presence enhancement (`equalizer`), low-end de-mudding (`highpass`), and dynamic compression (`dynaudnorm`) to balance quiet dialogue and loud sound effects during late-night viewing.
+- **Ultra-Fast 90ms WASAPI Audio Buffer (`audio-buffer=0.09`)**: Fast buffer fill time on track switches while remaining 100% immune to audio underruns and crackles.
 - **Zero-Delay Persistence Safeguards**: Any manual audio/subtitle delay applied to defective media is automatically isolated—never saved to resume files and reset to 0.000ms on the next video.
 - **Picture-in-Picture (`[Window-PiP]`)**: Automatically scales the OSC and enables a persistent progress bar when floating on-top in windowed mode.
 - **Auto-Pause on Minimize (`[Minimized]`)**: Automatically pauses video when the player window is minimized to conserve system resources.
@@ -480,8 +480,8 @@ biraj-mpv-conf/
 ### Audio & Night Mode
 | Shortcut | Action |
 | :--- | :--- |
-| <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) *(or <kbd>_</kbd> / <kbd>#</kbd>)* | Cycle audio tracks forward / backward *(VLC & MPV standard, zero-lag debounced)* |
-| <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Audio Normalization** (`dynaudnorm`) |
+| <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) | Cycle audio tracks forward / backward *(VLC & MPV standard, zero-lag debounced)* |
+| <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Dialogue Clarity & Normalization** |
 | <kbd>Ctrl</kbd> + <kbd>[</kbd> / <kbd>Ctrl</kbd> + <kbd>]</kbd> | Adjust Audio delay (&minus;100ms / +100ms) |
 | <kbd>↑</kbd> / <kbd>↓</kbd> *(or Scroll Wheel)* | Volume up / down (+5% / -5%) |
 | <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
