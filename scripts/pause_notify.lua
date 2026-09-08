@@ -76,16 +76,15 @@ end
 
 -- Calculate shift distance in pixels based on font size or custom config
 local function get_shift_amount(lines)
-    lines = lines or 1
+    lines = math.max(1, lines or 1)
     if opts.shift_offset > 0 then
-        return opts.shift_offset + (lines - 1) * math.floor(opts.shift_offset * 0.75)
+        return lines * opts.shift_offset
     end
     local fs = mp.get_property_number("osd-font-size", 26)
-    -- In mpv native OSD with background-box, first line height is fs + 14px padding.
-    -- Each additional line in multi-line text adds font-size + 4px interline spacing.
-    local first_line = fs + 14
-    local extra_line = fs + 4
-    return first_line + (lines - 1) * extra_line
+    -- Native mpv OSD with background-box occupies:
+    -- line_height = font-size * 1.35 (libass line spacing) + 8px (background-box padding & separation gap)
+    local line_height = math.floor(fs * 1.50) + 4
+    return lines * line_height
 end
 
 -- Render the pause notification overlay with exact native mpv OSD styling
@@ -119,7 +118,15 @@ local function trigger_shift(duration, lines)
     local now = mp.get_time() or 0
     local new_target = now + active_dur
 
-    active_osd_lines = lines or 1
+    local req_lines = math.max(1, lines or 1)
+    -- If a multi-line notification (e.g. screenshot or audio filter) is active on screen,
+    -- never downgrade active_osd_lines to 1 from subsequent internal/sub-commands!
+    if now < active_osd_expire_time then
+        active_osd_lines = math.max(active_osd_lines, req_lines)
+    else
+        active_osd_lines = req_lines
+    end
+
     if new_target >= active_osd_expire_time then
         active_osd_expire_time = new_target
     end
@@ -159,15 +166,20 @@ local function estimate_text_lines(text)
     local osd_w, _ = mp.get_osd_size()
     if not osd_w or osd_w <= 0 then
         local dims = mp.get_property_native("osd-dimensions")
-        osd_w = dims and dims.w or 1280
+        if dims and dims.w and dims.w > 0 then
+            osd_w = dims.w
+        else
+            local dw = mp.get_property_number("dwidth", 0)
+            osd_w = (dw > 0) and dw or 1600
+        end
     end
     local mx = mp.get_property_number("osd-margin-x", 16)
-    local usable_w = math.max(200, osd_w - (mx * 2))
+    local usable_w = math.max(400, osd_w - (mx * 2))
     local fs = mp.get_property_number("osd-font-size", 26)
 
-    -- In libass / mpv native OSD, character width averages ~0.55 * fs for proportional fonts.
-    local char_w = fs * 0.55
-    local max_line_chars = math.max(20, math.floor(usable_w / char_w))
+    -- In libass / mpv native OSD, character width averages ~0.50 * fs for proportional fonts.
+    local char_w = fs * 0.50
+    local max_line_chars = math.max(30, math.floor(usable_w / char_w))
 
     -- Normalize explicit linebreaks (\N, \n, \r\n)
     local clean_text = text:gsub("\\N", "\n"):gsub("\\n", "\n"):gsub("\r\n", "\n")
@@ -222,7 +234,7 @@ mp.register_event("log-message", function(e)
     if e.prefix ~= "cplayer" then return end
 
     -- Detect screenshot completion or progress log: "Screenshot: '...'" or "Starting screenshot: '...'"
-    local shot_path = e.text:match("^Screenshot: '(.-)'") or e.text:match("^Starting screenshot: '(.-)'")
+    local shot_path = e.text:match("Screenshot: '(.-)'") or e.text:match("Starting screenshot: '(.-)'")
     if shot_path then
         local full_msg = "Screenshot: '" .. shot_path .. "'"
         local lines = math.max(2, estimate_text_lines(full_msg))
@@ -249,7 +261,7 @@ mp.register_event("log-message", function(e)
     end
 
     -- Detect screenshot command invocation (immediate anticipatory shift)
-    if e.text:find("Run command: screenshot") then
+    if e.text:find("Run command: screenshot") or e.text:find('arg0="screenshot"') then
         local lines = estimate_screenshot_lines()
         trigger_shift(nil, lines)
         return
@@ -270,6 +282,11 @@ mp.register_event("log-message", function(e)
             return
         end
 
+        -- Screenshot commands are handled specifically above; ignore here to prevent overriding line count
+        if cmd == "screenshot" then
+            return
+        end
+
         local f = tonumber(flags) or 0
         local osd_type = f % 8
         -- osd_type >= 4: osd-msg (flags=76) or osd-msg-bar (flags=78)
@@ -281,10 +298,10 @@ mp.register_event("log-message", function(e)
             cmd == "chapter-seek" or cmd == "playlist-play-index" or cmd == "playlist-shuffle"
         )) then
             local lines = 1
-            -- cycle-values on filters (af, vf) formats as 2+ lines in mpv native OSD: "Audio filters:\n..."
+            -- cycle-values on filters: "Audio filters:\n..." is 2 lines when enabled, 1 line when cleared
             if cmd == "cycle-values" and (e.text:find('arg0="af"') or e.text:find('arg0="vf"')) then
                 local filter_val = e.text:match('arg1="([^"]*)"') or ""
-                lines = math.max(2, estimate_text_lines("Audio filters:\n" .. filter_val))
+                lines = (#filter_val > 0) and 2 or 1
             end
             trigger_shift(nil, lines)
         end
