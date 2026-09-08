@@ -4,6 +4,7 @@ cookies.txt
 *.session
 
 # MPV Cache & Watch later
+cache/
 watch_later/
 mpv-cache/
 *.log

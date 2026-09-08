@@ -257,6 +257,8 @@ if options.thumbnail == "" then
     else
         options.thumbnail = "/tmp/thumbfast.out"
     end
+else
+    options.thumbnail = mp.command_native({"expand-path", options.thumbnail})
 end
 
 local unique = mp.utils.getpid()

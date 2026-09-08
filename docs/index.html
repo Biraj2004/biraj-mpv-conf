@@ -780,7 +780,7 @@
 
                         <!-- Audio -->
                         <tr data-cat="audio">
-                            <td><kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> <small class="text-muted">(or <kbd>_</kbd> / <kbd>#</kbd>)</small></td>
+                            <td><kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> <small class="text-muted">(or <kbd>B</kbd>)</small></td>
                             <td>Cycle audio tracks forward / backward <em>(VLC & MPV standard, zero-lag debounced)</em></td>
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
@@ -795,7 +795,7 @@
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
                         <tr data-cat="audio">
-                            <td><kbd>&uarr;</kbd> / <kbd>&darr;</kbd></td>
+                            <td><kbd>&uarr;</kbd> / <kbd>&darr;</kbd> <small class="text-muted">(or Scroll Wheel)</small></td>
                             <td>Volume up / down (&plusmn;5%)</td>
                             <td><span class="badge-cat">Audio</span></td>
                         </tr>
@@ -927,7 +927,14 @@
                         <span class="code-card-title">Video & Cache Architecture</span>
                         <span class="code-card-file">mpv.conf</span>
                     </div>
-                    <pre><code>### Video Pipeline
+                    <pre><code>### Watch History & Segregated Cache Architecture
+save-position-on-quit=yes
+watch-later-directory="~~cache/watch_later"
+gpu-shader-cache-dir="~~cache/shaders"
+icc-cache-dir="~~cache/icc"
+demuxer-cache-dir="~~cache/demuxer"
+
+### Video Pipeline
 vo=gpu-next
 gpu-context=auto
 d3d11-flip=yes
@@ -953,10 +960,10 @@ hdr-compute-peak=auto
 gamut-mapping-mode=auto
 hwdec-codecs=all
 
-### Audio Pipeline (100ms WASAPI Lock)
+### Audio Pipeline (90ms WASAPI Lock)
 ao=wasapi,coreaudio,pipewire,pulse,
 audio-exclusive=no
-audio-buffer=0.10
+audio-buffer=0.09
 audio-stream-silence=yes
 audio-wait-open=0
 audio-pitch-correction=yes
@@ -1002,6 +1009,7 @@ sub-use-margins=no
 sub-ass-force-margins=no
 sub-ass-override=no
 
+sub-font="Segoe UI"
 sub-font-size=50
 sub-color="#FFFFFF"
 sub-border-size=1.8
@@ -1104,6 +1112,7 @@ sub-margin-y=36</code></pre>
                     </div>
                     <p class="credit-desc">Original author, curator, and maintainer of this configuration suite. Custom developed features and scripts include:</p>
                     <ul class="credit-list">
+                        <li><strong><code>cache_manager.lua</code></strong> — Centralized & segregated cache architecture on C: drive (<code>%LOCALAPPDATA%\mpv\cache\</code>) with dedicated subdirectories for GPU shaders, resume watch history, and hover thumbnails, auto-healing missing folders on startup.</li>
                         <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 30ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
                         <li><strong><code>hdr_badge.lua</code>, <code>resume_indicator.lua</code>, & <code>pause_notify.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart duration formatting.</li>

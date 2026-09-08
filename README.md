@@ -304,7 +304,9 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
 - **Debanding & Dithering**: Eliminates color banding artifacts and gradient compression with balanced, detail-preserving parameters (`iterations=2`, `threshold=35`, `range=16`, `grain=5`, `temporal-dither=yes`). Kept off by default for pure reference playback without loss of fine grain or facial textures, and instantly toggleable on-the-fly with <kbd>g</kbd> whenever you encounter banded content.
-- **Windows WASAPI Shared Audio Pipeline (`ao=wasapi`, `audio-exclusive=no`)**: Directly binds mpv to the modern Windows Audio Session API with a microsecond-accurate 100ms hardware clock buffer (`audio-buffer=0.10`) for drift-free A/V sync, zero audio cutoffs on unpause (`audio-stream-silence=yes`), and seamless audio mixing with Discord and web browsers without device-locking.
+- **Windows WASAPI Shared Audio Pipeline (`ao=wasapi`, `audio-exclusive=no`)**: Directly binds mpv to the modern Windows Audio Session API with a microsecond-accurate 90ms hardware clock buffer (`audio-buffer=0.09`) for drift-free A/V sync, zero audio cutoffs on unpause (`audio-stream-silence=yes`), and seamless audio mixing with Discord and web browsers without device-locking.
+- **Modern Subtitle Typography (`sub-font="Segoe UI"`)**: Renders standard `.srt` text in clean, modern Segoe UI typography with high-contrast outlines and shadow boxes, while preserving stylized anime `.ass` formatting intact (`sub-ass-override=no`).
+- **Centralized & Segregated Cache Architecture ([`cache_manager.lua`](scripts/cache_manager.lua))**: All runtime cache and state data are cleanly isolated in a single common parent directory on the C: drive (`%LOCALAPPDATA%\mpv\cache\`), partitioned into dedicated subdirectories for GPU shaders (`shaders/`), resume watch history (`watch_later/`), hover thumbnails (`thumbnails/`), color profile LUTs (`icc/`), and disk buffer fallbacks (`demuxer/`). Automatically regenerates missing subfolders on launch if deleted or absent, keeping the git repository 100% clean.
 
 > [!NOTE]
 > **File Format vs. Screen Support**: The badge indicates the **color format received from the video file itself** (e.g. `DV` indicates a Dolby Vision file stream), **not** that your physical display panel supports native Dolby Vision. On standard SDR monitors, mpv automatically decodes the DV/HDR stream and tone-maps it into vivid, accurate SDR in real-time.
@@ -481,7 +483,7 @@ biraj-mpv-conf/
 | <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (<kbd>B</kbd>) *(or <kbd>_</kbd> / <kbd>#</kbd>)* | Cycle audio tracks forward / backward *(VLC & MPV standard, zero-lag debounced)* |
 | <kbd>N</kbd> / <kbd>y</kbd> | **Toggle Night Mode Audio Normalization** (`dynaudnorm`) |
 | <kbd>Ctrl</kbd> + <kbd>[</kbd> / <kbd>Ctrl</kbd> + <kbd>]</kbd> | Adjust Audio delay (&minus;100ms / +100ms) |
-| <kbd>↑</kbd> / <kbd>↓</kbd> *(or Media Vol Up/Down)* | Volume up / down (+5% / -5%) |
+| <kbd>↑</kbd> / <kbd>↓</kbd> *(or Scroll Wheel)* | Volume up / down (+5% / -5%) |
 | <kbd>m</kbd> / <kbd>Media Mute</kbd> | Toggle Mute |
 | <kbd>Ctrl</kbd> + <kbd>a</kbd> | Open Native File Dialog to add Audio track |
 
@@ -640,6 +642,7 @@ alang=hi,en,ja
 ### 5. Subtitle Typography & Positioning
 In [`mpv.conf`](mpv.conf):
 ```ini
+sub-font="Segoe UI"
 sub-font-size=50
 sub-color="#FFFFFF"
 sub-border-size=1.8
