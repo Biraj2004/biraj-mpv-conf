@@ -84,7 +84,8 @@ function subprocess(args, async, callback)
 end
 
 local winapi = {}
-if options.direct_io then
+local is_windows = (package.config:sub(1,1) == "\\")
+if options.direct_io and is_windows then
     local ffi_loaded, ffi = pcall(require, "ffi")
     if ffi_loaded then
         winapi = {
@@ -133,6 +134,8 @@ if options.direct_io then
     else
         options.direct_io = false
     end
+else
+    options.direct_io = false
 end
 
 local file

@@ -84,6 +84,5 @@ local function init_cache_dirs()
     end
 end
 
--- Initialize on mpv startup
-init_cache_dirs()
-
+-- Initialize non-blockingly after playback starts to eliminate cold-start launch contention
+mp.add_timeout(4.0, init_cache_dirs)

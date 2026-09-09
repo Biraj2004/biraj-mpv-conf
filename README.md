@@ -300,7 +300,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 ### Next-Gen GPU Video Rendering & Tone-Mapping
 - **`gpu-next` Engine**: Utilizes mpv's latest libplacebo-powered rendering backend for exceptional color accuracy, high-bitdepth pipelines, and HDR processing.
 - **Hardware Direct3D 11 Flip Presentation (`d3d11-flip=yes`)**: Bypasses legacy DWM composition layers for tear-free, flicker-free presentation with 0 dropped frames and instant Alt-Tab.
-- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays with optimal dynamic range (`target-contrast=auto`), preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=120`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=yes`).
+- **HDR10 & Dolby Vision (DV) Support**: Automatically tone-maps HDR10 and Dolby Vision (Profiles 5 & 8) to SDR on standard displays with optimal dynamic range (`target-contrast=auto`), preserving highlight details and color saturation without washed-out tones. Subtitles retain crisp `#FFFFFF` white on SDR displays (`blend-subtitles=no`, `sub-hdr-peak=120`). Passes dynamic metadata on native HDR monitors (`target-colorspace-hint=auto`).
 - **Dynamic HDR / DV / SDR Format Badge**: Minimalist floating overlay badge (`DV`, `HDR10+`, `HDR10`, `HLG`, `SDR`) in the top-right corner that announces the detected color format of the incoming media stream.
 - **Auto-Safe Hardware Decoding (`hwdec=auto-safe`)**: Automatically negotiates the fastest, low-CPU/low-power video decoding pipeline (`d3d11va`, `nvdec`, `vaapi`) with safe fallback mechanisms and 16 extra VRAM buffers (`hwdec-extra-frames=16`).
 - **Debanding & Dithering**: Eliminates color banding artifacts and gradient compression with balanced, detail-preserving parameters (`iterations=2`, `threshold=35`, `range=16`, `grain=5`, `temporal-dither=yes`). Kept off by default for pure reference playback without loss of fine grain or facial textures, and instantly toggleable on-the-fly with <kbd>g</kbd> whenever you encounter banded content.
@@ -547,7 +547,7 @@ This configuration utilizes **`vo=gpu-next`** with mpv's **libplacebo** renderin
    - Highlights and shadows are compressed cleanly, preventing the dull, washed-out appearance typical of unmapped HDR content.
    - `hdr-compute-peak=auto` dynamically assesses peak brightness for optimal scene contrast.
 2. **On Windows HDR Displays**:
-   - `target-colorspace-hint=yes` automatically signals the Windows Display Subsystem to pass wide-gamut (BT.2020) and high-peak brightness metadata directly to your HDR monitor or TV.
+   - `target-colorspace-hint=auto` automatically signals the Windows Display Subsystem to pass wide-gamut (BT.2020) and high-peak brightness metadata directly to your HDR monitor or TV while avoiding swapchain reset stalls on SDR.
 
 > [!IMPORTANT]
 > **Performance Note on Heavy 4K UHD Blu-ray REMUX (60GB+):**

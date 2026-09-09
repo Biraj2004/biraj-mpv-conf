@@ -232,7 +232,7 @@ local function estimate_screenshot_lines()
 end
 
 -- Listen for cplayer log messages to detect show-text, screenshot, show-progress, and native OSD commands
-mp.enable_messages("trace")
+mp.enable_messages("v")
 
 mp.register_event("log-message", function(e)
     if not opts.enable then return end
