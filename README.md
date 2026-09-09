@@ -5,6 +5,7 @@
 **A refined, ultra-optimized, and modern configuration suite for [mpv media player](https://mpv.io/).**
 
 [![mpv](https://img.shields.io/badge/mpv-v0.38%2B-blue?style=for-the-badge&logo=mpv&logoColor=white)](https://mpv.io/)
+[![CI Validation](https://github.com/Biraj2004/biraj-mpv-conf/actions/workflows/validate.yml/badge.svg)](https://github.com/Biraj2004/biraj-mpv-conf/actions/workflows/validate.yml)
 [![Renderer](https://img.shields.io/badge/Renderer-gpu--next-success?style=for-the-badge&logo=vulkan&logoColor=white)](https://mpv.io/manual/master/#options-vo)
 [![Hardware Acceleration](https://img.shields.io/badge/HW%20Dec-auto--safe-informational?style=for-the-badge&logo=windows&logoColor=white)](https://mpv.io/manual/master/#options-hwdec)
 [![UI Theme](https://img.shields.io/badge/UI-ModernZ%20(Fluent%2FMaterial)-orange?style=for-the-badge)](https://github.com/Samillion/ModernZ)
@@ -103,25 +104,19 @@ To ensure 100% plug-and-play compatibility across Windows File Explorer context 
 
 ### Method 1: Standard Installation (Windows) — *Recommended*
 
-#### Option A: 1-Click Install via PowerShell (Recommended & Fastest)
-Open **PowerShell** and run the one-line command below to automatically download, back up any existing configuration, and deploy all required files into `%APPDATA%\mpv`:
-```powershell
-irm https://raw.githubusercontent.com/Biraj2004/biraj-mpv-conf/main/install.ps1 | iex
-```
-
-#### Option B: Automated Sync & Update via Batch Script (`.bat`)
-If you have cloned or downloaded this repository, double-click:
+#### Option A: Automated Sync & Update via Batch Script (`.bat`) — *Recommended*
+Download or clone this repository and simply double-click:
 ```cmd
 Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat
 ```
-- **Player Verification**: Automatically checks whether `mpv.exe` is installed on your system at standard locations.
+- **Player Verification**: Automatically checks whether `mpv.exe` is installed on your system at standard locations (with guided setup advisory if missing).
 - **Live GitHub API Status**: Queries and displays the latest commit SHA, author, UTC timestamp, and commit message directly from GitHub's `main` branch.
 - **Safety Gate & Confirmation**: Interactive `[Y/N]` confirmation prompt before any files are downloaded or modified.
-- **Automatic Safety Backup**: Creates a timestamped ZIP archive of your existing configuration in `%APPDATA%\mpv\backups\biraj-mpv-conf-backup-<timestamp>.zip` prior to updating.
+- **Automatic Safety Backup**: Creates a timestamped ZIP archive of your existing configuration in `%APPDATA%\mpv\backups\biraj-mpv-conf-backup-<timestamp>.zip` prior to updating (automatically retains the 5 newest).
 - **High-Speed Deployment**: Downloads and synchronizes all configuration files, scripts, script-opts, and fonts directly into `%APPDATA%\mpv\`.
 - **Intelligent Re-Run Handling**: Tracks the installed commit in `%APPDATA%\mpv\biraj-mpv-version.txt`. If already up to date, it notifies you and asks if you wish to force a re-download.
 
-#### Option C: Manual Extraction (ZIP)
+#### Option B: Manual Extraction (ZIP)
 1. Download this repository as a ZIP archive: [**Download ZIP**](https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip).
 2. Press <kbd>Win</kbd> + <kbd>R</kbd>, type `%APPDATA%\mpv`, and press **Enter** (or navigate to `C:\Users\<YourUsername>\AppData\Roaming\mpv\`).
 3. Copy **only the necessary configuration folders and files** (`fonts/`, `scripts/`, `script-opts/`, `mpv.conf`, `input.conf`, `menu.conf`, `yt-dlp.conf`) from the extracted folder directly into `%APPDATA%\mpv\`. *(You do not need to copy repository docs, screenshots, or license files into mpv).*
@@ -413,12 +408,12 @@ biraj-mpv-conf/
 ├── mpv.conf                  # Core configuration (renderer, cache, audio, video, profiles)
 ├── input.conf                # Custom keybindings, mouse shortcuts, and script triggers
 ├── menu.conf                 # Right-click context menu definitions
+├── yt-dlp.conf               # YouTube & streaming network retries, format selectors
+├── Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat # Interactive batch updater (Option A)
 ├── Windows-Context-Menu/     # Windows File Explorer context menu integration installers
 │   ├── Add_Play_with_MPV_Context_Menu.reg    # Registry script to add "Play with MPV as a Playlist"
 │   ├── Remove_Play_with_MPV_Context_Menu.reg # Registry script to remove the context menu
-│   ├── Setup_Play_with_MPV_Context_Menu.bat  # 1-click installer and path auto-detector
-│   ├── mpv-launcher.cs                       # C# source for mutex-synchronized multi-select IPC launcher
-│   ├── mpv-launcher.exe                      # Lightweight (~6KB) 0-overhead single-instance playlist forwarder
+│   ├── Setup_Play_with_MPV_Context_Menu.bat  # 1-click interactive installer and auto-detector
 │   └── README.md                             # Context menu setup guide and behavior matrix
 ├── Stremio-Play-in-MPV/      # Automated "Play in MPV" integration installers for Stremio
 │   ├── Win_Setup_Stremio_To_Play_In_MPV.bat   # Windows Stremio external player setup script
@@ -428,6 +423,7 @@ biraj-mpv-conf/
 │   └── modernz-icons.ttf     # Fluent & Material vector icons for ModernZ
 ├── scripts/
 │   ├── auto_exit_eof.lua     # Graceful auto-exit at end of media with 4s grace & 2s OSD warning
+│   ├── cache_manager.lua     # Segregated cache directories & automated scratch buffer purger
 │   ├── cycle_audio.lua       # Zero-lag VLC & MPV audio / subtitle cycler with anti-spam debouncing
 │   ├── hdr_badge.lua         # Dynamic HDR/DV/SDR format badge overlay
 │   ├── modernz.lua           # Modern On-Screen Controller (OSC)
@@ -446,16 +442,15 @@ biraj-mpv-conf/
 │   ├── pause_notify.conf     # Configuration for on-screen pause notification
 │   ├── resume_indicator.conf # Configuration for on-screen resume notifications
 │   └── thumbfast.conf        # Configuration for thumbnail caching and size
-├── screenshots/
-│   ├── hdr10plus-badge-overlay.jpg         # Dynamic HDR10+ format badge overlay
-│   ├── interactive-console-stream-log.jpg  # Interactive console with yt-dlp & decoder logs
-│   ├── modernz-osc-pause-indicator.jpg     # ModernZ OSC interface & center pause indicator
-│   ├── stats-overlay-1080p-sdr.jpg         # Real-time stats overlay on 1080p SDR playback
-│   ├── stats-overlay-4k-hdr10plus.jpg      # Real-time stats overlay on 4K HDR10+ playback
-│   └── thumbfast-hover-preview-subtitles.jpg # Seekbar thumbnail preview & styled subtitles
+├── docs/                     # Interactive documentation web portal (GitHub Pages)
+│   ├── assets/               # Branding assets, keybinding charts, diagrams
+│   ├── screenshots/          # High-resolution UI showcase screenshots
+│   ├── index.html            # Web portal layout and interactive guides
+│   ├── style.css             # Glassmorphism aesthetic and responsive typography
+│   └── script.js             # Copy-to-clipboard buttons and interactive tab logic
+├── screenshots/              # High-resolution UI showcase screenshots
 ├── biraj-mpv-key-binding.pdf # 1-page visual shortcuts manual (XeLaTeX)
 ├── biraj-mpv-guide.pdf       # Comprehensive reference guide (XeLaTeX)
-├── keybindings-chart.jpg     # Visual keyboard & mouse shortcuts cheat sheet (300 DPI)
 ├── SECURITY.md               # Security policy and vulnerability disclosure
 ├── LICENSE                   # Apache 2.0 Open Source License
 └── README.md                 # Documentation
@@ -470,7 +465,7 @@ biraj-mpv-conf/
 
 <div align="center">
 
-![Keyboard & Mouse Shortcuts Cheat Sheet](keybindings-chart.jpg)
+![Keyboard & Mouse Shortcuts Cheat Sheet](docs/assets/keybindings-chart.jpg)
 
 </div>
 

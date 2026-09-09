@@ -372,7 +372,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "    $sp = Join-Path $src $f;" ^
     "    if (Test-Path $sp) { Copy-Item -Path $sp -Destination (Join-Path $dst $f) -Force; Write-Host ('  Updated: ' + $f) };" ^
     "};" ^
-    "$cfgDirs = @('fonts', 'script-opts', 'scripts', 'shaders', 'icc', 'Stremio-Play-in-MPV', 'Windows-Context-Menu');" ^
+    "$cfgDirs = @('fonts', 'script-opts', 'scripts', 'Stremio-Play-in-MPV', 'Windows-Context-Menu');" ^
     "foreach ($d in $cfgDirs) {" ^
     "    $sd = Join-Path $src $d;" ^
     "    if (Test-Path $sd) {" ^
@@ -415,7 +415,7 @@ echo     - Right-click -^> Click "Install" (or "Install for all users").
 echo.
 echo  2. EXPLORER RIGHT-CLICK CONTEXT MENU [Optional]:
 echo     - To add "Play with MPV" for videos and folders in Windows Explorer:
-echo       Open %APPDATA%\mpv\Windows-Context-Menu\ and run "install-context-menu.reg".
+echo       Open %APPDATA%\mpv\Windows-Context-Menu\ and run "Setup_Play_with_MPV_Context_Menu.bat".
 echo.
 echo  3. STREMIO "PLAY IN MPV" INTEGRATION [Optional]:
 echo     - To stream torrents/HTTP links directly into MPV with tone-mapping:
