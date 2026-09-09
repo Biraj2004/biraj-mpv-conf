@@ -232,11 +232,15 @@ local function estimate_screenshot_lines()
 end
 
 -- Listen for cplayer log messages to detect show-text, screenshot, show-progress, and native OSD commands
-mp.enable_messages("v")
+mp.enable_messages("trace")
 
 mp.register_event("log-message", function(e)
     if not opts.enable then return end
     if e.prefix ~= "cplayer" then return end
+
+    -- Ultra-fast early discard of high-frequency rendering logs (frametime, video_output_image, etc.)
+    local c = e.text:sub(1, 1)
+    if c ~= "R" and c ~= "S" then return end
 
     -- Detect screenshot completion or progress log: "Screenshot: '...'" or "Starting screenshot: '...'"
     local shot_path = e.text:match("Screenshot: '(.-)'") or e.text:match("Starting screenshot: '(.-)'")
