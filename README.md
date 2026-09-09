@@ -5,7 +5,6 @@
 **A refined, ultra-optimized, and modern configuration suite for [mpv media player](https://mpv.io/).**
 
 [![mpv](https://img.shields.io/badge/mpv-v0.38%2B-blue?style=for-the-badge&logo=mpv&logoColor=white)](https://mpv.io/)
-[![CI Validation](https://github.com/Biraj2004/biraj-mpv-conf/actions/workflows/validate.yml/badge.svg)](https://github.com/Biraj2004/biraj-mpv-conf/actions/workflows/validate.yml)
 [![Renderer](https://img.shields.io/badge/Renderer-gpu--next-success?style=for-the-badge&logo=vulkan&logoColor=white)](https://mpv.io/manual/master/#options-vo)
 [![Hardware Acceleration](https://img.shields.io/badge/HW%20Dec-auto--safe-informational?style=for-the-badge&logo=windows&logoColor=white)](https://mpv.io/manual/master/#options-hwdec)
 [![UI Theme](https://img.shields.io/badge/UI-ModernZ%20(Fluent%2FMaterial)-orange?style=for-the-badge)](https://github.com/Samillion/ModernZ)
