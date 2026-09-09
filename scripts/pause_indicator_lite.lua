@@ -7,6 +7,7 @@
 
 local options = {
     enable = true,                        -- enable/disable pause indicator lite
+    pause_indicator = true,               -- show pause indicator on pause (center screen overlay)
     -- indicator icon type
     indicator_icon = "pause",             -- indicator icon type. "pause", "play"
     indicator_stay = true,                -- keep indicator visibile during pause
@@ -207,6 +208,7 @@ local function kill_timer(key)
 end
 
 local function update_indicator(force)
+    if not options.pause_indicator or options.indicator_icon == "none" then return end
     if not state.aspect or state.aspect == 0 then return end
     if not force and state.indicator_visible then
         return
