@@ -1,10 +1,12 @@
 # Secrets and personal tokens
 cookies.txt
+yt-cookies.txt
 *.cookies
 *.session
 
 # MPV Cache & Watch later
 cache/
+shaders/
 watch_later/
 mpv-cache/
 *.log

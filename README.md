@@ -109,9 +109,19 @@ Open **PowerShell** and run the one-line command below to automatically download
 irm https://raw.githubusercontent.com/Biraj2004/biraj-mpv-conf/main/install.ps1 | iex
 ```
 
-*(Alternatively, if you already cloned or downloaded this repository, simply double-click `install.bat` in the repository folder).*
+#### Option B: Automated Sync & Update via Batch Script (`.bat`)
+If you have cloned or downloaded this repository, double-click:
+```cmd
+Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat
+```
+- **Player Verification**: Automatically checks whether `mpv.exe` is installed on your system at standard locations.
+- **Live GitHub API Status**: Queries and displays the latest commit SHA, author, UTC timestamp, and commit message directly from GitHub's `main` branch.
+- **Safety Gate & Confirmation**: Interactive `[Y/N]` confirmation prompt before any files are downloaded or modified.
+- **Automatic Safety Backup**: Creates a timestamped ZIP archive of your existing configuration in `%APPDATA%\mpv\backups\biraj-mpv-conf-backup-<timestamp>.zip` prior to updating.
+- **High-Speed Deployment**: Downloads and synchronizes all configuration files, scripts, script-opts, and fonts directly into `%APPDATA%\mpv\`.
+- **Intelligent Re-Run Handling**: Tracks the installed commit in `%APPDATA%\mpv\biraj-mpv-version.txt`. If already up to date, it notifies you and asks if you wish to force a re-download.
 
-#### Option B: Manual Extraction (ZIP)
+#### Option C: Manual Extraction (ZIP)
 1. Download this repository as a ZIP archive: [**Download ZIP**](https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip).
 2. Press <kbd>Win</kbd> + <kbd>R</kbd>, type `%APPDATA%\mpv`, and press **Enter** (or navigate to `C:\Users\<YourUsername>\AppData\Roaming\mpv\`).
 3. Copy **only the necessary configuration folders and files** (`fonts/`, `scripts/`, `script-opts/`, `mpv.conf`, `input.conf`, `menu.conf`, `yt-dlp.conf`) from the extracted folder directly into `%APPDATA%\mpv\`. *(You do not need to copy repository docs, screenshots, or license files into mpv).*
