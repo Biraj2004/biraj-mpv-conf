@@ -84,8 +84,9 @@ local function get_shift_amount(lines)
     fs = (fs and fs > 0) and fs or 26
     -- Native mpv OSD with background-box occupies:
     -- line_height = font-size * 1.35 (libass line spacing) + 8px (background-box padding & separation gap)
-    local line_height = math.floor(fs * 1.50) + 4
-    return lines * line_height
+    local first_line = math.floor(fs * 1.50) + 4
+    local extra_line = math.floor(fs * 1.20)
+    return first_line + (lines - 1) * extra_line
 end
 
 -- Render the pause notification overlay with exact native mpv OSD styling
