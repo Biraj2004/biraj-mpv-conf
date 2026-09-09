@@ -27,8 +27,8 @@ end
 
 local is_windows = package.config:sub(1,1) == "\\"
 local ipc_socket_path = is_windows and "\\\\.\\pipe\\mpvsocket_playlist" or ((os.getenv("XDG_RUNTIME_DIR") or "/tmp") .. "/mpvsocket_playlist")
-local temp_dir = os.getenv("TEMP") or os.getenv("TMP") or "C:\\Windows\\Temp"
-local lock_file = temp_dir .. "\\mpv_playlist_master.lock"
+local temp_dir = is_windows and (os.getenv("TEMP") or os.getenv("TMP") or "C:\\Windows\\Temp") or (os.getenv("TMPDIR") or "/tmp")
+local lock_file = is_windows and (temp_dir .. "\\mpv_playlist_master.lock") or (temp_dir .. "/mpv_playlist_master.lock")
 
 local function sleep_ms(ms)
     local start = mp.get_time()

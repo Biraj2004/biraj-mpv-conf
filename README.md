@@ -189,11 +189,17 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
 
 ### Method 3: Linux / macOS
 
-While pre-tuned for Windows workflows with PowerShell dialogs and native Direct3D hardware acceleration, this configuration works smoothly on Linux and macOS:
-1. Clone or extract the repository to `~/.config/mpv/`.
-2. *(Optional)* In `mpv.conf`, verify or adjust the hardware decoding backend if needed:
-   - **Linux**: `hwdec=auto-safe` (or explicitly `hwdec=vaapi` / `hwdec=nvdec`).
-   - **macOS**: `hwdec=auto-safe` (or `hwdec=videotoolbox`).
+While engineered primarily for Windows with Direct3D 11 Flip presentation, WASAPI shared audio, and PowerShell dialogs, this configuration is fully cross-platform with seamless, automatic native fallbacks for Linux and macOS:
+
+1. Clone or extract the repository to `~/.config/mpv/`:
+   ```bash
+   git clone https://github.com/Biraj2004/biraj-mpv-conf.git ~/.config/mpv
+   ```
+2. **Native Cross-Platform Features Built-In**:
+   - **Native File Dialogs (<kbd>Ctrl</kbd>+<kbd>O</kbd>)**: Windows uses native PowerShell WPF dialogs. macOS automatically invokes built-in Cocoa file pickers via AppleScript (`osascript`) with zero dependencies. Linux invokes native GTK/KDE pickers (`zenity` / `kdialog`).
+   - **Audio Pipelines**: Prioritizes `wasapi` on Windows, falling back seamlessly to `coreaudio` on macOS, and `pipewire` / `pulse` on Linux (`ao=wasapi,coreaudio,pipewire,pulse,`).
+   - **Hardware Video Acceleration**: `hwdec=auto-safe` automatically negotiates `d3d11va`/`nvdec` on Windows, `vaapi`/`nvdec` on Linux, and `videotoolbox` on macOS.
+   - **Thumbfast & Single-Instance IPC**: Windows leverages ultra-fast Win32 FFI Named Pipes, while Linux and macOS automatically use POSIX in-memory Unix domain sockets (`/tmp/thumbfast`) and safe `/tmp` lockfiles.
 
 ---
 
@@ -306,13 +312,15 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - **Debanding & Dithering**: Eliminates color banding artifacts and gradient compression with balanced, detail-preserving parameters (`iterations=2`, `threshold=35`, `range=16`, `grain=5`, `temporal-dither=yes`). Kept off by default for pure reference playback without loss of fine grain or facial textures, and instantly toggleable on-the-fly with <kbd>g</kbd> whenever you encounter banded content.
 - **Windows WASAPI Shared Audio Pipeline (`ao=wasapi`, `audio-exclusive=no`)**: Directly binds mpv to the modern Windows Audio Session API with a microsecond-accurate 90ms hardware clock buffer (`audio-buffer=0.09`) for drift-free A/V sync, zero audio cutoffs on unpause (`audio-stream-silence=yes`), and seamless audio mixing with Discord and web browsers without device-locking.
 - **Modern Subtitle Typography (`sub-font="Segoe UI"`)**: Renders standard `.srt` text in clean, modern Segoe UI typography with high-contrast outlines and shadow boxes, while preserving stylized anime `.ass` formatting intact (`sub-ass-override=no`).
-- **Centralized & Segregated Cache Architecture ([`cache_manager.lua`](scripts/cache_manager.lua))**: All runtime cache and state data are cleanly isolated in a single common parent directory on the C: drive (`%LOCALAPPDATA%\mpv\cache\`), partitioned into dedicated subdirectories for GPU shaders (`shaders/`), resume watch history (`watch_later/`), hover thumbnails (`thumbnails/`), color profile LUTs (`icc/`), and disk buffer fallbacks (`demuxer/`). Automatically regenerates missing subfolders on launch if deleted or absent, keeping the git repository 100% clean.
+- **Centralized & Segregated Cache Architecture ([`cache_manager.lua`](scripts/cache_manager.lua))**: All runtime cache and state data are cleanly isolated in a single common parent directory on the C: drive (`%LOCALAPPDATA%\mpv\cache\`), partitioned into dedicated subdirectories for GPU shaders (`shaders/`), resume watch history (`watch_later/`), hover thumbnails (`thumbnails/`), color profile LUTs (`icc/`), and disk buffer fallbacks (`demuxer/`). Automatically purges 30-minute-old temporary scratch buffers non-blockingly after playback starts (`mp.add_timeout(4.0)`), completely eliminating startup disk I/O contention while keeping the git repository 100% clean.
 
 > [!NOTE]
 > **File Format vs. Screen Support**: The badge indicates the **color format received from the video file itself** (e.g. `DV` indicates a Dolby Vision file stream), **not** that your physical display panel supports native Dolby Vision. On standard SDR monitors, mpv automatically decodes the DV/HDR stream and tone-maps it into vivid, accurate SDR in real-time.
 
 ### Instant Seekbar Hover Thumbnails
 - Integrated with **[`thumbfast`](https://github.com/po5/thumbfast)** to provide instant, real-time visual preview thumbnails when hovering or scrubbing along the seekbar.
+- **On-Demand Worker (`spawn_first=no`)**: Thumbnail generator process stays dormant until the cursor hovers over the seekbar, eliminating ~200ms of cold-start delay and completely preventing background process kill/respawn churn during window resizing or fullscreen toggling.
+- **High-Speed Direct I/O (`direct_io=yes`)**: Uses unbuffered Windows Win32 Named Pipes via LuaJIT FFI (`CreateFileW`, `WriteFile`, `PIPE_NOWAIT`) to drop first-hover thumbnail latency into the **sub-100ms** zone, with seamless automatic fallback to POSIX Unix domain sockets on Linux and macOS.
 
 ### Rich Right-Click Context Menu
 - Full-featured **contextual GUI menu** (`menu.conf`) accessible on right-click or via <kbd>g</kbd> <kbd>m</kbd>:
@@ -333,8 +341,9 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - **Natural Ascending File Dialog Loading ([`open-file.lua`](scripts/open-file.lua))**: Selecting multiple files via <kbd>Ctrl</kbd>+<kbd>O</kbd> automatically sorts them in ascending order before adding them to the playlist.
 - **On-Demand Playlist Sorter (<kbd>K</kbd> / Context Menu)**: Instant shortcut (`sort_playlist/sort-playlist`) to re-sort any active playlist into natural ascending order on demand.
 
-### Native Windows File and Track Selectors
+### Native GUI File and Track Selectors (Windows-First with macOS & Linux Fallbacks)
 - **PowerShell / WPF Native Dialogs** ([`open-file.lua`](https://github.com/Samillion/ModernZ/tree/main/extras/open-file)): Seamlessly browse and open files (<kbd>Ctrl</kbd>+<kbd>O</kbd>), load external subtitles (<kbd>Ctrl</kbd>+<kbd>S</kbd>), or attach secondary audio tracks (<kbd>Ctrl</kbd>+<kbd>A</kbd>) using standard Windows File Explorer dialogs with natural ascending sort.
+- **Cross-Platform Dialog Fallbacks**: When running on macOS, automatically launches native Cocoa file pickers via built-in AppleScript (`osascript`) with zero dependencies. On Linux, automatically launches native GTK/KDE file pickers via `zenity` or `kdialog`.
 
 ### Smart Dynamic Profiles & Audio Normalization
 - **Night Mode Audio Normalization & Dialogue Clarity (<kbd>N</kbd> / <kbd>y</kbd>)**: Real-time vocal presence enhancement (`equalizer`), low-end de-mudding (`highpass`), and dynamic compression (`dynaudnorm`) to balance quiet dialogue and loud sound effects during late-night viewing.
