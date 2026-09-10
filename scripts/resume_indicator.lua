@@ -6,7 +6,7 @@
     Features:
     - Follows the exact native OSD styling of biraj-mpv-conf (Subtitles/Audio/Playlist format).
     - Displays: "Resuming: (14:22 / 24:00)" or "Resuming: (14:22)"
-    - Automatically ignores fresh file starts (first 5 seconds).
+    - Automatically ignores fresh file starts (first 3% / min 3s) and near-completion (last 5% / 95% mark).
     - Only triggers once on initial file load restoration; never triggers during manual seeks.
 --]]
 
@@ -15,9 +15,11 @@ local options = require 'mp.options'
 
 local opts = {
     enable = true,
-    duration = 2.5,          -- OSD display duration in seconds (matches osd-duration)
-    min_resume_time = 5.0,   -- Minimum position in seconds to be considered a resume (ignores starts from beginning)
-    show_duration = true,    -- Include total duration e.g. "Resuming: (14:22 / 24:00)"
+    duration = 2.5,                -- OSD display duration in seconds (matches osd-duration)
+    min_resume_percent = 3.0,      -- Minimum playback percentage to trigger resume (ignores fresh starts < 3%)
+    max_resume_percent = 95.0,     -- Maximum playback percentage to trigger resume (ignores near-completion >= 95%)
+    min_duration = 100.0,          -- Minimum media duration in seconds to trigger resume notification (default: 100s)
+    show_duration = true,          -- Include total duration e.g. "Resuming: (14:22 / 24:00)"
 }
 
 options.read_options(opts, "resume_indicator")
@@ -36,16 +38,45 @@ local function format_time(seconds)
     end
 end
 
+-- Calculate start and end percentage threshold boundaries
+local function get_threshold_bounds(duration)
+    if not duration or duration <= 0 then return nil, nil end
+    local start_p = math.max(0.0, opts.min_resume_percent or 0.0)
+    local max_p = math.min(100.0, opts.max_resume_percent or 100.0)
+
+    local start_sec = 0
+    if start_p > 0 then
+        start_sec = math.max(3.0, duration * (start_p / 100.0))
+    end
+
+    local end_sec = duration
+    if max_p < 100.0 then
+        end_sec = math.min(duration - 5.0, duration * (max_p / 100.0))
+    end
+
+    if start_sec >= end_sec then return nil, nil end
+    return start_sec, end_sec
+end
+
 local function check_and_notify_resume()
     if not opts.enable or has_checked_resume then return end
 
-    -- Check if active file has valid duration
+    -- Check if active file has valid duration and is greater than min_duration (default: 100s)
     local duration = mp.get_property_number("duration", 0)
-    if duration <= 0 then return end
+    if duration <= 0 or (opts.min_duration and duration <= opts.min_duration) then return end
 
     local time_pos = mp.get_property_number("time-pos", 0)
-    -- Ignore fresh starts and ignore files restoring near the very end (last 10 seconds)
-    if time_pos >= opts.min_resume_time and (duration - time_pos) > 10.0 then
+    local start_sec, end_sec = get_threshold_bounds(duration)
+    local is_valid_resume = false
+
+    if start_sec and end_sec then
+        is_valid_resume = (time_pos >= start_sec and time_pos < end_sec)
+    else
+        is_valid_resume = (time_pos >= 3.0 and time_pos < (duration - 5.0))
+    end
+
+    -- Ignore fresh starts and ignore files restoring near the very end
+    if is_valid_resume then
         has_checked_resume = true
         local cur_str = format_time(time_pos)
         local msg_text
