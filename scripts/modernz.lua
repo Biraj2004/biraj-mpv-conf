@@ -3231,16 +3231,16 @@ local function osc_init()
     ne = new_element("jump_backward", "button")
     ne.softrepeat = user_opts.jump_softrepeat
     ne.content = jump_icon[1]
-    ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", -jump_amount, jump_mode) end
-    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", -jump_more_amount, jump_mode) end
+    ne.eventresponder["mbtn_left_down"] = function () mp.commandv("osd-msg-bar", "seek", -jump_amount, jump_mode) end
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("osd-msg-bar", "seek", -jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-back-step") end
 
     --jump_forward
     ne = new_element("jump_forward", "button")
     ne.softrepeat = user_opts.jump_softrepeat
     ne.content = jump_icon[2]
-    ne.eventresponder["mbtn_left_down"] = function () mp.commandv("seek", jump_amount, jump_mode) end
-    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("seek", jump_more_amount, jump_mode) end
+    ne.eventresponder["mbtn_left_down"] = function () mp.commandv("osd-msg-bar", "seek", jump_amount, jump_mode) end
+    ne.eventresponder["mbtn_right_down"] = function () mp.commandv("osd-msg-bar", "seek", jump_more_amount, jump_mode) end
     ne.eventresponder["shift+mbtn_left_down"] = function () mp.commandv("frame-step") end
 
     --chapter_prev

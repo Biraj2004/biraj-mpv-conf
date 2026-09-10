@@ -328,10 +328,23 @@ for _, prop in ipairs(layout_props) do
     end)
 end
 
+local is_observing_time = false
+
+-- Dynamic timestamp update during seeking while paused
+local function on_time_pos_change(_, _)
+    if is_paused and opts.enable then
+        update_overlay()
+    end
+end
+
 -- Handle pause / unpause state changes
 local function on_pause_change(_, paused)
     is_paused = (paused == true)
     if is_paused then
+        if not is_observing_time then
+            is_observing_time = true
+            mp.observe_property("time-pos", "number", on_time_pos_change)
+        end
         local now = mp.get_time() or 0
         -- If an OSD message (e.g. from seek or volume right before pausing) is still active on screen:
         if now < active_osd_expire_time then
@@ -362,6 +375,10 @@ local function on_pause_change(_, paused)
         end
         update_overlay()
     else
+        if is_observing_time then
+            is_observing_time = false
+            mp.unobserve_property(on_time_pos_change)
+        end
         if shift_timer then
             shift_timer:kill()
             shift_timer = nil
@@ -374,15 +391,7 @@ local function on_pause_change(_, paused)
     end
 end
 
--- Dynamic timestamp update during seeking while paused
-local function on_time_pos_change(_, _)
-    if is_paused and opts.enable then
-        update_overlay()
-    end
-end
-
 mp.observe_property("pause", "bool", on_pause_change)
-mp.observe_property("time-pos", "number", on_time_pos_change)
 
 -- Update if a new file is loaded while paused
 mp.register_event("file-loaded", function()
@@ -393,6 +402,10 @@ end)
 
 -- Cleanup on file change or exit
 local function cleanup()
+    if is_observing_time then
+        is_observing_time = false
+        mp.unobserve_property(on_time_pos_change)
+    end
     if shift_timer then
         shift_timer:kill()
         shift_timer = nil

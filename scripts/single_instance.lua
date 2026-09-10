@@ -30,10 +30,23 @@ local ipc_socket_path = is_windows and "\\\\.\\pipe\\mpvsocket_playlist" or ((os
 local temp_dir = is_windows and (os.getenv("TEMP") or os.getenv("TMP") or "C:\\Windows\\Temp") or (os.getenv("TMPDIR") or "/tmp")
 local lock_file = is_windows and (temp_dir .. "\\mpv_playlist_master.lock") or (temp_dir .. "/mpv_playlist_master.lock")
 
+local ffi_loaded, ffi = pcall(require, "ffi")
+if ffi_loaded and is_windows then
+    pcall(function()
+        ffi.cdef[[
+            void Sleep(unsigned long dwMilliseconds);
+        ]]
+    end)
+end
+
 local function sleep_ms(ms)
-    local start = mp.get_time()
-    local target = ms / 1000.0
-    while (mp.get_time() - start) < target do end
+    if ffi_loaded and is_windows then
+        ffi.C.Sleep(ms)
+    else
+        local start = mp.get_time()
+        local target = ms / 1000.0
+        while (mp.get_time() - start) < target do end
+    end
 end
 
 local function escape_json_str(str)
