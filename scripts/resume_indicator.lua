@@ -6,7 +6,7 @@
     Features:
     - Follows the exact native OSD styling of biraj-mpv-conf (Subtitles/Audio/Playlist format).
     - Displays: "Resuming: (14:22 / 24:00)" or "Resuming: (14:22)"
-    - Automatically ignores fresh file starts (first 3% / min 3s) and near-completion (last 5% / 95% mark).
+    - Automatically ignores fresh file starts (first 2% / min 3s) and near-completion (last 5% / 95% mark).
     - Only triggers once on initial file load restoration; never triggers during manual seeks.
 --]]
 
@@ -16,7 +16,7 @@ local options = require 'mp.options'
 local opts = {
     enable = true,
     duration = 2.5,                -- OSD display duration in seconds (matches osd-duration)
-    min_resume_percent = 3.0,      -- Minimum playback percentage to trigger resume (ignores fresh starts < 3%)
+    min_resume_percent = 2.0,      -- Minimum playback percentage to trigger resume (ignores fresh starts < 2%)
     max_resume_percent = 95.0,     -- Maximum playback percentage to trigger resume (ignores near-completion >= 95%)
     min_duration = 100.0,          -- Minimum media duration in seconds to trigger resume notification (default: 100s)
     show_duration = true,          -- Include total duration e.g. "Resuming: (14:22 / 24:00)"

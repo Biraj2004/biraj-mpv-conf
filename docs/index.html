@@ -336,7 +336,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">Graceful Auto-Exit at End of Media</h3>
-                    <p class="feature-desc">Pauses at EOF with a snappy 4s grace period. Renders a native top-left <code>Exiting...</code> OSD warning during the final 2.0s before quitting. Intelligently suppresses watch-later during the opening intro (first 5.0s) and completion (final 10.0s or EOF) so brief preview launches and completed videos start fresh from <code>0:00</code>, with instant cancellation on rewind (<kbd>&larr;</kbd>), unpause, or new media load.</p>
+                    <p class="feature-desc">Pauses at EOF with a snappy 4s grace period. Renders a native top-left <code>Exiting...</code> OSD warning during the final 2.0s before quitting. Intelligently bypasses watch-later for short videos (&le; 100s), and suppresses saving during the opening intro (first 2.0%) and completion (final 5.0% / 95% mark) so brief preview launches and finished videos start fresh from <code>0:00</code>, with instant cancellation on rewind (<kbd>&larr;</kbd>), unpause, or new media load.</p>
                 </div>
 
                 <!-- Feature 10 -->

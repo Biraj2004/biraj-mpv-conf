@@ -7,7 +7,7 @@
     - Waits for a configurable grace period (default: 4.0s) after a video/playlist finishes.
     - Gives user time to seek backwards (e.g., Left Arrow) or unpause to keep mpv open.
     - Displays a native top-left OSD warning ("Exiting...") during the final moments (default: last 2.0s).
-    - Automatically clears watch-later resume state when reaching the end (final 5% / 95% completion mark) or beginning (< 3%) so re-opening starts fresh from 0:00.
+    - Automatically clears watch-later resume state when reaching the end (final 5% / 95% completion mark) or beginning (< 2%) so re-opening starts fresh from 0:00.
     - Intelligently handles edge cases:
         * Multi-file playlists (only exits on the final file).
         * Looping modes (loop-file / loop-playlist are respected).
@@ -27,7 +27,7 @@ local opts = {
     show_warning = true,            -- Show the OSD warning message
     only_fullscreen = false,        -- Only auto-exit if mpv is in fullscreen mode
     reset_watch_later = true,       -- Reset watch-later position when reaching the end of media
-    start_threshold_percent = 3.0,  -- Percentage from beginning to ignore watch-later (default: 3.0%)
+    start_threshold_percent = 2.0,  -- Percentage from beginning to ignore watch-later (default: 2.0%)
     eof_threshold_percent = 5.0,    -- Percentage from end of media to treat video as completed (default: 5.0% / 95% completion mark)
     min_duration = 100.0,           -- Minimum video duration in seconds to enable watch-later saving (default: 100.0s)
 }
@@ -210,7 +210,7 @@ mp.observe_property("time-pos", "number", function(_, time_pos)
         return
     end
 
-    -- Reset watch-later when within initial start threshold (default: 3.0%) or final completion threshold (default: 5.0% / 95% completion mark)
+    -- Reset watch-later when within initial start threshold (default: 2.0%) or final completion threshold (default: 5.0% / 95% completion mark)
     local start_sec, end_sec = get_threshold_bounds(duration)
     if start_sec and end_sec then
         if time_pos < start_sec or time_pos >= end_sec then
