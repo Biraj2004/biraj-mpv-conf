@@ -330,7 +330,6 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - Full-featured **contextual GUI menu** (`menu.conf`) accessible on right-click or via <kbd>g</kbd> <kbd>m</kbd>:
   - Toggle audio/subtitle streams with dedicated `Off / None` option, secondary subtitles, and audio devices.
   - Enable **Night Mode Audio Normalization** directly from the audio menu.
-  - Choose HDR Tone-Mapping curves (*Auto libplacebo, BT.2390, Spline, Reinhard, Clip*).
   - Switch ModernZ layouts (*Default, Compact, Mini, Seekbar*) and icon styles (*Fluent, Material*).
   - Adjust playback speed (*0.25x* to *8.0x*), A-B looping, aspect ratios, zoom, and rotation.
   - View real-time playback statistics, drop frames, and media information.
@@ -524,7 +523,6 @@ biraj-mpv-conf/
 | <kbd>g</kbd> | **Toggle Debanding filter on/off (with OSD status)** |
 | <kbd>Shift</kbd> + <kbd>a</kbd> (<kbd>A</kbd>) | **Cycle Video Aspect Ratio override (*16:9 → 4:3 → 2.35:1 → Original*)** |
 | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
-| <kbd>Alt</kbd> + <kbd>h</kbd> | Cycle HDR Tone-Mapping curves (*Auto, BT.2390, Spline, Reinhard, Clip*) |
 | <kbd>s</kbd> | Take Screenshot (saved to `~/Pictures/MPV-Screenshots/`) |
 | <kbd>Shift</kbd> + <kbd>s</kbd> (<kbd>S</kbd>) | Take Screenshot **without subtitles** |
 
