@@ -348,7 +348,7 @@
                         </svg>
                     </div>
                     <h3 class="feature-title">Native OSD Pause Notification</h3>
-                    <p class="feature-desc">Persistent top-left badge (<code>Paused at hr:min:sec / total time</code>) matching MPV's native dark translucent OSD box. Features dynamic collision avoidance (shifts down cleanly for other OSD messages), proportional multi-line clearance, cross-state seek tracking, live seeking timestamps, and automatic repositioning.</p>
+                    <p class="feature-desc">Persistent top-left badge (<code>Paused at hr:min:sec / total time</code>) matching MPV's native dark translucent OSD box. Features dynamic collision avoidance (shifts down cleanly for other OSD messages), proportional multi-line clearance, cross-state seek tracking, live seeking timestamps, event-driven zero-overhead observer (eliminates thousands of redundant callbacks during playback), and automatic repositioning.</p>
                 </div>
             </div>
         </div>
@@ -602,6 +602,7 @@
 │   └── modernz-icons.ttf
 ├── scripts\
 │   ├── auto_exit_eof.lua
+│   ├── cache_manager.lua
 │   ├── cycle_audio.lua
 │   ├── hdr_badge.lua
 │   ├── modernz.lua
@@ -732,7 +733,7 @@
                         </tr>
                         <tr data-cat="playback">
                             <td><kbd>&rarr;</kbd> / <kbd>&larr;</kbd></td>
-                            <td>Seek forward / backward 6 seconds (exact with OSD bar)</td>
+                            <td>Seek forward / backward 6 seconds (exact with OSD bar, unified with ModernZ &lt;10 / 10&gt; buttons)</td>
                             <td><span class="badge-cat">Playback</span></td>
                         </tr>
                         <tr data-cat="playback">
@@ -833,7 +834,7 @@
                         <!-- Video & Streaming -->
                         <tr data-cat="video">
                             <td><kbd>Ctrl</kbd> + <kbd>y</kbd></td>
-                            <td><strong>Cycle Stream Quality</strong> (720p &rarr; 1080p &rarr; 1440p &rarr; Best)</td>
+                            <td><strong>Cycle Stream Quality</strong> (720p &rarr; 1080p &rarr; 1440p &rarr; Best, dynamically resumes from current second)</td>
                             <td><span class="badge-cat">Streaming</span></td>
                         </tr>
                         <tr data-cat="video">
@@ -1105,9 +1106,10 @@ sub-margin-y=36</code></pre>
                     <p class="credit-desc">Original author, curator, and maintainer of this configuration suite. Custom developed features and scripts include:</p>
                     <ul class="credit-list">
                         <li><strong><code>cache_manager.lua</code></strong> — Centralized & segregated cache architecture on C: drive (<code>%LOCALAPPDATA%\mpv\cache\</code>) with dedicated subdirectories for GPU shaders, resume watch history, and hover thumbnails, auto-healing missing folders on startup.</li>
-                        <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 30ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
+                        <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio &amp; subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, two-pass deterministic track matching, 30ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
+                        <li><strong><code>single_instance.lua</code></strong> — Win32 FFI zero-CPU sleep implementation for the single-instance IPC pipeline, eliminating CPU spin-loops during Windows Explorer multi-select launches.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
-                        <li><strong><code>hdr_badge.lua</code>, <code>resume_indicator.lua</code>, & <code>pause_notify.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart duration formatting.</li>
+                        <li><strong><code>hdr_badge.lua</code>, <code>resume_indicator.lua</code>, &amp; <code>pause_notify.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with event-driven zero-overhead observer architecture and smart duration formatting.</li>
                         <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>

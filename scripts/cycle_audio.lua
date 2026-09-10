@@ -118,9 +118,17 @@ local function cycle_audio(direction)
             current_index = 1
         else
             for i, track in ipairs(tracks) do
-                if tostring(track.id) == tostring(current_aid) or track.selected then
+                if tostring(track.id) == tostring(current_aid) then
                     current_index = i
                     break
+                end
+            end
+            if not current_index then
+                for i, track in ipairs(tracks) do
+                    if track.selected then
+                        current_index = i
+                        break
+                    end
                 end
             end
         end
@@ -200,9 +208,17 @@ local function cycle_sub(direction)
             current_index = 0 -- "none" state
         else
             for i, track in ipairs(tracks) do
-                if tostring(track.id) == tostring(current_sid) or track.selected then
+                if tostring(track.id) == tostring(current_sid) then
                     current_index = i
                     break
+                end
+            end
+            if not current_index then
+                for i, track in ipairs(tracks) do
+                    if track.selected then
+                        current_index = i
+                        break
+                    end
                 end
             end
             if not current_index then

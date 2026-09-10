@@ -134,6 +134,7 @@ Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat
    │   └── thumbfast.conf
    ├── scripts/
    │   ├── auto_exit_eof.lua
+   │   ├── cache_manager.lua
    │   ├── cycle_audio.lua
    │   ├── hdr_badge.lua
    │   ├── modernz.lua
@@ -173,6 +174,7 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    │   └── thumbfast.conf
    ├── scripts/
    │   ├── auto_exit_eof.lua
+   │   ├── cache_manager.lua
    │   ├── cycle_audio.lua
    │   ├── hdr_badge.lua
    │   ├── modernz.lua
@@ -185,7 +187,8 @@ If you are using a portable mpv build (e.g., extracted to `C:\mpv\` or a USB dri
    │   └── thumbfast.lua
    ├── input.conf
    ├── menu.conf
-   └── mpv.conf
+   ├── mpv.conf
+   └── yt-dlp.conf
    ```
 4. Install `fonts/modernz-icons.ttf` onto your system to enable vector icons.
 
@@ -302,6 +305,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 ### Modern UI and Fluent On-Screen Controller
 - **[ModernZ](https://github.com/Samillion/ModernZ) OSC Interface**: Replaces the default interface with a clean, responsive On-Screen Controller styled with Fluent/Material vector icons.
 - **Translucent Minimalist OSD**: Dark pill-box OSD overlays with crisp typography (`osd-duration=2500` 2.5s readable duration, `osd-playing-msg-duration=2500` 2.5s startup filename duration), eliminating disruptive double seekbars (`osd-bar=no`).
+- **Unified OSD Seeking Bar**: Both keyboard arrow seeks and ModernZ controller jump buttons (`<10` / `10>`) invoke `osd-msg-bar` for consistent position and duration timestamp display (`[00:01:23 / 00:45:00]`).
 - **Sleek Pause / Play Indicator**: Minimalist, non-distracting center pause/unpause visual flash indicators ([`pause_indicator_lite`](https://github.com/Samillion/ModernZ/tree/main/extras/pause-indicator-lite)).
 - **Action-Based Controls & State-Based Overlay Philosophy**:
   - **Bottom OSC Control Bar (Action-Based — YouTube/VLC Standard)**: The interactive buttons follow the standard media player trigger philosophy, displaying the **action to be performed on click** (e.g. shows `▶` Play when paused to resume, and `||` Pause when playing to pause).
@@ -370,6 +374,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 
 ### Persistent On-Screen Pause Notification ([`pause_notify.lua`](scripts/pause_notify.lua))
 - **Theme-Matched Native OSD Notification**: Displays a clean, non-intrusive top-left OSD badge (**`Paused at hr:min:sec / total time`**) styled with MPV's native dark translucent background box (`osd-border-style=background-box`, `osd-back-color=0/0.5`, `osd-font-size=26`, `osd-shadow-offset=4`).
+- **Event-Driven Zero-Overhead Observer**: Dynamically unobserves `time-pos` during active playback, eliminating 3,600–8,640 redundant Lua callbacks per minute, and immediately re-observes upon pause for frame-accurate real-time scrubbing feedback with 0% CPU consumption.
 - **Dynamic Collision Avoidance (Zero Overlapping)**: Uses a dedicated ASS overlay channel (`ass-events`) so that mpv's native OSD channel remains completely free. Whenever another native or script message appears (volume adjustment, mute, seek timeline, audio/subtitle tracks, audio filter toggles like `cycle-values af`, speed, screenshot, ab-loop), that message takes mpv's standard top position (`y=16`), and "Paused at..." dynamically shifts down underneath it.
 - **Proportional Multi-Line Spacing**: Instead of an oversized 2.0x gap, each extra line adds `fs + 4` (30px), shifting down by 70px for 2-line messages (e.g. subtitles, audio filters) with an exact, uniform ~8px visual gap, completely eliminating overlapping without awkward voids.
 - **Cross-State Lifetime Tracking ("Seek Then Pause")**: Seeking during active playback and immediately pausing renders the pause notification shifted cleanly underneath the lingering seek message, then smoothly returns to the top once that message fades away.
@@ -380,7 +385,7 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - **Flexible User Preference**: Independent on/off switches in [`script-opts/pause_notify.conf`](script-opts/pause_notify.conf) (`enable=yes/no`) and [`script-opts/pause_indicator_lite.conf`](script-opts/pause_indicator_lite.conf) (`enable=yes/no`) let users choose between the top-left OSD notification, the center overlay rectangles, both, or neither.
 
 ### Advanced Subtitle & Audio Management
-- **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant visual OSD response with 30ms decoder coalescing, preventing decoder thrashing, audio pops, and video freezes during rapid key spamming. Features seamless GUI menu synchronization and type-safe track matching.
+- **Anti-Spam Smart Track Cycler ([`cycle_audio.lua`](scripts/cycle_audio.lua))**: 0ms instant visual OSD response with 30ms decoder coalescing and two-pass deterministic track matching (exact ID match followed by active selection fallback), preventing decoder thrashing, audio pops, video freezes, and track-jumping race conditions during rapid key spamming. Features seamless GUI menu synchronization and type-safe track matching.
 - **Pixel-Perfect Subtitle Geometry (`sub-ass-use-video-data=all`)**: Modern mpv v0.39+ standard passing full video resolution and aspect ratio to `libass` for 100% accurate signs, rotations, and Gaussian blurs with 0 startup warnings.
 - **Universal Subtitle Styling**: Renders crisp, high-contrast subtitles (`sub-font-size=50`, `sub-border-size=1.8`, `sub-shadow-offset=1.5`, `sub-shadow-color=0/0/0/0.5`, `#FFFFFF` with `#000000` outline and drop-shadow) guaranteeing immediate readability in both dark and bright scenes.
 - **Original Anime Typesetting & Positioning (`sub-ass-override=no`)**: Fully preserves author-intended ASS styling, top-screen song lyrics (`{\an8}`), signs, and typesetting for anime, while plain `.srt` and `.vtt` subtitles use your configured custom size and styling (`sub-margin-y=36`).
@@ -429,7 +434,7 @@ biraj-mpv-conf/
 │   ├── pause_indicator_lite.lua # Translucent center pause/resume indicator
 │   ├── pause_notify.lua      # Persistent native OSD pause notification ("Paused at hr:min:sec / total time")
 │   ├── resume_indicator.lua  # Clean OSD notification when resuming files e.g. "Resuming: (14:22 / 24:00)"
-│   ├── single_instance.lua   # Single-instance process forwarder
+│   ├── single_instance.lua   # Single-instance process forwarder with zero-CPU Win32 FFI sleeping for multi-file enqueueing
 │   ├── sort_playlist.lua     # Natural alphanumeric ascending video playlist sorter & filter
 │   └── thumbfast.lua         # High-performance seekbar thumbnail engine
 ├── script-opts/
@@ -691,9 +696,10 @@ icon_style=mixed      # Options: mixed, filled, outline
 
 ### Author & Maintainer
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
-  - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, 30ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
+  - **`cycle_audio.lua`**: Custom zero-lag audio & subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, two-pass deterministic track matching, anti-spam debouncing, type-safety, and seamless GUI menu synchronization.
+  - **`single_instance.lua`**: Win32 FFI zero-CPU sleep implementation for the single-instance IPC pipeline, eliminating CPU spin-loops during Windows Explorer multi-select launches.
   - **`sort_playlist.lua`**: Custom natural alphanumeric ascending video playlist sorting engine and automated non-video media filter with seamless background reordering and OSD feedback.
-  - **`hdr_badge.lua`, `resume_indicator.lua`, & `pause_notify.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with smart file-duration hour formatting.
+  - **`hdr_badge.lua`, `resume_indicator.lua`, & `pause_notify.lua`**: Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming at (14:22)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with event-driven zero-overhead observer architecture and smart file-duration hour formatting.
   - **`auto_exit_eof.lua`**: Graceful auto-exit at end of media with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.
   - **Unicode UTF-8 Dialog Integration (`open-file.lua`)**: PowerShell UTF-8 console output fix preserving special symbols, apostrophes, and curly quotes in filenames.
   - **Performance & Subtitle Architecture**: 250MB–425MB dynamic RAM seek buffer (with up to 175MB back-cache, 20s readahead, zero SSD wear), `gpu-next` tone-mapping pipeline, night mode normalization profiles, and precision anime subtitle typography.
