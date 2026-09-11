@@ -1994,12 +1994,12 @@ end
 local function download_done(success, result, error)
     if success and result and result.status == 0 then
         local path = get_download_path()
-        mp.commandv("show-text", "Download saved to " .. path, "-1", "1")
+        mp.commandv("show-text", "Download saved to " .. path, "2500", "1")
         state.downloaded_once = true
         msg.info("Download completed")
     else
         local err_msg = error or (result and result.error_string) or (result and result.status and result.status ~= 0 and "Process exited with code " .. tostring(result.status)) or "Unknown error"
-        mp.commandv("show-text", "Download failed - " .. err_msg, "-1", "1")
+        mp.commandv("show-text", "Download failed - " .. err_msg, "3500", "1")
         msg.warn("Download failed: " .. err_msg)
     end
     state.downloading = false
