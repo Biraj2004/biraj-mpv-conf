@@ -38,6 +38,13 @@ local function format_time(seconds)
     end
 end
 
+-- Helper to display OSD and notify pause_notify for dynamic collision avoidance
+local function show_osd(text, duration)
+    local dur = duration or opts.duration
+    mp.osd_message(text, dur)
+    mp.commandv("script-message-to", "pause_notify", "osd-notify", text, tostring(dur))
+end
+
 -- Calculate start and end percentage threshold boundaries
 local function get_threshold_bounds(duration)
     if not duration or duration <= 0 then return nil, nil end
@@ -86,7 +93,7 @@ local function check_and_notify_resume()
         else
             msg_text = string.format("Resuming: (%s)", cur_str)
         end
-        mp.osd_message(msg_text, opts.duration)
+        show_osd(msg_text, opts.duration)
     else
         has_checked_resume = true
     end

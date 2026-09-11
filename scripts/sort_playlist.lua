@@ -96,6 +96,13 @@ local function alphanum_key(filename)
     return status and key or target:lower()
 end
 
+-- Helper to display OSD and notify pause_notify for dynamic collision avoidance
+local function show_osd(text, duration)
+    local dur = duration or 2
+    mp.osd_message(text, dur)
+    mp.commandv("script-message-to", "pause_notify", "osd-notify", text, tostring(dur))
+end
+
 local is_sorting = false
 
 local function clean_and_sort_playlist(silent)
@@ -104,7 +111,7 @@ local function clean_and_sort_playlist(silent)
     local pl = mp.get_property_native("playlist", {})
     if not pl or #pl <= 1 then
         if not silent and pl and #pl == 1 then
-            mp.osd_message("Playlist: 1 item", 2)
+            show_osd("Playlist: 1 item", 2)
         end
         return
     end
@@ -112,7 +119,7 @@ local function clean_and_sort_playlist(silent)
     -- Safety Cap: Prevent hang if an accidental massive file tree (> 5,000 items) is queued
     if #pl > MAX_SORT_LIMIT then
         if not silent then
-            mp.osd_message("Playlist: Large batch (" .. #pl .. " items) — sorting skipped for performance", 3)
+            show_osd("Playlist: Large batch (" .. #pl .. " items) — sorting skipped for performance", 3)
         end
         return
     end
@@ -154,7 +161,7 @@ local function clean_and_sort_playlist(silent)
         -- User dropped exclusively non-video files (e.g. only text notes)
         is_sorting = false
         if not silent then
-            mp.osd_message("No video files found in selection", 3)
+            show_osd("No video files found in selection", 3)
         end
         return
     end
@@ -163,7 +170,7 @@ local function clean_and_sort_playlist(silent)
     if #valid_videos <= 1 then
         is_sorting = false
         if removed_any and not silent then
-            mp.osd_message("Playlist: Filtered non-video files", 2)
+            show_osd("Playlist: Filtered non-video files", 2)
         end
         return
     end
@@ -181,9 +188,9 @@ local function clean_and_sort_playlist(silent)
         is_sorting = false
         if not silent then
             if removed_any then
-                mp.osd_message("Playlist: Filtered non-video files (sorted)", 2)
+                show_osd("Playlist: Filtered non-video files (sorted)", 2)
             else
-                mp.osd_message("Playlist already sorted (ascending)", 2)
+                show_osd("Playlist already sorted (ascending)", 2)
             end
         end
         return
@@ -233,9 +240,9 @@ local function clean_and_sort_playlist(silent)
 
     if not silent then
         if removed_any then
-            mp.osd_message("Playlist: Filtered non-video files & sorted", 2)
+            show_osd("Playlist: Filtered non-video files & sorted", 2)
         else
-            mp.osd_message("Playlist sorted in ascending order", 2)
+            show_osd("Playlist sorted in ascending order", 2)
         end
     end
 end

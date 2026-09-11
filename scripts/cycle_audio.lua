@@ -7,6 +7,13 @@ local mp = require 'mp'
 local DEBOUNCE_DELAY = 0.03 -- 30ms debounce window (ultra-fast near-instant response while preventing decoder thrashing)
 local OSD_DURATION = 2.5     -- 2.5 seconds display time (universal OSD duration)
 
+-- Helper to display OSD and notify pause_notify for dynamic collision avoidance
+local function show_osd(text, duration)
+    local dur = duration or OSD_DURATION
+    mp.osd_message(text, dur)
+    mp.commandv("script-message-to", "pause_notify", "osd-notify", text, tostring(dur))
+end
+
 -- Audio State
 local pending_aid = nil
 local audio_timer = nil
@@ -102,7 +109,7 @@ local function cycle_audio(direction)
     local count = #tracks
 
     if count == 0 then
-        mp.osd_message("No audio tracks", OSD_DURATION)
+        show_osd("No audio tracks", OSD_DURATION)
         return
     end
 
@@ -137,7 +144,7 @@ local function cycle_audio(direction)
     if count == 1 then
         last_audio_idx = 1
         pending_aid = tracks[1].id
-        mp.osd_message(format_audio_osd(tracks[1], 1, 1), OSD_DURATION)
+        show_osd(format_audio_osd(tracks[1], 1, 1), OSD_DURATION)
         if audio_timer then audio_timer:kill() end
         audio_timer = mp.add_timeout(DEBOUNCE_DELAY, apply_audio_switch)
         return
@@ -156,7 +163,7 @@ local function cycle_audio(direction)
     pending_aid = next_track.id
 
     -- Instant visual OSD feedback with 0ms delay
-    mp.osd_message(format_audio_osd(next_track, next_index, count), OSD_DURATION)
+    show_osd(format_audio_osd(next_track, next_index, count), OSD_DURATION)
 
     -- Debounce heavy decoder initialization
     if audio_timer then audio_timer:kill() end
@@ -190,7 +197,7 @@ local function cycle_sub(direction)
     local count = #tracks
 
     if count == 0 then
-        mp.osd_message("No subtitles", OSD_DURATION)
+        show_osd("No subtitles", OSD_DURATION)
         return
     end
 
@@ -237,11 +244,11 @@ local function cycle_sub(direction)
 
     if next_state == 0 then
         pending_sid = "no"
-        mp.osd_message("Subtitles: none", OSD_DURATION)
+        show_osd("Subtitles: none", OSD_DURATION)
     else
         local next_track = tracks[next_state]
         pending_sid = next_track.id
-        mp.osd_message(format_sub_osd(next_track, next_state, count), OSD_DURATION)
+        show_osd(format_sub_osd(next_track, next_state, count), OSD_DURATION)
     end
 
     -- Debounce libass font-loading and demuxer switches

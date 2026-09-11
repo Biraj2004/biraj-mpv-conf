@@ -31,6 +31,7 @@ options.read_options(opts, "pause_notify")
 
 local is_paused = false
 local is_shifted = false
+local is_stats_active = false
 local shift_lines = 1
 local shift_timer = nil
 local shift_target_time = 0
@@ -92,7 +93,7 @@ end
 
 -- Render the pause notification overlay with exact native mpv OSD styling
 local function update_overlay()
-    if not opts.enable or not is_paused then
+    if not opts.enable or not is_paused or is_stats_active then
         ov.data = ""
         ov:remove()
         return
@@ -278,6 +279,21 @@ mp.register_event("log-message", function(e)
         return
     end
 
+    -- Detect stats toggle (i) or stats temporary display (I)
+    if e.text:find("stats/display%-stats%-toggle") then
+        is_stats_active = not is_stats_active
+        if is_stats_active then
+            ov.data = ""
+            ov:remove()
+        else
+            if is_paused then update_overlay() end
+        end
+        return
+    elseif e.text:find("stats/display%-stats") then
+        trigger_shift(4.0, 15)
+        return
+    end
+
     -- Detect commands carrying OSD flags
     local cmd, flags = e.text:match('Run command: ([%w%-_]+), flags=(%d+)')
     if cmd and flags then
@@ -306,7 +322,8 @@ mp.register_event("log-message", function(e)
             cmd == "add" or cmd == "cycle" or cmd == "cycle-values" or cmd == "multiply" or
             cmd == "seek" or cmd == "sub-seek" or cmd == "sub-step" or cmd == "revert-seek" or
             cmd == "set" or cmd == "ab-loop" or cmd == "playlist-next" or cmd == "playlist-prev" or
-            cmd == "chapter-seek" or cmd == "playlist-play-index" or cmd == "playlist-shuffle"
+            cmd == "chapter-seek" or cmd == "playlist-play-index" or cmd == "playlist-shuffle" or
+            (cmd == "script-binding" and not (e.text:find("open_file") or e.text:find("select") or e.text:find("hdr_badge") or e.text:find("positioning")))
         )) then
             local lines = 1
             -- cycle-values on filters: "Audio filters:\n..." is 2 lines when enabled, 1 line when cleared
@@ -317,6 +334,14 @@ mp.register_event("log-message", function(e)
             trigger_shift(nil, lines)
         end
     end
+end)
+
+-- Direct script message support for custom scripts (e.g. cycle_audio, sort_playlist)
+mp.register_script_message("osd-notify", function(text, dur_str)
+    if not opts.enable then return end
+    local duration = dur_str and tonumber(dur_str) or nil
+    local lines = estimate_text_lines(text)
+    trigger_shift(duration, lines)
 end)
 
 -- Adapt immediately if mpv or scripts change layout/margins/font-size
@@ -396,6 +421,7 @@ mp.observe_property("pause", "bool", on_pause_change)
 
 -- Update if a new file is loaded while paused
 mp.register_event("file-loaded", function()
+    is_stats_active = false
     if is_paused and opts.enable then
         update_overlay()
     end
@@ -403,6 +429,7 @@ end)
 
 -- Cleanup on file change or exit
 local function cleanup()
+    is_stats_active = false
     if is_observing_time then
         is_observing_time = false
         mp.unobserve_property(on_time_pos_change)
