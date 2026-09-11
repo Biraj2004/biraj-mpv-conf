@@ -32,6 +32,7 @@ options.read_options(opts, "pause_notify")
 local is_paused = false
 local is_shifted = false
 local is_stats_active = false
+local is_console_active = false
 local shift_lines = 1
 local shift_timer = nil
 local shift_target_time = 0
@@ -93,7 +94,7 @@ end
 
 -- Render the pause notification overlay with exact native mpv OSD styling
 local function update_overlay()
-    if not opts.enable or not is_paused or is_stats_active then
+    if not opts.enable or not is_paused or is_stats_active or is_console_active then
         ov.data = ""
         ov:remove()
         return
@@ -279,18 +280,34 @@ mp.register_event("log-message", function(e)
         return
     end
 
-    -- Detect stats toggle (i) or stats temporary display (I)
-    if e.text:find("stats/display%-stats%-toggle") then
-        is_stats_active = not is_stats_active
-        if is_stats_active then
-            ov.data = ""
-            ov:remove()
-        else
-            if is_paused then update_overlay() end
+    -- Accurately detect when the stats overlay is active (via 'i', 'I', or page keys)
+    if e.text:find('name="input_forced_stats"') then
+        local contents = e.text:match('contents="([^"]*)"')
+        if contents then
+            is_stats_active = (#contents > 0)
+            if is_stats_active then
+                ov.data = ""
+                ov:remove()
+            else
+                if is_paused and not is_console_active then update_overlay() end
+            end
         end
         return
-    elseif e.text:find("stats/display%-stats") then
-        trigger_shift(4.0, 15)
+    end
+
+    -- Direct stats command invocation (instant pre-emptive hide)
+    if e.text:find("stats/display%-stats") then
+        is_stats_active = true
+        ov.data = ""
+        ov:remove()
+        return
+    end
+
+    -- Direct console command invocation (instant pre-emptive hide)
+    if e.text:find("console/enable") then
+        is_console_active = true
+        ov.data = ""
+        ov:remove()
         return
     end
 
@@ -358,6 +375,19 @@ for _, prop in ipairs(layout_props) do
         end
     end)
 end
+
+-- Hide pause notification whenever mpv's interactive console is open
+mp.observe_property("user-data/mpv/console/open", "bool", function(_, is_open)
+    is_console_active = (is_open == true)
+    if is_console_active then
+        ov.data = ""
+        ov:remove()
+    else
+        if is_paused and not is_stats_active then
+            update_overlay()
+        end
+    end
+end)
 
 local is_observing_time = false
 
@@ -427,6 +457,7 @@ mp.observe_property("pause", "bool", on_pause_change)
 -- Update if a new file is loaded while paused
 mp.register_event("file-loaded", function()
     is_stats_active = false
+    is_console_active = false
     if is_paused and opts.enable then
         update_overlay()
     end
@@ -435,6 +466,7 @@ end)
 -- Cleanup on file change or exit
 local function cleanup()
     is_stats_active = false
+    is_console_active = false
     if is_observing_time then
         is_observing_time = false
         mp.unobserve_property(on_time_pos_change)
