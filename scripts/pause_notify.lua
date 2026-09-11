@@ -100,6 +100,7 @@ local function update_overlay()
     if not opts.enable or not is_paused or is_stats_active or is_console_active then
         ov.data = ""
         ov:remove()
+        mp.set_property_bool("user-data/pause_notify/visible", false)
         return
     end
 
@@ -115,11 +116,12 @@ local function update_overlay()
     -- \an7 pins to top-left. Inherits exact native OSD font, size, background box, and colors from mpv.
     ov.data = string.format("{\\an7\\pos(%d,%d)}%s", mx, y, msg_text)
     ov:update()
+    mp.set_property_bool("user-data/pause_notify/visible", true)
 end
 
 -- Trigger shifting the pause notification down when another OSD message is active
 local function trigger_shift(duration, lines)
-    if not opts.enable then return end
+    if not opts.enable or is_stats_active or is_console_active then return end
 
     local default_dur = (mp.get_property_number("osd-duration", 2500) / 1000.0)
     local active_dur = (duration or default_dur) + opts.reposition_delay
@@ -265,6 +267,17 @@ mp.register_event("log-message", function(e)
 
         -- Count visual lines accounting for explicit newlines and word wrapping
         local text = e.text:match('text="(.-)"') or e.text:match('text="([^"]*)"')
+
+        -- Ignore empty text or duration <= 0 (OSD wipe/clear commands)
+        if not text or #text == 0 or (duration and duration <= 0) then
+            return
+        end
+
+        -- Suppress OSD shift while diagnostic overlay (stats or console) is active
+        if is_stats_active or is_console_active then
+            return
+        end
+
         local lines = estimate_text_lines(text)
         trigger_shift(duration, lines)
         return
@@ -284,33 +297,40 @@ mp.register_event("log-message", function(e)
     end
 
     -- Accurately detect when the stats overlay is active (via 'i', 'I', or page keys)
-    if e.text:find('name="input_forced_stats"') then
-        local contents = e.text:match('contents="([^"]*)"')
+    if e.text:find('input_forced_stats') then
+        local clean = e.text:gsub('\\+"', '"')
+        local contents = clean:match('contents="([^"]*)"')
         if contents then
             is_stats_active = (#contents > 0)
             if is_stats_active then
                 ov.data = ""
                 ov:remove()
+                mp.set_property_bool("user-data/pause_notify/visible", false)
             else
-                if is_paused and not is_console_active then update_overlay() end
+                if is_paused and not is_console_active then
+                    update_overlay()
+                end
             end
         end
         return
     end
 
-    -- Direct stats command invocation (instant pre-emptive hide)
-    if e.text:find("stats/display%-stats") then
-        is_stats_active = true
-        ov.data = ""
-        ov:remove()
-        return
-    end
-
-    -- Direct console command invocation (instant pre-emptive hide)
-    if e.text:find("console/enable") then
-        is_console_active = true
-        ov.data = ""
-        ov:remove()
+    -- Accurately detect when the interactive console overlay is active (via '`' or commands)
+    if e.text:find('input_forced_console') then
+        local clean = e.text:gsub('\\+"', '"')
+        local contents = clean:match('contents="([^"]*)"')
+        if contents then
+            is_console_active = (#contents > 0)
+            if is_console_active then
+                ov.data = ""
+                ov:remove()
+                mp.set_property_bool("user-data/pause_notify/visible", false)
+            else
+                if is_paused and not is_stats_active then
+                    update_overlay()
+                end
+            end
+        end
         return
     end
 
