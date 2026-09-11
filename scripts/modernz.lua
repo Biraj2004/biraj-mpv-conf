@@ -2004,15 +2004,23 @@ local function get_download_path()
     return path
 end
 
+-- Helper to display native OSD text and coordinate with pause_notify for dynamic collision avoidance
+local function show_osd_msg(text, duration_ms)
+    local ms = (duration_ms and duration_ms > 0) and duration_ms or 2500
+    local dur_sec = ms / 1000.0
+    mp.commandv("show-text", text, tostring(ms), "1")
+    mp.commandv("script-message-to", "pause_notify", "osd-notify", text, tostring(dur_sec))
+end
+
 local function download_done(success, result, error)
     if success and result and result.status == 0 then
         local path = get_download_path()
-        mp.commandv("show-text", "Download saved to " .. path, "2500", "1")
+        show_osd_msg("Download saved to " .. path, 2500)
         state.downloaded_once = true
         msg.info("Download completed")
     else
         local err_msg = error or (result and result.error_string) or (result and result.status and result.status ~= 0 and "Process exited with code " .. tostring(result.status)) or "Unknown error"
-        mp.commandv("show-text", "Download failed - " .. err_msg, "3500", "1")
+        show_osd_msg("Download failed - " .. err_msg, 3500)
         msg.warn("Download failed: " .. err_msg)
     end
     state.downloading = false
@@ -3477,7 +3485,7 @@ local function osc_init()
     ne.content = function() return state.shuffled and icons.shuffle_on or icons.shuffle_off end
     ne.tooltipF = function() return state.shuffled and locale.shuffle or locale.unshuffle end
     ne.eventresponder["mbtn_left_up"] = function()
-        mp.commandv("show-text", state.shuffled and locale.unshuffle or locale.shuffle, "-1", "1")
+        show_osd_msg(state.shuffled and locale.unshuffle or locale.shuffle, 2500)
         state.shuffled = not state.shuffled
         mp.command("playlist-" .. (state.shuffled and "shuffle" or "unshuffle"))
     end
@@ -3496,11 +3504,11 @@ local function osc_init()
         local localpath = get_download_path()
 
         if state.downloaded_once then
-            mp.commandv("show-text", locale.downloaded, "-1", "1")
+            show_osd_msg(locale.downloaded, 2500)
         elseif state.downloading then
-            mp.commandv("show-text", locale.download_in_progress, "-1", "1")
+            show_osd_msg(locale.download_in_progress, 2500)
         else
-            mp.commandv("show-text", locale.downloading .. "...", "-1", "1")
+            show_osd_msg(locale.downloading .. "...", 2500)
             state.downloading = true
             local command = { "yt-dlp" }
             if not state.is_image then

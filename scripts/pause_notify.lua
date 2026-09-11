@@ -262,14 +262,16 @@ mp.register_event("log-message", function(e)
 
     -- Detect show-text (e.g., from mp.osd_message in scripts or user show-text commands)
     if e.text:find("Run command: show%-text") then
-        local dur_str = e.text:match('duration="(%d+)"')
-        local duration = dur_str and (tonumber(dur_str) / 1000.0) or nil
+        local dur_str = e.text:match('duration="([%d%-]+)"') or e.text:match('duration="(%d+)"')
+        local raw_dur = dur_str and tonumber(dur_str) or nil
+        -- Negative duration (e.g. -1) means default osd-duration in mpv
+        local duration = (raw_dur and raw_dur > 0) and (raw_dur / 1000.0) or nil
 
         -- Count visual lines accounting for explicit newlines and word wrapping
         local text = e.text:match('text="(.-)"') or e.text:match('text="([^"]*)"')
 
-        -- Ignore empty text or duration <= 0 (OSD wipe/clear commands)
-        if not text or #text == 0 or (duration and duration <= 0) then
+        -- Ignore empty text or duration == 0 (OSD wipe/clear commands)
+        if not text or #text == 0 or raw_dur == 0 then
             return
         end
 
