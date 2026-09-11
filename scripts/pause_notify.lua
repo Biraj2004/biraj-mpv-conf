@@ -9,6 +9,9 @@
     - Uses a dedicated ASS OSD overlay to keep mpv's native OSD channel completely free.
     - Non-Overlapping Collision Avoidance: Only this pause notification shifts down when another OSD message
       (volume, mute, tracks, etc.) appears, leaving the top native position for the other message.
+    - Inter-Script Coordination: Receives osd-notify events from cycle_audio, sort_playlist, and resume_indicator.
+    - Stats & Console Auto-Suppression: Automatically hides when technical stats (i / Shift+I) or console (`) are active.
+    - Motion & Window State Isolation: Ignores ModernZ mouse hover events and window fullscreen/unfullscreen toggles.
     - Repositions back up automatically as soon as the other OSD message fades away.
     - Dynamically updates the timestamp if seeking while paused.
     - Immediately disappears the exact second playback resumes (zero lingering display).
