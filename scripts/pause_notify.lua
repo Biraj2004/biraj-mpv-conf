@@ -304,8 +304,13 @@ mp.register_event("log-message", function(e)
             return
         end
 
-        -- Exclude pause toggle commands (pausing/unpausing doesn't display text OSD)
-        if (cmd == "cycle" or cmd == "set") and e.text:find('name="pause"') then
+        -- Exclude silent commands that do not display text OSD (pause toggle, fullscreen toggle, etc.)
+        if (cmd == "cycle" or cmd == "set") and (
+            e.text:find('name="pause"') or
+            e.text:find('name="fullscreen"') or
+            e.text:find('video%-align') or
+            e.text:find('file%-local%-options')
+        ) then
             return
         end
 
