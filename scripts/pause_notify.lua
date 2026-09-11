@@ -302,15 +302,7 @@ mp.register_event("log-message", function(e)
         local contents = clean:match('contents="([^"]*)"')
         if contents then
             is_stats_active = (#contents > 0)
-            if is_stats_active then
-                ov.data = ""
-                ov:remove()
-                mp.set_property_bool("user-data/pause_notify/visible", false)
-            else
-                if is_paused and not is_console_active then
-                    update_overlay()
-                end
-            end
+            update_overlay()
         end
         return
     end
@@ -321,15 +313,7 @@ mp.register_event("log-message", function(e)
         local contents = clean:match('contents="([^"]*)"')
         if contents then
             is_console_active = (#contents > 0)
-            if is_console_active then
-                ov.data = ""
-                ov:remove()
-                mp.set_property_bool("user-data/pause_notify/visible", false)
-            else
-                if is_paused and not is_stats_active then
-                    update_overlay()
-                end
-            end
+            update_overlay()
         end
         return
     end
@@ -402,14 +386,7 @@ end
 -- Hide pause notification whenever mpv's interactive console is open
 mp.observe_property("user-data/mpv/console/open", "bool", function(_, is_open)
     is_console_active = (is_open == true)
-    if is_console_active then
-        ov.data = ""
-        ov:remove()
-    else
-        if is_paused and not is_stats_active then
-            update_overlay()
-        end
-    end
+    update_overlay()
 end)
 
 local is_observing_time = false
@@ -470,8 +447,7 @@ local function on_pause_change(_, paused)
         shift_target_time = 0
         is_shifted = false
         shift_lines = 1
-        ov.data = ""
-        ov:remove()
+        update_overlay()
     end
 end
 
@@ -501,8 +477,7 @@ local function cleanup()
     shift_target_time = 0
     is_shifted = false
     shift_lines = 1
-    ov.data = ""
-    ov:remove()
+    update_overlay()
 end
 
 mp.register_event("end-file", cleanup)

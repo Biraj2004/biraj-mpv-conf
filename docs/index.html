@@ -1029,9 +1029,15 @@ sub-margin-y=36</code></pre>
 ### DASH / HLS Acceleration
 --concurrent-fragments 4
 
-### Subtitles & Metadata
+### Subtitles, Metadata, Thumbnails & Packaging
 --sub-langs all,-live_chat
 --embed-subs
+--embed-metadata
+--embed-chapters
+--embed-thumbnail
+--convert-thumbnails jpg
+--remux-video ts>mkv/webm>mkv
+--merge-output-format mp4/mkv
 
 ### Playlist Handling & Safety
 --yes-playlist

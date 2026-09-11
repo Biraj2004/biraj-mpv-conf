@@ -247,13 +247,18 @@ While engineered primarily for Windows with Direct3D 11 Flip presentation, WASAP
   - **Right-Click**: Navigate to **Video** $\rightarrow$ **YT-Stream Quality** and select `720p`, `1080p`, `1440p`, or `Best`.
   - **Keyboard**: Press <kbd>Ctrl</kbd> + <kbd>y</kbd> to cycle between stream resolutions (720p $\rightarrow$ 1080p $\rightarrow$ 1440p $\rightarrow$ Best).
   - *The stream instantly reloads at the new resolution and resumes from your current second.*
-- **One-Click Stream Download**: Click the download button on the ModernZ controller bar to save the online video directly to `~/Downloads/MPV-Downloads`.
+- **One-Click Stream Download (Selective MKV + Cover Art Thumbnail)**: Click the download button on the ModernZ controller bar to save the online video directly to `~/Downloads/MPV-Downloads`.
+  - **Selective Remuxing**: Automatically converts problematic formats (YouTube WebM and HLS `.ts` streams) into `.mkv` for full seekability and thumbnail support, while preserving native `.mp4` files untouched.
+  - Automatically converts and embeds video thumbnail cover art (`cover.jpg`) so Windows Explorer and media players show rich visual previews immediately.
+  - Injects full video metadata (Title, Artist, Uploader, Date, Description) and embedded chapter markers.
+  - Accelerates download speed via multi-threaded concurrent fragment fetching (`--concurrent-fragments 4`).
 
 ### 3. Dedicated `yt-dlp.conf` (Network Resilience, Anti-Throttling & 99% Reliability)
 Advanced streaming options are cleanly separated into [`yt-dlp.conf`](yt-dlp.conf). Using native `yt-dlp` configuration options avoids overwriting player settings and gives full control over downloads and network handling:
 
 - **Network Resilience & Anti-Throttling**: 10 connection retries, 10 fragment retries, 4 concurrent DASH chunks, and automated TLS certificate handling survive temporary Wi-Fi hiccups and prevent HTTP 403 throttling.
-- **Auto-Subtitles**: Automatically fetches all official subtitles while filtering out noisy live chats.
+- **Embedded Subtitles, Thumbnails & Metadata**: Automatically embeds official subtitles, metadata tags, chapter markers, and converts WebP thumbnails to JPEG for Windows Explorer support.
+- **Selective Remuxing**: Remuxes fragmented WebM and HLS transport streams (`.ts`) into universal Matroska (`.mkv`) files while leaving native MP4 streams as `.mp4`.
 - **Playlist Safety**: Ignores deleted/private videos in playlists without terminating playback.
 - **Where to Place `yt-dlp.conf`**:
   1. Inside `%APPDATA%\mpv\` alongside `mpv.conf` (or `%APPDATA%\yt-dlp\config`).

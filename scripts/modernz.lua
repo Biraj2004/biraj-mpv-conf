@@ -114,7 +114,13 @@ local user_opts = {
     screenshot_button = true,              -- show screenshot button
 
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
-    download_path = "~~desktop/mpv",       -- default download directory for videos (https://mpv.io/manual/master/#paths)
+    download_path = "~/Downloads/MPV-Downloads", -- default download directory for videos
+    download_format = "auto",              -- container format: 'auto' (selective: .ts/.webm -> .mkv, native .mp4 -> .mp4), 'mkv', 'mp4'
+    download_embed_thumbnail = true,       -- embed video thumbnail as cover art
+    download_embed_metadata = true,        -- embed metadata tags (title, artist, uploader, date, description)
+    download_embed_chapters = true,        -- embed chapter markers
+    download_concurrent_fragments = 4,     -- multi-threaded fragment downloads for faster speed
+    download_extra_args = "",              -- extra custom yt-dlp arguments
 
     loop_button = true,                    -- show file loop button
     shuffle_button = false,                -- show shuffle button
@@ -1892,6 +1898,7 @@ local function exec(args, callback)
     msg.info("Executing: " .. table.concat(args, " "))
     mp.command_native_async({
         name = "subprocess",
+        playback_only = false,
         args = args,
         capture_stdout = true,
         capture_stderr = true
@@ -1952,15 +1959,48 @@ local function check_path_url()
     end
 end
 
-local function download_done(success, _, error)
-    if success then
-        local path = mp.command_native({"expand-path", user_opts.download_path})
+local function get_download_path()
+    local raw = user_opts.download_path or "~/Downloads/MPV-Downloads"
+    -- Normalize user aliases like ~~downloads or Windows backslashes
+    local normalized = raw:gsub("^~~downloads[/\\]?", "~/Downloads/"):gsub("\\", "/")
+    local path = mp.command_native({"expand-path", normalized})
+    if not path or path == "" then
+        path = mp.command_native({"expand-path", "~/Downloads/MPV-Downloads"})
+    end
+    -- Ensure the download directory exists on disk
+    if path and path ~= "" then
+        local finfo = utils.file_info(path)
+        if not finfo or not finfo.is_dir then
+            local is_windows = mp.get_property("platform") == "windows" or package.config:sub(1,1) == "\\"
+            if is_windows then
+                local win_path = path:gsub("/", "\\")
+                mp.command_native({
+                    name = "subprocess",
+                    args = { "powershell", "-NoProfile", "-Command", "New-Item", "-ItemType", "Directory", "-Force", "-Path", win_path },
+                    playback_only = false,
+                })
+            else
+                mp.command_native({
+                    name = "subprocess",
+                    args = { "mkdir", "-p", path },
+                    playback_only = false,
+                })
+            end
+        end
+    end
+    return path
+end
+
+local function download_done(success, result, error)
+    if success and result and result.status == 0 then
+        local path = get_download_path()
         mp.commandv("show-text", "Download saved to " .. path, "-1", "1")
         state.downloaded_once = true
         msg.info("Download completed")
     else
-        mp.commandv("show-text", "Download failed - " .. (error or "Unknown error"), "-1", "1")
-        msg.info("Download failed")
+        local err_msg = error or (result and result.error_string) or (result and result.status and result.status ~= 0 and "Process exited with code " .. tostring(result.status)) or "Unknown error"
+        mp.commandv("show-text", "Download failed - " .. err_msg, "-1", "1")
+        msg.warn("Download failed: " .. err_msg)
     end
     state.downloading = false
 end
@@ -3440,7 +3480,7 @@ local function osc_init()
     ne.content = function () return state.downloading and icons.downloading or icons.download end
     ne.tooltipF = function () return state.downloading and locale.downloading .. "..." or locale.download .. " (" .. state.file_size_normalized .. ")" end
     ne.eventresponder["mbtn_left_up"] = function ()
-        local localpath = mp.command_native({"expand-path", user_opts.download_path})
+        local localpath = get_download_path()
 
         if state.downloaded_once then
             mp.commandv("show-text", locale.downloaded, "-1", "1")
@@ -3452,12 +3492,60 @@ local function osc_init()
             local command = {
                 "yt-dlp",
                 state.is_image and "" or get_ytdl_format(),
-                "--add-metadata",
-                "--embed-subs",
-                "-o", "%(title)s.%(ext)s",
-                "-P", localpath,
-                state.url_path
             }
+
+            -- Container remuxing: selective (.ts & .webm -> .mkv, native .mp4 -> .mp4) or explicit format
+            if not state.is_image then
+                if user_opts.download_format == "auto" or user_opts.download_format == "selective" then
+                    table.insert(command, "--remux-video")
+                    table.insert(command, "ts>mkv/webm>mkv")
+                    table.insert(command, "--merge-output-format")
+                    table.insert(command, "mp4/mkv")
+                elseif user_opts.download_format and user_opts.download_format ~= "" then
+                    table.insert(command, "--remux-video")
+                    table.insert(command, user_opts.download_format)
+                    table.insert(command, "--merge-output-format")
+                    table.insert(command, user_opts.download_format)
+                end
+            end
+
+            -- Embed thumbnail as cover art (with conversion from WebP to JPG for Windows Explorer support)
+            if not state.is_image and user_opts.download_embed_thumbnail then
+                table.insert(command, "--embed-thumbnail")
+                table.insert(command, "--convert-thumbnails")
+                table.insert(command, "jpg")
+            end
+
+            -- Metadata & chapters
+            if user_opts.download_embed_metadata then
+                table.insert(command, "--embed-metadata")
+            end
+            if user_opts.download_embed_chapters then
+                table.insert(command, "--embed-chapters")
+            end
+
+            -- Subtitles
+            table.insert(command, "--embed-subs")
+
+            -- Multi-threaded fragment downloading for faster speeds
+            local fragments = tonumber(user_opts.download_concurrent_fragments)
+            if fragments and fragments > 1 then
+                table.insert(command, "--concurrent-fragments")
+                table.insert(command, tostring(fragments))
+            end
+
+            -- Extra custom user arguments
+            if user_opts.download_extra_args and user_opts.download_extra_args ~= "" then
+                for arg in string.gmatch(user_opts.download_extra_args, "%S+") do
+                    table.insert(command, arg)
+                end
+            end
+
+            table.insert(command, "-o")
+            table.insert(command, "%(title)s.%(ext)s")
+            table.insert(command, "-P")
+            table.insert(command, localpath)
+            table.insert(command, state.url_path)
 
             exec(command, download_done)
         end
