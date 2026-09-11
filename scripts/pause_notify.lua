@@ -323,7 +323,7 @@ mp.register_event("log-message", function(e)
             cmd == "seek" or cmd == "sub-seek" or cmd == "sub-step" or cmd == "revert-seek" or
             cmd == "set" or cmd == "ab-loop" or cmd == "playlist-next" or cmd == "playlist-prev" or
             cmd == "chapter-seek" or cmd == "playlist-play-index" or cmd == "playlist-shuffle" or
-            (cmd == "script-binding" and not (e.text:find("open_file") or e.text:find("select") or e.text:find("hdr_badge") or e.text:find("positioning")))
+            (cmd == "script-binding" and e.text:find("modernz/visibility"))
         )) then
             local lines = 1
             -- cycle-values on filters: "Audio filters:\n..." is 2 lines when enabled, 1 line when cleared
