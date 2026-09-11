@@ -115,8 +115,9 @@ local user_opts = {
 
     download_button = true,                -- show download button on web videos (requires yt-dlp and ffmpeg)
     download_path = "~/Downloads/MPV-Downloads", -- default download directory for videos
-    download_format = "auto",              -- container format: 'auto' (selective: .ts/.webm -> .mkv, native .mp4 -> .mp4), 'mkv', 'mp4'
-    download_embed_thumbnail = true,       -- embed video thumbnail as cover art
+    download_format = "auto",              -- container format: 'auto' (selective: only .ts -> .mkv, native .webm/.mp4 preserved), 'mkv', 'mp4', 'webm'
+    download_max_resolution = 1440,        -- max video resolution for downloads: 1440 (1440p -> 1080p -> 720p...), 1080, 720, or 'best'
+    download_embed_thumbnail = false,      -- embed video thumbnail as cover art (false preserves native .webm without yt-dlp forcing .mkv; recommended with Icaros)
     download_embed_metadata = true,        -- embed metadata tags (title, artist, uploader, date, description)
     download_embed_chapters = true,        -- embed chapter markers
     download_concurrent_fragments = 4,     -- multi-threaded fragment downloads for faster speed
@@ -1887,8 +1888,14 @@ local function is_image()
 end
 
 local function get_ytdl_format()
+    if user_opts.download_max_resolution and user_opts.download_max_resolution ~= "" and user_opts.download_max_resolution ~= "best" then
+        local max_h = tostring(user_opts.download_max_resolution):gsub("%D", "")
+        if max_h ~= "" then
+            return "bestvideo[height<=?" .. max_h .. "]+bestaudio/best[height<=?" .. max_h .. "]/best"
+        end
+    end
     local fmt = mp.get_property("file-local-options/ytdl-format") or mp.get_property("ytdl-format") or ""
-    return fmt ~= "" and ("-f " .. fmt) or "-f bestvideo+bestaudio/best"
+    return fmt ~= "" and fmt or "bestvideo[height<=?1440]+bestaudio/best[height<=?1440]/best"
 end
 
 local function exec(args, callback)
@@ -1932,13 +1939,19 @@ local function check_path_url()
         if user_opts.download_button then
             msg.info("Approximating file size...")
             state.file_size_normalized = "Approximating file size..."
-            exec({
-                "yt-dlp",
-                state.is_image and "" or get_ytdl_format(),
-                "--no-download",
-                "-O", "%(filesize,filesize_approx)s",
-                path
-            }, function(_, result)
+            local size_cmd = { "yt-dlp" }
+            if not state.is_image then
+                local fmt = get_ytdl_format()
+                if fmt and fmt ~= "" then
+                    table.insert(size_cmd, "-f")
+                    table.insert(size_cmd, fmt)
+                end
+            end
+            table.insert(size_cmd, "--no-download")
+            table.insert(size_cmd, "-O")
+            table.insert(size_cmd, "%(filesize,filesize_approx)s")
+            table.insert(size_cmd, path)
+            exec(size_cmd, function(_, result)
                 local bytes = tonumber(result.stdout)
                 if bytes then
                     state.file_size_normalized = utils.format_bytes_humanized(bytes)
@@ -3489,18 +3502,20 @@ local function osc_init()
         else
             mp.commandv("show-text", locale.downloading .. "...", "-1", "1")
             state.downloading = true
-            local command = {
-                "yt-dlp",
-                state.is_image and "" or get_ytdl_format(),
-            }
+            local command = { "yt-dlp" }
+            if not state.is_image then
+                local fmt = get_ytdl_format()
+                if fmt and fmt ~= "" then
+                    table.insert(command, "-f")
+                    table.insert(command, fmt)
+                end
+            end
 
-            -- Container remuxing: selective (.ts & .webm -> .mkv, native .mp4 -> .mp4) or explicit format
+            -- Container remuxing: selective (only .ts -> .mkv, native .webm & .mp4 preserved) or explicit format
             if not state.is_image then
                 if user_opts.download_format == "auto" or user_opts.download_format == "selective" then
                     table.insert(command, "--remux-video")
-                    table.insert(command, "ts>mkv/webm>mkv")
-                    table.insert(command, "--merge-output-format")
-                    table.insert(command, "mp4/mkv")
+                    table.insert(command, "ts>mkv")
                 elseif user_opts.download_format and user_opts.download_format ~= "" then
                     table.insert(command, "--remux-video")
                     table.insert(command, user_opts.download_format)
