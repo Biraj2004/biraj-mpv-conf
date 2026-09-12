@@ -29,32 +29,36 @@ This directory contains promotional and screenshot assets for submitting the ext
 
 ### Short Summary (132 characters max)
 ```
-Open YouTube, Stremio Web, and any web video directly in your local MPV player. Seamless timestamp sync with zero background RAM.
+Open YouTube, Stremio Web, and any web video directly in your local MPV player. Zero latency, instant window, and zero background RAM.
 ```
 
 ### Detailed Description
 ```
-Play in MPV provides a zero-latency bridge between Chromium browsers and your local MPV media player.
+Play in MPV provides a zero-latency bridge between Chromium browsers (Chrome, Brave, Edge) and your local MPV media player.
 
 FEATURES:
 
-1. YOUTUBE TIMESTAMP INTEGRATION
-A clean Play button appears in YouTube player controls on Watch and Shorts pages. Clicking it instantly launches MPV at that exact second, letting you seamlessly continue watching in your local media player.
+1. INSTANT YOUTUBE INTEGRATION
+A native Play button is seamlessly integrated into YouTube player controls on standard Watch pages and YouTube Shorts. Clicking it pauses the browser player, preserves the exact video title, and launches MPV at that exact second.
 
-2. STREMIO WEB INTEGRATION
-Adds a native "Play in MPV" option directly into Stremio Web (web.stremio.com) stream context menus and player menus. Automatically pauses browser playback and hands off streams with zero manual copying.
+2. ONE-CLICK STREMIO WEB STREAMING
+Adds a native "Play in MPV" button directly into Stremio Web (web.stremio.com & app.strem.io) stream context menus and player controls. Directly captures stream URLs in 0 ms, locks background browser audio, and prevents duplicate network bandwidth usage.
 
-3. UNIVERSAL CONTEXT MENU
-Right-click any link, video, audio element, or highlighted URL to stream it in MPV immediately.
+3. UNIVERSAL CONTEXT MENU & TOOLBAR ACTION
+Right-click any webpage, video tag, audio element, hyperlink, or highlighted URL text to dispatch it immediately to MPV. You can also click the toolbar action icon to send the current tab's video directly to MPV.
 
-4. SEAMLESS COMPATIBILITY
-The extension only passes the media URL, title, and timestamp. Your local mpv.conf, shaders, tone-mapping, subtitles, and yt-dlp.conf configurations handle playback quality without alteration.
+4. ULTRA-FAST INSTANT WINDOW LAUNCH
+Leverages MPV's immediate window rendering (--force-window=immediate) and independent Windows process detachment. MPV renders its window in under 100 ms while streams buffer asynchronously in the background.
 
-5. ZERO BACKGROUND RESOURCE CONSUMPTION
-No persistent background server. No open network ports. Communicates locally on demand using the Chrome Native Messaging API and exits immediately after launch.
+5. ZERO BACKGROUND RESOURCE OVERHEAD
+No persistent background servers. No open network ports. No localhost daemon. Communicates purely on-demand using the Chrome Native Messaging API and exits immediately after dispatching playback.
 
-PRIVACY:
-This extension communicates strictly with your local computer to spawn MPV. It does not collect, log, or transmit any browsing data or telemetry.
+6. FULL PLAYBACK FIDELITY
+The extension only passes the media URL, title, and timestamp. Your local mpv.conf, GPU-next shaders, HDR tone-mapping, subtitle styling, and yt-dlp configurations handle playback quality without alteration or quality degradation.
+
+PRIVACY & SECURITY:
+- Strict local-only communication: Zero telemetry, zero analytics, zero data leaving your machine.
+- Hardened native launcher: Validates protocols (http, https, magnet) and isolates options using argument delimiters to prevent injection.
 
 Part of the biraj-mpv-conf suite:
 https://github.com/Biraj2004/biraj-mpv-conf
