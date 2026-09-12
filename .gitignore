@@ -10,3 +10,8 @@ shaders/
 watch_later/
 mpv-cache/
 *.log
+
+# Browser Extension local artifacts
+Browser-Play-in-MPV/mpv_native_host/launch_host.bat
+Browser-Play-in-MPV/mpv_native_host/mpv_launcher_host.json
+*.zip
