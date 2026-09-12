@@ -80,19 +80,105 @@
     return null;
   }
 
+  /** Check if extension context is valid and runtime is available. */
+  function isExtensionValid() {
+    try {
+      return typeof chrome !== 'undefined' &&
+             Boolean(chrome?.runtime) &&
+             typeof chrome.runtime.sendMessage === 'function' &&
+             Boolean(chrome.runtime.id);
+    } catch {
+      return false;
+    }
+  }
+
   /** Send message to background service worker with automatic retry. */
   function sendMessageWithRetry(msg, maxAttempts = 3) {
+    if (!isExtensionValid()) return;
     let attempts = 0;
     function trySend() {
+      if (!isExtensionValid()) return;
       attempts++;
-      chrome.runtime.sendMessage(msg, (response) => {
-        const err = chrome.runtime.lastError;
-        if (err && attempts < maxAttempts) {
-          setTimeout(trySend, 200 * attempts);
-        }
-      });
+      try {
+        chrome.runtime.sendMessage(msg, (response) => {
+          const err = chrome.runtime?.lastError;
+          if (err && attempts < maxAttempts) {
+            setTimeout(trySend, 200 * attempts);
+          }
+        });
+      } catch (e) {
+        // Context invalidated
+      }
     }
     trySend();
+  }
+
+  /**
+   * Firmly pauses Stremio Web playback and prevents auto-resume during MPV handoff.
+   */
+  function pauseStremioPlayback() {
+    const pauseAllMedia = () => {
+      const media = document.querySelectorAll('video, audio');
+      media.forEach((el) => {
+        try {
+          if (!el.paused) el.pause();
+          el.muted = true;
+        } catch (e) {}
+      });
+    };
+
+    // 1. Immediate pause and mute
+    pauseAllMedia();
+
+    // 2. Click native UI pause button if active in Stremio's player bar
+    try {
+      const pauseBtns = document.querySelectorAll(
+        'button[title*="Pause" i], button[aria-label*="Pause" i], [class*="play-pause"], [class*="play-button"]'
+      );
+      for (const btn of pauseBtns) {
+        const label = (btn.getAttribute('title') || btn.getAttribute('aria-label') || '').toLowerCase();
+        if (label.includes('pause')) {
+          btn.click();
+          break;
+        }
+      }
+    } catch (e) {}
+
+    // 3. Document-level capturing listener:
+    // Stremio's options menu closing event often triggers video.play() on unmount.
+    // Intercept and halt any play event during the handoff window.
+    const interceptPlay = (evt) => {
+      try {
+        if (evt.target && typeof evt.target.pause === 'function') {
+          evt.target.pause();
+          evt.target.muted = true;
+        }
+      } catch (e) {}
+    };
+
+    document.addEventListener('play', interceptPlay, { capture: true });
+
+    // 4. Polling safeguard during the handoff transition window (1.5s)
+    let checks = 0;
+    const interval = setInterval(() => {
+      pauseAllMedia();
+      checks++;
+      if (checks > 20) {
+        clearInterval(interval);
+      }
+    }, 75);
+
+    // 5. Clean up interceptor after MPV launch window and allow audio on user-initiated play
+    setTimeout(() => {
+      document.removeEventListener('play', interceptPlay, { capture: true });
+      document.querySelectorAll('video, audio').forEach((el) => {
+        const restoreAudioOnManualPlay = () => {
+          el.muted = false;
+          el.removeEventListener('play', restoreAudioOnManualPlay);
+        };
+        el.addEventListener('play', restoreAudioOnManualPlay, { once: true });
+      });
+    }, 2000);
   }
 
   /** Injects "Play in MPV" into a detected Stremio menu. */
@@ -162,16 +248,14 @@
         title = (document.title || '').replace(/\s*-\s*Stremio.*$/i, '').trim();
       }
 
-      // Check current playback timestamp
+      // Check current playback timestamp BEFORE pausing
       const video = document.querySelector('video');
       const time = (video && Number.isFinite(video.currentTime) && video.currentTime > 2)
         ? Math.floor(video.currentTime)
         : 0;
 
-      // Pause web player to prevent concurrent audio
-      if (video && !video.paused) {
-        try { video.pause(); } catch (err) {}
-      }
+      // Firmly pause and mute web player so no background audio plays
+      pauseStremioPlayback();
 
       // Cryptographic nonce authentication
       const nonceArr = new Uint32Array(2);
@@ -210,10 +294,13 @@
         sendMessageWithRetry({ action: 'play_in_mpv', url: capturedUrl, time, title });
       });
 
-      // Dismiss menu cleanly
+      // Dismiss menu cleanly if still open
       setTimeout(() => {
-        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
-      }, 80);
+        const activeMenu = document.querySelector('[class*="context-menu-content"], [class*="options-menu-container"]');
+        if (activeMenu) {
+          document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+        }
+      }, 100);
     });
 
     // Placement: right after "Play", or before "Copy Stream Link"

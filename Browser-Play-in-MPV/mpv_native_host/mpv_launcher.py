@@ -90,10 +90,9 @@ def _find_mpv() -> Optional[str]:
 # Launch
 # ──────────────────────────────────────────────────────────────────────────────
 
-# Windows process creation flags
-_DETACHED_PROCESS = 0x00000008   # Detach from parent's console
-_CREATE_NO_WINDOW = 0x08000000   # No new console window
-
+# Windows process creation flags: DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
+_DETACHED_PROCESS = 0x00000008          # Detach from parent console
+_CREATE_NEW_PROCESS_GROUP = 0x00000200  # Independent process group
 
 def _launch_mpv(url: str, time: int, title: str = '') -> dict:
     """
@@ -124,14 +123,20 @@ def _launch_mpv(url: str, time: int, title: str = '') -> dict:
     args.append('--')
     args.append(url)
 
+    # Set working directory to MPV config directory or MPV executable directory
+    config_dir = os.path.expandvars(r'%APPDATA%\mpv')
+    launch_cwd = config_dir if os.path.isdir(config_dir) else os.path.dirname(mpv)
+    env = os.environ.copy()
+
     try:
         subprocess.Popen(
             args,
-            creationflags=_DETACHED_PROCESS | _CREATE_NO_WINDOW,
+            cwd=launch_cwd,
+            env=env,
+            creationflags=_DETACHED_PROCESS | _CREATE_NEW_PROCESS_GROUP,
             stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            close_fds=True,
         )
         return {'success': True}
     except OSError as exc:

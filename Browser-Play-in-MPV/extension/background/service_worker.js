@@ -39,7 +39,7 @@ function setupContextMenu() {
     chrome.contextMenus.create({
       id:       MENU_ITEM_ID,
       title:    'Play in MPV',
-      contexts: ['link', 'selection', 'video', 'audio'],
+      contexts: ['page', 'link', 'selection', 'video', 'audio'],
     });
   });
 }
@@ -47,13 +47,14 @@ function setupContextMenu() {
 chrome.runtime.onInstalled.addListener(setupContextMenu);
 chrome.runtime.onStartup.addListener(setupContextMenu);
 
-chrome.contextMenus.onClicked.addListener((info) => {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId !== MENU_ITEM_ID) return;
 
   let rawUrl = '';
+  let title = '';
   if (info.linkUrl) {
     rawUrl = info.linkUrl;
-  } else if (info.srcUrl) {
+  } else if (info.srcUrl && !info.srcUrl.startsWith('blob:')) {
     rawUrl = info.srcUrl;
   } else if (info.selectionText) {
     let text = info.selectionText.trim().replace(/^["'<(\[]+|["'>)\]]+$/g, '');
@@ -62,13 +63,33 @@ chrome.contextMenus.onClicked.addListener((info) => {
     } else if (/^(?:www\.|youtube\.com|youtu\.be|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})/i.test(text)) {
       rawUrl = 'https://' + text;
     }
+  } else if (info.pageUrl) {
+    rawUrl = info.pageUrl;
+    title = (tab?.title || '').trim();
+  } else if (tab?.url) {
+    rawUrl = tab.url;
+    title = (tab?.title || '').trim();
   }
 
   const url = sanitizeUrl(rawUrl);
   if (!url) return;
 
-  sendToMpv(url, 0);
+  sendToMpv(url, 0, title);
 });
+
+
+// ─── Toolbar Action Click ──────────────────────────────────────────────────
+
+if (chrome.action?.onClicked) {
+  chrome.action.onClicked.addListener((tab) => {
+    if (!tab?.url) return;
+    const url = sanitizeUrl(tab.url);
+    if (!url) return;
+
+    const title = (tab.title || '').trim();
+    sendToMpv(url, 0, title);
+  });
+}
 
 
 // ─── Messages from content scripts ─────────────────────────────────────────

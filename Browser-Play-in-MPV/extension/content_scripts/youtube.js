@@ -169,19 +169,65 @@
   }
 
 
-  // ─── Robust Messaging ─────────────────────────────────────────────────────
+  // ─── Robust Messaging & In-Player Feedback ───────────────────────────────
+
+  /** Check if extension context is valid and runtime is available. */
+  function isExtensionValid() {
+    try {
+      return typeof chrome !== 'undefined' &&
+             Boolean(chrome?.runtime) &&
+             typeof chrome.runtime.sendMessage === 'function' &&
+             Boolean(chrome.runtime.id);
+    } catch {
+      return false;
+    }
+  }
+
+  /** Display a non-intrusive floating toast directly in the player. */
+  function showPlayerToast(message, type = 'info') {
+    try {
+      let toast = document.getElementById('biraj-mpv-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'biraj-mpv-toast';
+        const targetParent = document.querySelector('#movie_player')
+                          || document.querySelector('.html5-video-player')
+                          || document.body;
+        targetParent.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.className = `biraj-mpv-toast-visible biraj-mpv-toast-${type}`;
+      clearTimeout(toast._hideTimer);
+      toast._hideTimer = setTimeout(() => {
+        toast.className = '';
+      }, 2600);
+    } catch (e) {}
+  }
 
   /** Send message to background service worker with automatic retry if worker was idle. */
   function sendMessageWithRetry(msg, maxAttempts = 3) {
+    if (!isExtensionValid()) {
+      showPlayerToast('Extension reloaded. Please refresh the page (F5).', 'warning');
+      return;
+    }
+
     let attempts = 0;
     function trySend() {
+      if (!isExtensionValid()) {
+        showPlayerToast('Extension reloaded. Please refresh the page (F5).', 'warning');
+        return;
+      }
       attempts++;
-      chrome.runtime.sendMessage(msg, (response) => {
-        const err = chrome.runtime.lastError;
-        if (err && attempts < maxAttempts) {
-          setTimeout(trySend, 200 * attempts);
-        }
-      });
+      try {
+        chrome.runtime.sendMessage(msg, (response) => {
+          const err = chrome.runtime?.lastError;
+          if (err && attempts < maxAttempts) {
+            setTimeout(trySend, 200 * attempts);
+          }
+        });
+      } catch (e) {
+        showPlayerToast('Extension reloaded. Please refresh the page (F5).', 'warning');
+      }
     }
     trySend();
   }
@@ -201,6 +247,11 @@
       e.preventDefault();
       e.stopPropagation();
 
+      if (!isExtensionValid()) {
+        showPlayerToast('Extension reloaded. Please refresh the page (F5).', 'warning');
+        return;
+      }
+
       // Read exact current timestamp BEFORE anything else
       const time  = getStartTime();
       const url   = getCanonicalUrl();
@@ -214,7 +265,14 @@
       btn.style.opacity = '0.5';
       setTimeout(() => { btn.style.opacity = ''; }, 200);
 
-      sendMessageWithRetry({ action: 'play_in_mpv', url, time, title });
+      // Show instant feedback toast
+      showPlayerToast('Opening in MPV...', 'info');
+
+      try {
+        sendMessageWithRetry({ action: 'play_in_mpv', url, time, title });
+      } catch (err) {
+        showPlayerToast('Extension reloaded. Please refresh the page (F5).', 'warning');
+      }
     });
 
     return btn;
