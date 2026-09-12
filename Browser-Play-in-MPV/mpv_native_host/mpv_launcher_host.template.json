@@ -1,0 +1,12 @@
+{
+  "_comment": "TEMPLATE ONLY — this file is NOT used directly by Chrome.",
+  "_comment2": "Run Install_Native_Host.bat to generate the real manifest with correct absolute paths.",
+
+  "name": "com.biraj.mpv_launcher",
+  "description": "Biraj MPV Launcher — opens URLs in your local MPV media player",
+  "path": "C:\\path\\to\\Browser-Play-in-MPV\\mpv_native_host\\launch_host.bat",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://REPLACE_WITH_YOUR_EXTENSION_ID/"
+  ]
+}

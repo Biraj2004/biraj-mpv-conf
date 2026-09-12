@@ -539,10 +539,34 @@
 
                 <!-- Windows Installation Instructions -->
                 <div class="os-content active" id="content-windows">
+                    <!-- winget Quick Install -->
+                    <div class="step-card" style="border-color: rgba(99,102,241,0.35); background: rgba(99,102,241,0.04);">
+                        <div class="step-number">⚡</div>
+                        <div class="step-body">
+                            <h4 class="step-title">Quick Install via winget (Fastest)</h4>
+                            <p class="step-desc">Install MPV and yt-dlp with two commands in PowerShell or Windows Terminal. No manual download or extraction needed.</p>
+                            <div class="code-block" style="margin-top:12px;">
+                                <code id="wingetMpv">winget install --id shinchiro.mpv</code>
+                                <button class="btn-copy" onclick="copyCode('wingetMpv', this)" aria-label="Copy winget MPV command">
+                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </div>
+                            <div class="code-block" style="margin-top:8px;">
+                                <code id="wingetYtdlp">winget install --id yt-dlp.yt-dlp</code>
+                                <button class="btn-copy" onclick="copyCode('wingetYtdlp', this)" aria-label="Copy winget yt-dlp command">
+                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                            </div>
+                            <p class="step-desc" style="margin-top:10px; font-size:0.88rem; opacity:0.75;">After installing via winget, continue to Step 1 below to install the configuration. Then move <code>mpv.exe</code> to <code>C:\Program Files\mpv\</code> for full suite compatibility.</p>
+                        </div>
+                    </div>
+
                     <div class="step-card">
                         <div class="step-number">0</div>
                         <div class="step-body">
-                            <h4 class="step-title">Download & Place MPV (Standard Location)</h4>
+                            <h4 class="step-title">Download &amp; Place MPV (Standard Location)</h4>
                             <p class="step-desc">Download the latest 64-bit Windows build from <strong><a href="https://github.com/zhongfly/mpv-winbuild/releases" target="_blank" rel="noopener">zhongfly mpv-winbuild releases</a></strong>. Extract and rename the folder to <code>mpv</code> and place it in <code>C:\Program Files\mpv\</code> (so your player is at <code>C:\Program Files\mpv\mpv.exe</code>), then right-click <code>mpv-register.bat</code> &rarr; Run as administrator.</p>
                         </div>
                     </div>

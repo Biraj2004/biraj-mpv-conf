@@ -1,0 +1,63 @@
+/*
+ * youtube_button.css — Styles for the "Play in MPV" button injected into YouTube
+ * Part of: biraj-mpv-conf | github.com/Biraj2004/biraj-mpv-conf
+ *
+ * Scoped exclusively to #biraj-mpv-btn.
+ * Matches YouTube's native dark player button appearance and sizing.
+ * No external fonts. No network requests. No !important overrides.
+ */
+
+#biraj-mpv-btn {
+  /* Sizing — identical to adjacent YT player buttons */
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  width:           48px;
+  height:          48px;
+  padding:         0;
+  margin:          0;
+  flex-shrink:     0;
+
+  /* Appearance — blend with YT dark chrome */
+  background:      transparent;
+  border:          none;
+  border-radius:   50%;
+  color:           #ffffff;
+  cursor:          pointer;
+  opacity:         0.9;
+
+  /* Smooth hover transitions — no jank */
+  transition:      opacity 0.15s ease,
+                   transform 0.12s ease,
+                   background-color 0.15s ease;
+
+  /* Prevent text/icon selection on rapid clicks */
+  user-select:     none;
+  -webkit-user-select: none;
+}
+
+#biraj-mpv-btn:hover {
+  opacity:          1;
+  transform:        scale(1.1);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+#biraj-mpv-btn:active {
+  transform:        scale(0.93);
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Keyboard focus ring — accessibility */
+#biraj-mpv-btn:focus-visible {
+  outline:        2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* SVG icon inside the button */
+#biraj-mpv-btn svg {
+  width:          22px;
+  height:         22px;
+  display:        block;
+  pointer-events: none;    /* Prevent click-on-SVG from bypassing the button handler */
+  fill:           currentColor;
+}

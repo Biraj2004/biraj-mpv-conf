@@ -65,12 +65,30 @@
 
 ## Installation
 
+### ⚡ Quick Install via winget (Recommended)
+
+Install MPV (shinchiro build — the recommended Windows build) and yt-dlp with two commands:
+
+```powershell
+# Install MPV (shinchiro build)
+winget install --id shinchiro.mpv
+
+# Install yt-dlp (YouTube streaming backend — required for online streaming)
+winget install --id yt-dlp.yt-dlp
+```
+
+> [!NOTE]
+> After installing via winget, continue to **Step 1** below to install this configuration suite. The winget MPV install places `mpv.exe` in a versioned folder — you can still use it with a portable `portable_config` folder, or move it to `C:\Program Files\mpv\` for full compatibility with all suite tools.
+
+---
+
 ### Step 0: Download & Set Up MPV on Windows (Standard Location)
 
-To ensure 100% plug-and-play compatibility across Windows File Explorer context menus ([`Windows-Context-Menu/`](Windows-Context-Menu/)), Stremio desktop player hooks ([`Stremio-Play-in-MPV/`](Stremio-Play-in-MPV/)), and batch scripts, set up MPV in the standard Windows directory:
+To ensure 100% plug-and-play compatibility across Windows File Explorer context menus ([`Windows-Context-Menu/`](Windows-Context-Menu/)), Stremio desktop player hooks ([`Stremio-Play-in-MPV/`](Stremio-Play-in-MPV/)), Browser extension ([`Browser-Play-in-MPV/`](Browser-Play-in-MPV/)), and batch scripts, set up MPV in the standard Windows directory:
 
 1. **Download MPV for Windows**:
-   - Download the latest 64-bit build from **[zhongfly mpv-winbuild releases](https://github.com/zhongfly/mpv-winbuild/releases)** (or [shinchiro builds](https://sourceforge.net/projects/mpv-player-windows/files/)).
+   - **Via winget (quickest):** `winget install --id shinchiro.mpv`
+   - **Manual download:** Latest 64-bit build from **[zhongfly mpv-winbuild releases](https://github.com/zhongfly/mpv-winbuild/releases)** (or [shinchiro builds](https://sourceforge.net/projects/mpv-player-windows/files/)).
 2. **Extract, Rename, and Place in `C:\Program Files\mpv\`**:
    - Extract the downloaded archive (e.g. `mpv-x86_64-v3-*.7z` or `.zip`).
    - Rename the extracted folder to **`mpv`** and move it directly to **`C:\Program Files\`**.

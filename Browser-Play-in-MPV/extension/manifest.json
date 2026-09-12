@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Play in MPV",
+  "version": "1.0.0",
+  "description": "Open any link or YouTube video in your local MPV media player. Seamlessly hand off YouTube playback at the exact current timestamp.",
+
+  "icons": {
+    "16":  "icons/icon16.png",
+    "32":  "icons/icon32.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "action": {
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "32":  "icons/icon32.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Play in MPV"
+  },
+
+  "background": {
+    "service_worker": "background/service_worker.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/watch*",
+        "*://*.youtube.com/shorts/*"
+      ],
+      "js":  ["content_scripts/youtube.js"],
+      "css": ["styles/youtube_button.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "permissions": [
+    "contextMenus",
+    "nativeMessaging",
+    "notifications"
+  ],
+
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ]
+}
