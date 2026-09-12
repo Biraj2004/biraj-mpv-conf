@@ -326,6 +326,21 @@ kbd {
     transform: translateY(-2px);
 }
 
+.btn-extension {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.22) 0%, rgba(109, 40, 217, 0.35) 100%);
+    color: #f5f3ff;
+    border: 1px solid rgba(167, 139, 250, 0.45);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+}
+
+.btn-extension:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.38) 0%, rgba(109, 40, 217, 0.55) 100%);
+    border-color: #c4b5fd;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.35);
+}
+
 .btn-download-nav {
     background: rgba(99, 102, 241, 0.12);
     color: var(--primary-light);
