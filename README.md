@@ -15,7 +15,7 @@
 
 *Bridges the gap between mpv's lightweight performance and a sleek, feature-rich modern media player experience.*
 
-[Live Documentation Website](https://biraj2004.github.io/biraj-mpv-conf/) • [Quick Start / Installation](#installation) • [Visual Showcase](#visual-showcase) • [How to Play](#how-to-play--usage-guide) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [HDR & Tone-Mapping](#hdr--dolby-vision-playback) • [Customization](#customization) • [Credits](#credits--acknowledgements)
+[Live Documentation Website](https://biraj2004.github.io/biraj-mpv-conf/) • [Browser Extension Docs](https://biraj2004.github.io/biraj-mpv-conf/extension.html) • [Quick Start / Installation](#installation) • [Visual Showcase](#visual-showcase) • [How to Play](#how-to-play--usage-guide) • [Companion Suites](#companion-suites--extensions) • [Key Features](#key-features) • [Keybindings](#keyboard--mouse-shortcuts) • [Smart Profiles](#smart-automation-profiles) • [HDR & Tone-Mapping](#hdr--dolby-vision-playback) • [Customization](#customization) • [Credits](#credits--acknowledgements)
 
 ---
 
@@ -65,7 +65,7 @@
 
 ## Installation
 
-### ⚡ Quick Install via winget (Recommended)
+### Quick Install via winget (Recommended)
 
 Install MPV (shinchiro build — the recommended Windows build) and yt-dlp with two commands:
 
@@ -320,6 +320,30 @@ YouTube enforces session authentication on certain high-resolution and age-restr
 - **Context Menu**: <kbd>Right Click</kbd> or <kbd>g</kbd> <kbd>m</kbd>
 - **Night Mode Audio Normalization**: <kbd>y</kbd> or <kbd>N</kbd> (balances loud explosions & quiet dialogue)
 - **Real-Time Performance Stats**: <kbd>i</kbd> (fps, dropped frames, decoder, HDR nits)
+
+---
+
+## Companion Suites & Extensions
+
+This repository includes first-party companion integrations designed to extend your MPV playback workflow seamlessly across your browser, streaming apps, and operating system:
+
+### 1. [Browser-Play-in-MPV](Browser-Play-in-MPV/) — Chromium Browser Extension
+- **Official Documentation**: [Play in MPV Extension Documentation](https://biraj2004.github.io/biraj-mpv-conf/extension.html)
+- **Supported Browsers**: Google Chrome, Brave, Microsoft Edge, Opera, and Chromium-based browsers.
+- **YouTube Integration**: Injects a native-styled button into YouTube player controls to hand off playback at the exact current second.
+- **Stremio Web Integration**: Hooks into `web.stremio.com` and `app.strem.io` stream menus to route video streams directly into MPV while automatically pausing the web player.
+- **Universal Context Menu**: Right-click any link, video, or audio track across the web to launch it in MPV instantly.
+- **Zero Daemon Architecture**: Powered by Chrome Native Messaging IPC with Python. Zero open network ports, zero tracking, and zero persistent background RAM usage.
+
+### 2. [Stremio-Play-in-MPV](Stremio-Play-in-MPV/) — Desktop Player Integration
+- **Platform Support**: Windows 10/11 (`.bat`) and macOS (`.sh` for Apple Silicon & Intel).
+- **Integration**: Patches Stremio's desktop server engine to add **"Play in MPV"** alongside VLC.
+- **Fidelity**: Routes streams, torrents, and subtitles directly to your local hardware-accelerated MPV setup.
+
+### 3. [Windows-Context-Menu](Windows-Context-Menu/) — File Explorer Playlist Integration
+- **Dual Playback Modes**: Adds **"Play with MPV as a Playlist"** to Windows File Explorer for folders, multi-selected files, and external drives.
+- **Natural Ascending Order**: Leverages `sort_playlist.lua` to sequence episodes numerically (`01` -> `02` -> `10`).
+- **Zero Admin Rights**: Writes safely to Current User registry (`HKCU`).
 
 ---
 

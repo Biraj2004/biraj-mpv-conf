@@ -19,12 +19,12 @@
 Just like VLC's *"Play with VLC media player"* context menu, this integration adds **"Play with MPV as a Playlist"** with the official MPV icon to Windows File Explorer. 
 
 Combined with [`sort_playlist.lua`](../scripts/sort_playlist.lua) and [`single_instance.lua`](../scripts/single_instance.lua), this introduces clean **dual playback modes**:
-- 🗂️ **"Play with MPV as a Playlist"**: Batches all selected files or folder contents into **1 single unified MPV window** with an automated natural ascending playlist (`01`, `02` ... `40`).
-- 🪟 **Standard "Open" / Double-Click**: Retains normal independent multi-window behavior (each file opens in its own separate window).
-- ⚡ **Pure Native Architecture**: Directly invokes the official `mpv.exe` without any third-party wrapper binaries.
-- 🧹 **Automatic Deduplication & Filtering**: Purges duplicate entries and non-video files (`.txt`, `.nfo`, `.pdf`) automatically in the background.
-- 🛡️ **Zero Desktop Pollution**: Multi-file batch selection loads strictly the highlighted items and never scans the parent directory.
-- 🔒 **User Scope**: Operates strictly in user scope (`HKEY_CURRENT_USER\Software\Classes`) — **no Administrator privileges required**.
+- **"Play with MPV as a Playlist"**: Batches all selected files or folder contents into **1 single unified MPV window** with an automated natural ascending playlist (`01`, `02` ... `40`).
+- **Standard "Open" / Double-Click**: Retains normal independent multi-window behavior (each file opens in its own separate window).
+- **Pure Native Architecture**: Directly invokes the official `mpv.exe` without any third-party wrapper binaries.
+- **Automatic Deduplication & Filtering**: Purges duplicate entries and non-video files (`.txt`, `.nfo`, `.pdf`) automatically in the background.
+- **Zero Desktop Pollution**: Multi-file batch selection loads strictly the highlighted items and never scans the parent directory.
+- **User Scope**: Operates strictly in user scope (`HKEY_CURRENT_USER\Software\Classes`) — **no Administrator privileges required**.
 
 ---
 
@@ -74,14 +74,14 @@ Choose **either** Method 1 (Automated) or Method 2 (Manual Registry):
 
 | Target | Shows Menu Option? | Explanation / Rule |
 | :--- | :---: | :--- |
-| **Folders & Folder Shortcuts** | ✅ **YES** | Matches `Directory\shell` and `Folder\shell` |
-| **Single Video File** | ✅ **YES** | Matches `SystemFileAssociations\video` and direct video extensions (`.mp4`, `.mkv`, `.avi`, `.webm`, `.mov`, `.ts`...) |
-| **Multiple Video Files** | ✅ **YES** | Batches all selected videos into a single MPV player session (`MultiSelectModel="Player"`) |
-| **Single Drive / USB** | ✅ **YES** | Matches `Drive\shell` |
-| **Empty Desktop / Folder Background** | ❌ **NO (Clean)** | Excluded — keeps the right-click *View / Sort by / Refresh* menu clean |
-| **Audio Files (`.mp3`, `.flac`...)** | ❌ **NO (Hidden)** | Excluded — reserved for your dedicated music player |
-| **Images (`.jpg`, `.png`...)** | ❌ **NO (Hidden)** | Excluded — reserved for your photo viewer |
-| **Documents (`.pdf`, `.txt`, `.docx`...)** | ❌ **NO (Hidden)** | Excluded from context menu |
+| **Folders & Folder Shortcuts** | **YES** | Matches `Directory\shell` and `Folder\shell` |
+| **Single Video File** | **YES** | Matches `SystemFileAssociations\video` and direct video extensions (`.mp4`, `.mkv`, `.avi`, `.webm`, `.mov`, `.ts`...) |
+| **Multiple Video Files** | **YES** | Batches all selected videos into a single MPV player session (`MultiSelectModel="Player"`) |
+| **Single Drive / USB** | **YES** | Matches `Drive\shell` |
+| **Empty Desktop / Folder Background** | **NO (Clean)** | Excluded — keeps the right-click *View / Sort by / Refresh* menu clean |
+| **Audio Files (`.mp3`, `.flac`...)** | **NO (Hidden)** | Excluded — reserved for your dedicated music player |
+| **Images (`.jpg`, `.png`...)** | **NO (Hidden)** | Excluded — reserved for your photo viewer |
+| **Documents (`.pdf`, `.txt`, `.docx`...)** | **NO (Hidden)** | Excluded from context menu |
 
 ---
 

@@ -1,53 +1,63 @@
-# extension/images/ — Chrome Web Store Assets
+# Chrome Web Store Promotional & Screenshot Assets
 
-This folder contains promotional and screenshot images for submitting the extension to the Chrome Web Store (or Brave/Edge Add-ons stores).
+This directory contains promotional and screenshot assets for submitting the extension to the Chrome Web Store, Brave, and Edge Add-ons stores.
 
-## Files
+---
 
-| File | Purpose | Required Size |
+## Asset Directory
+
+| File | Purpose | Resolution |
 |---|---|---|
-| `promotional_tile_1280x800.jpg` | Large promotional tile shown on the store listing page | 1280×800px |
-| `screenshot_context_menu.jpg` | Screenshot #1 — "Open Link in MPV" right-click context menu | 1280×800px or 640×400px |
-| `screenshot_youtube_button.jpg` | Screenshot #2 — "Play in MPV" button in the YouTube player controls | 1280×800px or 640×400px |
-| `icon_source_reference.jpg` | Source artwork for the extension icon — reference only, not uploaded | — |
+| `promotional_tile_1280x800.jpg` | Large promotional tile for the store listing header | 1280x800 px |
+| `screenshot_context_menu.jpg` | Store Screenshot #1: Native right-click context menu | 1280x800 px |
+| `screenshot_youtube_button.jpg` | Store Screenshot #2: YouTube player controls timestamp button | 1280x800 px |
+| `screenshot_stremio_menu.jpg` | Store Screenshot #3: Stremio Web one-click stream launch | 1280x800 px |
+| `icon_source_reference.jpg` | High-resolution master reference artwork (1024x1024) | 1024x1024 px |
 
-## Chrome Web Store Upload Notes
+---
 
-- **Store icon** (128×128 PNG): Use `../icons/icon128.png`
-- **Small tile** (440×280 PNG): Crop from `promotional_tile_1280x800.jpg` if needed
-- **Large tile** (920×680 PNG): Resize `promotional_tile_1280x800.jpg`
-- **Screenshots**: Upload `screenshot_context_menu.jpg` and `screenshot_youtube_button.jpg` as the two main screenshots
+## Chrome Web Store Upload Checklist
 
-## Suggested Store Description (short, 132 chars)
+- **Store Icon**: Upload `../icons/icon128.png` (128x128 PNG).
+- **Small Tile (Optional)**: 440x280 PNG (can be cropped from `promotional_tile_1280x800.jpg`).
+- **Large Promotional Tile**: Upload `promotional_tile_1280x800.jpg` (1280x800 JPG).
+- **Screenshots**: Upload `screenshot_youtube_button.jpg`, `screenshot_stremio_menu.jpg`, and `screenshot_context_menu.jpg`.
 
+---
+
+## Suggested Store Listing Copy
+
+### Short Summary (132 characters max)
 ```
-Open any link in MPV. Inject a "Play in MPV" button into YouTube — launches at your exact timestamp. Zero network calls.
+Open YouTube, Stremio Web, and any web video directly in your local MPV player. Seamless timestamp sync with zero background RAM.
 ```
 
-## Suggested Store Description (full)
-
+### Detailed Description
 ```
-Play in MPV adds two things to Chrome and Brave:
+Play in MPV provides a zero-latency bridge between Chromium browsers and your local MPV media player.
 
-▶ RIGHT-CLICK ANY LINK → "Open Link in MPV"
-Right-clicking any hyperlink shows "Open Link in MPV". MPV opens and streams it — YouTube videos, playlists, direct video URLs, anything yt-dlp can handle.
+FEATURES:
 
-▶ YOUTUBE TIMESTAMP BUTTON
-On any YouTube watch page, a Play ▶ button appears in the video player controls. Click it at any moment — MPV opens at that exact second. Watch the first few minutes in-browser, then seamlessly continue in MPV.
+1. YOUTUBE TIMESTAMP INTEGRATION
+A clean Play button appears in YouTube player controls on Watch and Shorts pages. Clicking it instantly launches MPV at that exact second, letting you seamlessly continue watching in your local media player.
 
-WORKS WITH YOUR MPV CONFIG
-The extension only passes the URL and timestamp. Your existing mpv.conf and yt-dlp.conf handle video quality, cookies, subtitles, HDR tone-mapping, and everything else — unchanged.
+2. STREMIO WEB INTEGRATION
+Adds a native "Play in MPV" option directly into Stremio Web (web.stremio.com) stream context menus and player menus. Automatically pauses browser playback and hands off streams with zero manual copying.
 
-ZERO BACKGROUND PROCESSES
-No server. No port. No persistent process. Uses Chrome's Native Messaging API — a local pipe that exists only while MPV is starting up.
+3. UNIVERSAL CONTEXT MENU
+Right-click any link, video, audio element, or highlighted URL to stream it in MPV immediately.
 
-PRIVACY
-This extension communicates only with your local machine to launch the local MPV player. It does not collect, store, or transmit any personal data, web history, or user activity off your device.
+4. SEAMLESS COMPATIBILITY
+The extension only passes the media URL, title, and timestamp. Your local mpv.conf, shaders, tone-mapping, subtitles, and yt-dlp.conf configurations handle playback quality without alteration.
 
-PART OF biraj-mpv-conf
-Built and tested as part of the biraj-mpv-conf ultra-optimized MPV configuration suite.
-github.com/Biraj2004/biraj-mpv-conf
+5. ZERO BACKGROUND RESOURCE CONSUMPTION
+No persistent background server. No open network ports. Communicates locally on demand using the Chrome Native Messaging API and exits immediately after launch.
 
-SETUP REQUIRED
-A one-time setup step is needed: load the extension, run Install_Native_Host.bat, and paste your Extension ID. See the GitHub README for full instructions.
+PRIVACY:
+This extension communicates strictly with your local computer to spawn MPV. It does not collect, log, or transmit any browsing data or telemetry.
+
+Part of the biraj-mpv-conf suite:
+https://github.com/Biraj2004/biraj-mpv-conf
+Documentation:
+https://biraj2004.github.io/biraj-mpv-conf/extension.html
 ```

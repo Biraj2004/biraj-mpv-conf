@@ -11,6 +11,8 @@
 
 *Seamlessly launch MPV at the exact YouTube timestamp with one click.*
 
+[Official Documentation](https://biraj2004.github.io/biraj-mpv-conf/extension.html) • [Parent Suite](https://github.com/Biraj2004/biraj-mpv-conf) • [Publishing Guide](../HOW_TO_PUBLISH_CHROME_WEBSTORE.md) • [Testing Guide](../HOW_TO_TEST_BROWSER_EXTENSION.md)
+
 </div>
 
 ---
@@ -21,7 +23,7 @@ Browser-Play-in-MPV provides a zero-latency bridge between Chromium browsers and
 
 1. **Right-Click Anywhere**: Right-click any link, highlighted URL, video, or audio -> **"Play in MPV"**: MPV opens and streams it.
 2. **YouTube Player Integration**: An unobtrusive **Play in MPV** button is injected into the bottom-right control bar of YouTube watch and Shorts pages. Clicking it reads the exact playback timestamp and title, handing off playback to MPV seamlessly.
-3. **Stremio Web Integration**: Adds a **Play in MPV** option directly into Stremio Web (`https://web.stremio.com/` and `https://app.strem.io/`) stream context menus and player menus. Streams launch directly in MPV without requiring manual URL copy and paste.
+3. **Stremio Web Integration**: Adds a **Play in MPV** option directly into Stremio Web (`https://web.stremio.com/` and `https://app.strem.io/`) stream context menus and player menus. Streams launch directly in MPV without requiring manual URL copy and paste, automatically pausing the browser player.
 
 ### Architecture Highlights
 
@@ -131,11 +133,19 @@ When watching any YouTube video or Short, click the **Play in MPV** button in th
 | YouTube Shorts | Automatically converts `/shorts/ID` to watch URL and opens in MPV |
 | YouTube Playlists | Opens the playlist in MPV starting from the active video index |
 | YouTube Live Streams | Opens stream in MPV without seek offset |
-| Premieres | Button indicates when media is not yet available for streaming |
+| Members-Only & Authenticated Videos | Passed to MPV and authenticated automatically via your local yt-dlp cookie configuration |
+
+### Stremio Web Integration
+
+When browsing media on `https://web.stremio.com/` or `https://app.strem.io/`:
+
+1. Select any movie or episode stream.
+2. In the stream source context menu (three dots or stream selection menu), click **"Play in MPV"**.
+3. The stream is immediately dispatched to your local MPV player, and the web player is paused automatically to prevent dual audio.
 
 ### Context Menu
 
-Right-click any hyperlink or video thumbnail across the web and select **"Open Link in MPV"**.
+Right-click any hyperlink, video tag, audio player, or thumbnail across the web and select **"Play in MPV"**.
 
 ---
 
@@ -155,15 +165,19 @@ Right-click any hyperlink or video thumbnail across the web and select **"Open L
 
 | Permission | Purpose |
 |---|---|
-| `contextMenus` | Adds the "Open Link in MPV" item to the browser right-click menu |
+| `contextMenus` | Adds the "Play in MPV" item to the browser right-click menu |
 | `nativeMessaging` | Allows communication with the local `mpv_launcher.py` script via stdin/stdout |
 | `notifications` | Alerts user if MPV is missing or if the native host registration is required |
 | `*://*.youtube.com/*` | Injects the player button and reads playback timestamp on user click |
+| `https://web.stremio.com/*` | Injects the "Play in MPV" button into Stremio Web stream menus |
+| `https://app.strem.io/*` | Injects the "Play in MPV" button into Stremio Web app variant |
 
 ---
 
 ## Project References
 
+- Extension Documentation Page: [Play in MPV Documentation](https://biraj2004.github.io/biraj-mpv-conf/extension.html)
 - Suite Repository: [biraj-mpv-conf](https://github.com/Biraj2004/biraj-mpv-conf)
 - Testing Guide: [HOW_TO_TEST_BROWSER_EXTENSION.md](../HOW_TO_TEST_BROWSER_EXTENSION.md)
 - Web Store Publication Guide: [HOW_TO_PUBLISH_CHROME_WEBSTORE.md](../HOW_TO_PUBLISH_CHROME_WEBSTORE.md)
+

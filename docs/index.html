@@ -93,6 +93,7 @@
                 <a href="#screenshots" class="nav-link">Screenshots</a>
                 <a href="#installation" class="nav-link">Installation</a>
                 <a href="#shortcuts" class="nav-link">Shortcuts</a>
+                <a href="extension.html" class="nav-link">Extension</a>
                 <a href="#credits" class="nav-link">Credits</a>
                 <div class="mobile-nav-cta">
                     <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="btn btn-primary btn-sm btn-mobile-dl" download>
@@ -350,6 +351,17 @@
                     <h3 class="feature-title">Native OSD Pause Notification</h3>
                     <p class="feature-desc">Persistent top-left badge (<code>Paused at hr:min:sec / total time</code>) matching MPV's native dark translucent OSD box. Features dynamic collision avoidance with direct inter-script coordination (shifts down cleanly for volume, seek timeline, tracks, and notifications), proportional multi-line clearance, stats (<kbd>i</kbd>) &amp; console (<kbd>`</kbd>) auto-suppression, strict motion and window state isolation, cross-state seek tracking, live seeking timestamps, and event-driven zero-overhead observer guaranteeing 100% native bare-metal opening speed.</p>
                 </div>
+
+                <!-- Feature 11 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Play in MPV Browser Extension</h3>
+                    <p class="feature-desc">Official Chromium companion for Chrome, Brave, and Edge. Stream YouTube videos at the exact playback timestamp, dispatch Stremio Web media with one click, or right-click any web video to stream via secure Native Messaging IPC. <a href="extension.html" style="font-weight: 600; color: var(--primary-light); text-decoration: underline;">Explore Extension Documentation &rarr;</a></p>
+                </div>
             </div>
         </div>
     </section>
@@ -541,7 +553,11 @@
                 <div class="os-content active" id="content-windows">
                     <!-- winget Quick Install -->
                     <div class="step-card" style="border-color: rgba(99,102,241,0.35); background: rgba(99,102,241,0.04);">
-                        <div class="step-number">⚡</div>
+                        <div class="step-number">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </div>
                         <div class="step-body">
                             <h4 class="step-title">Quick Install via winget (Fastest)</h4>
                             <p class="step-desc">Install MPV and yt-dlp with two commands in PowerShell or Windows Terminal. No manual download or extraction needed.</p>
@@ -572,7 +588,11 @@
                     </div>
 
                     <div class="step-card">
-                        <div class="step-number">⚡</div>
+                        <div class="step-number">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </div>
                         <div class="step-body">
                             <h4 class="step-title">Automated 1-Click Sync & Update via Batch Script (Recommended)</h4>
                             <p class="step-desc">Download or clone this repository and simply double-click <code>Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat</code>. It verifies your mpv installation, creates an automated safety backup, checks the latest commit on GitHub, and synchronizes all files into <code>%APPDATA%\mpv</code> with interactive safety gates.</p>
@@ -1182,6 +1202,7 @@ sub-margin-y=36</code></pre>
             </div>
 
             <div class="footer-links-group">
+                <a href="extension.html" class="footer-link">Play in MPV Extension</a>
                 <a href="https://github.com/Biraj2004/biraj-mpv-conf" target="_blank" rel="noopener" class="footer-link">GitHub Repository</a>
                 <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="footer-link">Download Latest ZIP</a>
                 <a href="https://github.com/Biraj2004/biraj-mpv-conf/blob/main/LICENSE" target="_blank" rel="noopener" class="footer-link">Apache 2.0 License</a>

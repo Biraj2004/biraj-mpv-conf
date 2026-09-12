@@ -20,10 +20,10 @@ Stremio's built-in web player is convenient, but lacks advanced features like GP
 
 By default, Stremio only includes an option for *"Play in VLC"*. This integration patches Stremio's local server engine to add **"Play in MPV"**, seamlessly forwarding streams, torrents, and subtitles directly to your custom `biraj-mpv-conf` setup with zero quality loss.
 
-- ✅ **One-Click Automated Setup**: Detects MPV and patches Stremio without requiring manual coding.
-- ✅ **Cross-Platform Support**: Dedicated installers for **Windows 10/11** (`.bat`) and **macOS** (`.sh` for Apple Silicon & Intel).
-- ✅ **Full Configuration Support**: Launches streams with all your `mpv.conf` settings, ModernZ OSC, RAM cache, and HDR tone-mapping intact.
-- ✅ **Zero-Risk Safety**: Automatically creates timestamped backups (`.backup_YYYYMMDD_HHMMSS`) before any file modification.
+- **One-Click Automated Setup**: Detects MPV and patches Stremio without requiring manual coding.
+- **Cross-Platform Support**: Dedicated installers for **Windows 10/11** (`.bat`) and **macOS** (`.sh` for Apple Silicon & Intel).
+- **Full Configuration Support**: Launches streams with all your `mpv.conf` settings, ModernZ OSC, RAM cache, and HDR tone-mapping intact.
+- **Zero-Risk Safety**: Automatically creates timestamped backups (`.backup_YYYYMMDD_HHMMSS`) before any file modification.
 
 ---
 
