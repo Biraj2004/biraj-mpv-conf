@@ -101,6 +101,7 @@ local function cancel_exit()
     if is_showing_warning then
         is_showing_warning = false
         mp.osd_message("", 0)
+        mp.commandv("script-message-to", "pause_notify", "osd-notify", "", "0")
     end
 end
 
@@ -159,19 +160,19 @@ local function start_exit_countdown()
     local warn_time = math.min(opts.warning_time, total_delay)
     local silent_delay = total_delay - warn_time
 
-    if silent_delay > 0 then
-        warning_timer = mp.add_timeout(silent_delay, function()
-            if opts.show_warning then
-                is_showing_warning = true
-                -- Show for slightly longer than warn_time to ensure it stays until exit
-                mp.osd_message(opts.warning_text, warn_time + 0.5)
-            end
-        end)
-    else
+    local function show_warning()
         if opts.show_warning then
             is_showing_warning = true
-            mp.osd_message(opts.warning_text, warn_time + 0.5)
+            local dur = warn_time + 0.5
+            mp.osd_message(opts.warning_text, dur)
+            mp.commandv("script-message-to", "pause_notify", "osd-notify", opts.warning_text, tostring(dur))
         end
+    end
+
+    if silent_delay > 0 then
+        warning_timer = mp.add_timeout(silent_delay, show_warning)
+    else
+        show_warning()
     end
 
     exit_timer = mp.add_timeout(total_delay, function()

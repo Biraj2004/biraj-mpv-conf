@@ -28,12 +28,14 @@ local opts = {
     show_duration = true,       -- Include total duration: "Paused at 08:27 / 43:40"
     shift_offset = 0,           -- Distance in px to shift down (0 = auto-calculate based on font size)
     reposition_delay = 0.10,    -- Extra buffer in seconds before shifting back up after OSD expires
+    suppress_on_eof = true,     -- Suppress pause notification when media reaches EOF (prevents conflict with auto-exit)
 }
 
 options.read_options(opts, "pause_notify")
 
 local is_paused = false
 local is_shifted = false
+local is_eof = false
 local is_stats_active = false
 local is_console_active = false
 local shift_lines = 1
@@ -97,7 +99,7 @@ end
 
 -- Render the pause notification overlay with exact native mpv OSD styling
 local function update_overlay()
-    if not opts.enable or not is_paused or is_stats_active or is_console_active then
+    if not opts.enable or not is_paused or is_stats_active or is_console_active or (opts.suppress_on_eof and is_eof) then
         ov.data = ""
         ov:remove()
         mp.set_property_bool("user-data/pause_notify/visible", false)
@@ -455,6 +457,20 @@ end
 
 mp.observe_property("pause", "bool", on_pause_change)
 
+-- Observe EOF state: suppress pause notification when media reaches the end
+local function on_eof_change(_, eof)
+    is_eof = (eof == true)
+    if is_paused and opts.enable then
+        update_overlay()
+    end
+end
+
+mp.observe_property("eof-reached", "bool", on_eof_change)
+
+mp.register_event("start-file", function()
+    is_eof = false
+end)
+
 -- Update if a new file is loaded while paused
 mp.register_event("file-loaded", function()
     is_stats_active = false
@@ -468,6 +484,7 @@ end)
 local function cleanup()
     is_stats_active = false
     is_console_active = false
+    is_eof = false
     if is_observing_time then
         is_observing_time = false
         mp.unobserve_property(on_time_pos_change)
