@@ -5,14 +5,13 @@
  * Injects a "Play in MPV" button into YouTube's player right-side controls.
  * On click, reads the current video timestamp and sends it to the service worker.
  *
- * Handles:
- *  - YouTube SPA navigation (yt-navigate-finish)
- *  - Live streams (no --start timestamp)
- *  - Shorts (converts /shorts/ID → /watch?v=ID)
- *  - Playlists (preserves list= param)
- *  - Premieres (button disabled with tooltip)
- *  - Button deduplication on re-renders
- *  - video.readyState guard before reading currentTime
+ * Fully dynamic across all YouTube SPA client-side navigations:
+ *  - Home feed to video
+ *  - Recommendation / sidebar clicks
+ *  - Search results to video
+ *  - Shorts to Watch and vice versa
+ *  - History back / forward
+ *  - Automatic reconnection retry if background service worker was sleeping
  *
  * Zero network calls. No external dependencies. Purely DOM + messaging.
  */
@@ -23,8 +22,8 @@
   // ─── Constants ────────────────────────────────────────────────────────────
 
   const BUTTON_ID      = 'biraj-mpv-btn';
-  const MAX_WAIT_MS    = 10000;   // Stop retrying after 10 s
-  const RETRY_DELAY_MS = 400;     // Poll interval for controls bar
+  const MAX_WAIT_MS    = 8000;
+  const RETRY_DELAY_MS = 300;
 
   // Inline SVG: MPV's native play-in-circle logo mark (matches extension icon)
   const MPV_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -38,71 +37,94 @@
 
   let retryTimer   = null;
   let retryElapsed = 0;
+  let heartbeatTimer = null;
 
 
-  // ─── URL helpers ──────────────────────────────────────────────────────────
+  // ─── URL & Video ID Helpers ───────────────────────────────────────────────
+
+  function isVideoPage() {
+    const p = window.location.pathname;
+    return p.startsWith('/watch') || p.startsWith('/shorts/');
+  }
+
+  function getVideoId() {
+    const loc = window.location;
+
+    // 1. /shorts/VIDEO_ID
+    const shortsMatch = loc.pathname.match(/^\/shorts\/([A-Za-z0-9_-]+)/);
+    if (shortsMatch && shortsMatch[1]) {
+      return shortsMatch[1];
+    }
+
+    // 2. /watch?v=VIDEO_ID search params
+    const searchParams = new URLSearchParams(loc.search);
+    const v = searchParams.get('v');
+    if (v) return v;
+
+    // 3. Fallback: <ytd-watch-flexy video-id="...">
+    const flexy = document.querySelector('ytd-watch-flexy');
+    const flexyId = flexy ? flexy.getAttribute('video-id') : null;
+    if (flexyId) return flexyId;
+
+    // 4. Fallback: YouTube internal player API
+    try {
+      const player = document.getElementById('movie_player');
+      if (player && typeof player.getVideoData === 'function') {
+        const data = player.getVideoData();
+        if (data && data.video_id) return data.video_id;
+      }
+    } catch (e) {}
+
+    // 5. Fallback: meta tag
+    const meta = document.querySelector('meta[itemprop="videoId"]');
+    if (meta && meta.content) return meta.content;
+
+    return null;
+  }
 
   function getCanonicalUrl() {
     const loc = window.location;
+    const vid = getVideoId();
 
-    // /shorts/VIDEO_ID  →  standard watch URL
-    const shortsMatch = loc.pathname.match(/^\/shorts\/([A-Za-z0-9_-]+)/);
-    if (shortsMatch) {
-      return `https://www.youtube.com/watch?v=${shortsMatch[1]}`;
-    }
-
-    // /watch  →  keep only v= and list= (strip all other params)
-    if (loc.pathname === '/watch') {
-      const src    = new URLSearchParams(loc.search);
-      const clean  = new URLSearchParams();
-      const v      = src.get('v');
-      const list   = src.get('list');
-      if (v)    clean.set('v',    v);
-      if (list) clean.set('list', list);
-      return `https://www.youtube.com/watch?${clean.toString()}`;
+    if (vid) {
+      const list = new URLSearchParams(loc.search).get('list');
+      return list
+        ? `https://www.youtube.com/watch?v=${vid}&list=${list}`
+        : `https://www.youtube.com/watch?v=${vid}`;
     }
 
     return loc.href;
   }
 
 
-  // ─── Player state helpers ─────────────────────────────────────────────────
+  // ─── Player State Helpers ─────────────────────────────────────────────────
 
   function isLiveStream() {
     return !!(
-      document.querySelector('.ytp-live-badge')          ||
+      document.querySelector('.ytp-live-badge')             ||
       document.querySelector('.ytp-time-display.ytp-live') ||
       document.querySelector('[class*="ytp-live-badge"]')
     );
   }
 
-  function isPremiere() {
-    return !!(
-      document.querySelector('.ytp-upcoming-thumbnail')  ||
-      document.querySelector('[class*="upcoming"]')
-    );
-  }
-
   /** Returns the integer second to pass as --start, or 0 to omit it. */
   function getStartTime() {
-    if (isLiveStream()) return 0;   // Live streams: no seek point
+    if (isLiveStream()) return 0;
 
-    // Prefer the YouTube video element (avoids ads / background music)
     const video = document.querySelector('video.html5-main-video')
                || document.querySelector('video.video-stream')
                || document.querySelector('video');
 
-    if (!video || video.readyState < 1) return 0;   // Not ready
+    if (!video || video.readyState < 1) return 0;
 
     const ct  = isFinite(video.currentTime) ? video.currentTime : 0;
     const dur = isFinite(video.duration)    ? video.duration    : 0;
 
-    if (ct < 2)                  return 0;           // Near start: omit
+    if (ct < 2)                  return 0;
     if (dur > 0 && ct > dur - 2) return Math.max(0, Math.floor(dur) - 2);
 
     return Math.floor(ct);
   }
-
 
   /** Extracts the clean video title from YouTube DOM or document.title. */
   function getVideoTitle() {
@@ -113,13 +135,31 @@
       return h1.textContent.trim();
     }
     let docTitle = document.title || '';
-    docTitle = docTitle.replace(/^\(\d+\)\s*/, '');    // Strip notification counter like "(1) "
-    docTitle = docTitle.replace(/\s*-\s*YouTube$/, ''); // Strip " - YouTube" suffix
+    docTitle = docTitle.replace(/^\(\d+\)\s*/, '');
+    docTitle = docTitle.replace(/\s*-\s*YouTube$/, '');
     return docTitle.trim();
   }
 
 
-  // ─── Button ───────────────────────────────────────────────────────────────
+  // ─── Robust Messaging ─────────────────────────────────────────────────────
+
+  /** Send message to background service worker with automatic retry if worker was idle. */
+  function sendMessageWithRetry(msg, maxAttempts = 3) {
+    let attempts = 0;
+    function trySend() {
+      attempts++;
+      chrome.runtime.sendMessage(msg, (response) => {
+        const err = chrome.runtime.lastError;
+        if (err && attempts < maxAttempts) {
+          setTimeout(trySend, 200 * attempts);
+        }
+      });
+    }
+    trySend();
+  }
+
+
+  // ─── Button Creation & Injection ──────────────────────────────────────────
 
   function createButton() {
     const btn = document.createElement('button');
@@ -130,42 +170,47 @@
     btn.innerHTML = MPV_SVG;
 
     btn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
 
-      if (isPremiere()) {
-        btn.setAttribute('title', 'Video is not yet available');
-        return;
-      }
+      // Visual feedback click flash
+      btn.style.opacity = '0.5';
+      setTimeout(() => { btn.style.opacity = ''; }, 200);
 
       const url   = getCanonicalUrl();
       const time  = getStartTime();
       const title = getVideoTitle();
 
-      // Send to service worker — fire-and-forget (no response needed)
-      chrome.runtime.sendMessage({ action: 'play_in_mpv', url, time, title }, () => {
-        // Suppress "no listener" error when SW is still waking up;
-        // the SW will handle it once active.
-        void chrome.runtime.lastError;
-      });
+      sendMessageWithRetry({ action: 'play_in_mpv', url, time, title });
     });
 
     return btn;
   }
 
-  /** Inject the button into .ytp-right-controls. Returns true if successful. */
+  /** Inject the button into .ytp-right-controls. Returns true if present or successfully injected. */
   function injectButton() {
-    if (document.getElementById(BUTTON_ID)) return true;   // Already present
-
+    const existing = document.getElementById(BUTTON_ID);
     const rightControls = document.querySelector('.ytp-right-controls');
+
     if (!rightControls) return false;
 
-    // Insert as left-most item in the right controls group
+    // If button already exists and is inside rightControls, all good
+    if (existing && rightControls.contains(existing)) {
+      return true;
+    }
+
+    // Remove stray button if parent got destroyed/recreated
+    if (existing) {
+      existing.remove();
+    }
+
+    // Insert as first item in right-side controls
     rightControls.insertBefore(createButton(), rightControls.firstChild);
     return true;
   }
 
 
-  // ─── Injection with retry ─────────────────────────────────────────────────
+  // ─── State Synchronization ────────────────────────────────────────────────
 
   function stopRetry() {
     if (retryTimer) {
@@ -175,61 +220,82 @@
     }
   }
 
-  function startInjection() {
-    stopRetry();
-
-    // Remove any leftover button from the previous page
-    document.getElementById(BUTTON_ID)?.remove();
-
-    // Try immediately — controls may already exist (fast page)
-    if (injectButton()) return;
-
-    // Poll until controls appear or we time-out
-    retryTimer = setInterval(() => {
-      retryElapsed += RETRY_DELAY_MS;
-
-      if (injectButton() || retryElapsed >= MAX_WAIT_MS) {
-        stopRetry();
-      }
-    }, RETRY_DELAY_MS);
-  }
-
-  function init() {
-    const path = window.location.pathname;
-    const isWatch  = path.startsWith('/watch');
-    const isShorts = path.startsWith('/shorts/');
-    if (!isWatch && !isShorts) {
+  function syncState() {
+    if (!isVideoPage()) {
       stopRetry();
       document.getElementById(BUTTON_ID)?.remove();
       return;
     }
 
-    startInjection();
+    // Immediate attempt
+    if (injectButton()) {
+      stopRetry();
+      return;
+    }
+
+    // If not ready, retry with polling
+    if (!retryTimer) {
+      retryElapsed = 0;
+      retryTimer = setInterval(() => {
+        retryElapsed += RETRY_DELAY_MS;
+        if (injectButton() || retryElapsed >= MAX_WAIT_MS || !isVideoPage()) {
+          stopRetry();
+        }
+      }, RETRY_DELAY_MS);
+    }
   }
 
 
-  // ─── Navigation listeners ─────────────────────────────────────────────────
+  // ─── Observers & Navigation Listeners ─────────────────────────────────────
 
-  // YouTube SPA: fires on every client-side navigation
-  window.addEventListener('yt-navigate-finish', () => {
-    setTimeout(init, 150);
+  // Continuous MutationObserver catches dynamic player insertion during SPA route changes
+  const domObserver = new MutationObserver(() => {
+    if (isVideoPage()) {
+      const existing = document.getElementById(BUTTON_ID);
+      const rightControls = document.querySelector('.ytp-right-controls');
+      if (rightControls && (!existing || !rightControls.contains(existing))) {
+        syncState();
+      }
+    } else {
+      document.getElementById(BUTTON_ID)?.remove();
+    }
   });
 
-  // YouTube SPA: fires when new video metadata/playlist data updates
-  window.addEventListener('yt-page-data-updated', () => {
-    setTimeout(init, 150);
+  domObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
   });
 
-  // Fallback for popstate (history.back / forward)
+  // YouTube custom navigation events
+  ['yt-navigate-finish', 'yt-page-data-updated', 'yt-player-updated', 'spemp-video-updated'].forEach((evt) => {
+    window.addEventListener(evt, () => {
+      setTimeout(syncState, 100);
+      setTimeout(syncState, 400);
+    });
+  });
+
+  // History & URL changes
   window.addEventListener('popstate', () => {
-    setTimeout(init, 150);
+    setTimeout(syncState, 150);
   });
 
-  // Initial page load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  // Periodic heartbeat as a safety net (every 600ms on video pages)
+  if (!heartbeatTimer) {
+    heartbeatTimer = setInterval(() => {
+      if (isVideoPage()) {
+        const rightControls = document.querySelector('.ytp-right-controls');
+        const existing = document.getElementById(BUTTON_ID);
+        if (rightControls && (!existing || !rightControls.contains(existing))) {
+          syncState();
+        }
+      }
+    }, 600);
   }
 
+  // Initial boot
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncState);
+  } else {
+    syncState();
+  }
 })();

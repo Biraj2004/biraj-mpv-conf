@@ -3,10 +3,11 @@
  * Part of: biraj-mpv-conf | github.com/Biraj2004/biraj-mpv-conf
  *
  * Responsibilities:
- *  - Creates and handles the "Open Link in MPV" context menu (links only).
- *  - Receives launch requests from the YouTube content script.
+ *  - Creates and handles the "Play in MPV" context menu.
+ *  - Receives launch requests from YouTube and Stremio content scripts.
+ *  - Sanitizes and validates all payloads against strict protocol allowlists.
  *  - Relays payloads to the local native messaging host (mpv_launcher.py).
- *  - Shows a Chrome notification if the host is not yet installed.
+ *  - Shows a Chrome notification if the host is not yet installed or MPV is missing.
  *
  * Zero network calls. Purely event-driven. No persistent state.
  */
@@ -16,18 +17,19 @@
 const NATIVE_HOST    = 'com.biraj.mpv_launcher';
 const MENU_ITEM_ID   = 'biraj-open-link-in-mpv';
 
-// ─── Tracking params stripped from non-YouTube URLs ────────────────────────
+// Strict protocol allowlist — only streamable web protocols allowed
+const ALLOWED_SCHEMES = new Set(['http:', 'https:', 'magnet:']);
+
+// Tracking params stripped from general web URLs
 const TRACKING_PARAMS = [
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
   'utm_id', 'fbclid', 'gclid', 'msclkid', 'mc_cid', 'mc_eid', 'ref',
   '_ga', 'igshid',
 ];
 
-// Schemes that must never be sent to mpv
-const BLOCKED_SCHEMES = new Set([
-  'chrome-extension:', 'chrome:', 'moz-extension:',
-  'blob:', 'data:', 'javascript:', 'about:',
-]);
+// Anti-spam / double-click debounce
+let lastLaunchTime = 0;
+let lastLaunchUrl  = '';
 
 
 // ─── Context menu ──────────────────────────────────────────────────────────
@@ -55,7 +57,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
     rawUrl = info.srcUrl;
   } else if (info.selectionText) {
     let text = info.selectionText.trim().replace(/^["'<(\[]+|["'>)\]]+$/g, '');
-    if (/^https?:\/\//i.test(text)) {
+    if (/^https?:\/\//i.test(text) || /^magnet:\?/i.test(text)) {
       rawUrl = text;
     } else if (/^(?:www\.|youtube\.com|youtu\.be|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})/i.test(text)) {
       rawUrl = 'https://' + text;
@@ -69,7 +71,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
 });
 
 
-// ─── Messages from content script (YouTube button) ─────────────────────────
+// ─── Messages from content scripts ─────────────────────────────────────────
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg?.action !== 'play_in_mpv') return false;
@@ -91,13 +93,21 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
   sendToMpv(url, time, title);
   sendResponse({ success: true });
-  return false; // synchronous response; no async needed
+  return false;
 });
 
 
 // ─── Core: send to native host ─────────────────────────────────────────────
 
 function sendToMpv(url, time, title = '') {
+  // Prevent duplicate execution if clicked twice in rapid succession (< 500ms)
+  const now = Date.now();
+  if (url === lastLaunchUrl && (now - lastLaunchTime) < 500) {
+    return;
+  }
+  lastLaunchTime = now;
+  lastLaunchUrl  = url;
+
   const payload = { action: 'open', url, time, title };
 
   chrome.runtime.sendNativeMessage(NATIVE_HOST, payload, (response) => {
@@ -105,7 +115,6 @@ function sendToMpv(url, time, title = '') {
 
     if (err) {
       const msg = err.message ?? '';
-      // "Specified native messaging host not found" — host not installed
       if (msg.includes('not found') || msg.includes('Native host')) {
         notifySetupRequired();
       } else {
@@ -127,23 +136,27 @@ function sendToMpv(url, time, title = '') {
 // ─── URL sanitisation ──────────────────────────────────────────────────────
 
 function sanitizeUrl(raw) {
-  if (!raw) return null;
+  if (!raw || typeof raw !== 'string') return null;
 
   let parsed;
   try {
-    parsed = new URL(raw);
+    parsed = new URL(raw.trim());
   } catch {
     return null;
   }
 
-  // Block internal browser URLs
-  if (BLOCKED_SCHEMES.has(parsed.protocol)) return null;
+  // Enforce strict protocol allowlist (http, https, magnet)
+  if (!ALLOWED_SCHEMES.has(parsed.protocol)) return null;
 
-  // For non-YouTube links, strip tracking query params
-  const isYouTube = parsed.hostname.endsWith('youtube.com')
-                 || parsed.hostname === 'youtu.be';
+  // Prevent leading dashes or spaces that could be misused
+  const cleanUrl = parsed.toString().trim();
+  if (cleanUrl.startsWith('-')) return null;
 
-  if (!isYouTube) {
+  // For non-YouTube and non-localhost links, strip tracking query params
+  const isYouTube = parsed.hostname.endsWith('youtube.com') || parsed.hostname === 'youtu.be';
+  const isLocalHost = parsed.hostname === '127.0.0.1' || parsed.hostname === 'localhost';
+
+  if (!isYouTube && !isLocalHost) {
     TRACKING_PARAMS.forEach(p => parsed.searchParams.delete(p));
   }
 

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Play in MPV",
   "version": "1.0.0",
-  "description": "Open any link or YouTube video in your local MPV media player. Seamlessly hand off YouTube playback at the exact current timestamp.",
+  "description": "Open any link, YouTube video, or Stremio stream in your local MPV media player. Seamlessly hand off playback with zero manual copying.",
 
   "icons": {
     "16":  "icons/icon16.png",
@@ -29,11 +29,28 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.youtube.com/watch*",
-        "*://*.youtube.com/shorts/*"
+        "*://*.youtube.com/*"
       ],
       "js":  ["content_scripts/youtube.js"],
       "css": ["styles/youtube_button.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://web.stremio.com/*",
+        "*://app.strem.io/*"
+      ],
+      "js":  ["content_scripts/stremio_bridge.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://web.stremio.com/*",
+        "*://app.strem.io/*"
+      ],
+      "js":  ["content_scripts/stremio.js"],
+      "css": ["styles/stremio.css"],
       "run_at": "document_idle"
     }
   ],
@@ -45,6 +62,8 @@
   ],
 
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "*://web.stremio.com/*",
+    "*://app.strem.io/*"
   ]
 }

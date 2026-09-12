@@ -1,0 +1,30 @@
+/*
+ * stremio.css — Styles for Stremio Web "Play in MPV" menu option
+ * Part of: biraj-mpv-conf | github.com/Biraj2004/biraj-mpv-conf
+ */
+
+.biraj-stremio-mpv-option {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.biraj-mpv-icon-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1.7rem !important;
+  height: 1.7rem !important;
+  margin-right: 1rem !important;
+  flex-shrink: 0 !important;
+  pointer-events: none !important;
+}
+
+.biraj-mpv-icon-wrap svg {
+  display: block !important;
+  width: 1.7rem !important;
+  height: 1.7rem !important;
+}

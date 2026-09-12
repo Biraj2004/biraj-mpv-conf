@@ -8,12 +8,12 @@ Protocol
 Chrome Native Messaging uses length-prefixed JSON on stdin/stdout:
   [4 bytes little-endian uint32 = message length][UTF-8 JSON payload]
 
-This script:
-  1. Reads one JSON message from stdin.
-  2. Finds mpv.exe (PATH → known install locations).
-  3. Launches mpv with the given URL and optional --start=N timestamp.
-  4. Writes a JSON result back to stdout.
-  5. Exits.
+Security Measures:
+  - Input validation: Only allows http, https, and magnet schemes.
+  - Option injection prevention: Flags end with '--' delimiter before target URL.
+  - Subprocess execution: List-based arguments (never shell=True).
+  - Sanitization: Removes dangerous quotes, newlines, and control characters.
+  - Process isolation: Detached process with closed descriptors.
 
 Self-test (no Chrome needed):
   python mpv_launcher.py --test
@@ -37,6 +37,8 @@ def _read_message() -> Optional[dict]:
     if len(raw_len) < 4:
         return None
     msg_len = struct.unpack('<I', raw_len)[0]
+    if msg_len > 1048576:  # Max 1 MB payload protection
+        return None
     raw_msg = sys.stdin.buffer.read(msg_len)
     if not raw_msg:
         return None
@@ -69,7 +71,10 @@ def _find_mpv() -> Optional[str]:
     """Return the absolute path to mpv.exe, or None if not found."""
     # 1. Check each directory in PATH
     for directory in os.environ.get('PATH', '').split(os.pathsep):
-        candidate = os.path.join(directory.strip('"'), 'mpv.exe')
+        clean_dir = directory.strip().strip('"')
+        if not clean_dir:
+            continue
+        candidate = os.path.join(clean_dir, 'mpv.exe')
         if os.path.isfile(candidate):
             return candidate
 
@@ -107,12 +112,16 @@ def _launch_mpv(url: str, time: int, title: str = '') -> dict:
             ),
         }
 
-    # Build args as a list — never via a shell string (injection-safe)
+    # Build argument list safely
     args = [mpv]
     if time > 1:
         args.append(f'--start={time}')
     if title:
         args.append(f'--force-media-title={title}')
+
+    # Security delimiter: instructs mpv that all subsequent args are media targets,
+    # never options/flags (guards against any argument-injection attack)
+    args.append('--')
     args.append(url)
 
     try:
@@ -175,26 +184,35 @@ def main() -> None:
         return
 
     # ── Validate fields ─────────────────────────────────────────────────────
-    url = message.get('url', '')
-    if not isinstance(url, str):
-        url = ''
-    url = url.strip()
-
-    if not url:
-        _write_message({'success': False, 'error': 'missing_url'})
+    raw_url = message.get('url', '')
+    if not isinstance(raw_url, str):
+        _write_message({'success': False, 'error': 'invalid_url_type'})
         return
 
-    # Sanity-check time: must be a non-negative number within a reasonable range
+    url = raw_url.strip()
+
+    # Strict URL validation: must start with safe protocol and not be a CLI switch
+    if not (url.startswith('http://') or url.startswith('https://') or url.startswith('magnet:')):
+        _write_message({'success': False, 'error': 'disallowed_protocol'})
+        return
+
+    if url.startswith('-') or url.startswith('/'):
+        _write_message({'success': False, 'error': 'malformed_url'})
+        return
+
+    # Sanity-check time: must be non-negative integer within 240 hours
     raw_time = message.get('time', 0)
     if isinstance(raw_time, (int, float)) and 0 <= raw_time < 864000:
         time = int(raw_time)
     else:
         time = 0
 
-    # Sanity-check title: must be a string up to 300 characters, no dangerous quotes or newlines
+    # Sanity-check title: max 300 characters, strip leading dashes, escape quotes/newlines
     raw_title = message.get('title', '')
     if isinstance(raw_title, str) and raw_title.strip():
-        title = raw_title.replace('"', "'").replace('\n', ' ').replace('\r', '').strip()[:300]
+        clean_title = raw_title.replace('"', "'").replace('\n', ' ').replace('\r', '').strip()
+        clean_title = clean_title.lstrip('-').strip()[:300]
+        title = clean_title
     else:
         title = ''
 

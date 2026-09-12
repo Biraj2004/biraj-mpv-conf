@@ -19,8 +19,9 @@
 
 Browser-Play-in-MPV provides a zero-latency bridge between Chromium browsers and your local MPV player:
 
-1. **Right-click any link** anywhere in the browser -> **"Open Link in MPV"**: MPV opens and streams it. Works on YouTube links, playlists, direct video URLs, and web media links.
-2. **YouTube Player Integration**: An unobtrusive **Play in MPV** button is injected into the bottom-right control bar of YouTube watch and Shorts pages. Clicking it reads the exact playback timestamp and browser-displayed title, handing off playback to MPV at that exact second.
+1. **Right-Click Anywhere**: Right-click any link, highlighted URL, video, or audio -> **"Play in MPV"**: MPV opens and streams it.
+2. **YouTube Player Integration**: An unobtrusive **Play in MPV** button is injected into the bottom-right control bar of YouTube watch and Shorts pages. Clicking it reads the exact playback timestamp and title, handing off playback to MPV seamlessly.
+3. **Stremio Web Integration**: Adds a **Play in MPV** option directly into Stremio Web (`https://web.stremio.com/` and `https://app.strem.io/`) stream context menus and player menus. Streams launch directly in MPV without requiring manual URL copy and paste.
 
 ### Architecture Highlights
 
