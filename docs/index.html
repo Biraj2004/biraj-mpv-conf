@@ -93,8 +93,8 @@
                 <a href="#screenshots" class="nav-link">Screenshots</a>
                 <a href="#installation" class="nav-link">Installation</a>
                 <a href="#shortcuts" class="nav-link">Shortcuts</a>
-                <a href="extension.html" class="nav-link">Extension</a>
                 <a href="#credits" class="nav-link">Credits</a>
+                <a href="extension.html" class="nav-link">Extension</a>
                 <div class="mobile-nav-cta">
                     <a href="https://github.com/Biraj2004/biraj-mpv-conf/archive/refs/heads/main.zip" class="btn btn-primary btn-sm btn-mobile-dl" download>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -171,19 +171,16 @@
                     </svg>
                     <span>Quick Install Guide</span>
                 </a>
-                <a href="extension.html" class="btn btn-secondary">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    <span>Play in MPV Extension</span>
-                </a>
             </div>
 
             <!-- Browser Extension Companion Callout -->
             <div class="hero-extension-banner">
                 <a href="extension.html" class="hero-extension-link">
-                    <span class="ext-banner-tag">Browser Companion</span>
-                    <span>Stream YouTube &amp; Stremio Web directly in MPV</span>
+                    <span class="ext-banner-tag">
+                        <img src="assets/extension/icon128.png" alt="" style="width: 12px; height: 12px; object-fit: contain; vertical-align: -1px; margin-right: 3px;">
+                        Companion Extension
+                    </span>
+                    <span class="ext-banner-text">Stream YouTube &amp; Stremio Web directly in MPV</span>
                     <span class="ext-banner-arrow">&rarr;</span>
                 </a>
             </div>
@@ -370,12 +367,16 @@
                 <!-- Feature 11 -->
                 <div class="feature-card">
                     <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
+                        <img src="assets/extension/icon128.png" alt="Play in MPV Extension">
                     </div>
                     <h3 class="feature-title">Play in MPV Browser Extension</h3>
-                    <p class="feature-desc">Official Chromium companion for Chrome, Brave, and Edge. Stream YouTube videos at the exact playback timestamp, dispatch Stremio Web media with one click, or right-click any web video to stream via secure Native Messaging IPC. <a href="extension.html" style="font-weight: 600; color: var(--primary-light); text-decoration: underline;">Explore Extension Documentation &rarr;</a></p>
+                    <p class="feature-desc">Official Chromium companion for Chrome, Brave, and Edge. Stream YouTube videos at the exact playback timestamp, dispatch Stremio Web media with one click, or right-click any web video to stream via secure Native Messaging IPC.</p>
+                    <div style="margin-top: auto; padding-top: 1.15rem;">
+                        <a href="extension.html" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.55rem;">
+                            <img src="assets/extension/icon128.png" alt="" style="width: 16px; height: 16px; object-fit: contain;">
+                            <span>Explore Extension Documentation</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -965,163 +966,97 @@
             <div class="section-header">
                 <div class="section-tag">Core Specifications</div>
                 <h2 class="section-title">Configuration Breakdown</h2>
-                <p class="section-subtitle">Examine the exact parameter values configured in <code>mpv.conf</code>.</p>
+                <p class="section-subtitle">Key parameters configured across <code>mpv.conf</code> and <code>yt-dlp.conf</code>.</p>
             </div>
 
             <div class="code-showcase-grid">
                 <!-- Video & Cache Card -->
                 <div class="code-card">
                     <div class="code-card-header">
-                        <span class="code-card-title">Video & Cache Architecture</span>
+                        <span class="code-card-title">Video Pipeline &amp; HDR</span>
                         <span class="code-card-file">mpv.conf</span>
                     </div>
-                    <pre><code>### Watch History & Segregated Cache Architecture
-save-position-on-quit=yes
-watch-later-directory="~~cache/watch_later"
-gpu-shader-cache-dir="~~cache/shaders"
-icc-cache-dir="~~cache/icc"
-demuxer-cache-dir="~~cache/demuxer"
-
-### Video Pipeline
+                    <pre><code>### GPU-Next Video Pipeline
 vo=gpu-next
 gpu-context=auto
-d3d11-flip=yes
-d3d11-exclusive-fs=no
 hwdec=auto-safe
-hwdec-extra-frames=16
 video-sync=audio
-deband=no
-deband-iterations=2
-deband-threshold=35
-deband-range=16
-deband-grain=5
-dither-depth=auto
 temporal-dither=yes
 sigmoid-upscaling=yes
 correct-downscaling=yes
 
-### HDR & Dolby Vision
+### Dynamic HDR10 &amp; Tone-Mapping
 target-colorspace-hint=auto
 target-contrast=auto
 tone-mapping=auto
 hdr-compute-peak=auto
-gamut-mapping-mode=auto
-hwdec-codecs=all
+gamut-mapping-mode=auto</code></pre>
+                </div>
 
-### Audio Pipeline (90ms WASAPI Lock)
+                <!-- Audio & Memory Cache Card -->
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <span class="code-card-title">Audio &amp; RAM Cache</span>
+                        <span class="code-card-file">mpv.conf</span>
+                    </div>
+                    <pre><code>### Low-Latency Audio Lock
 ao=wasapi,coreaudio,pipewire,pulse,
-audio-exclusive=no
 audio-buffer=0.09
 audio-stream-silence=yes
-audio-wait-open=0
 audio-pitch-correction=yes
 
-### Cache (System RAM & Zero SSD Wear)
+### Zero-Wear RAM Cache
 cache=auto
 cache-on-disk=no
 demuxer-max-bytes=250MiB
-demuxer-max-back-bytes=100MiB
 demuxer-readahead-secs=13
 demuxer-seekable-cache=yes
-cache-pause=yes
-cache-pause-initial=no
-
-### Dynamic Protocol Caching (Streaming & Stremio)
-[protocol.https]
-demuxer-max-bytes=425MiB
-demuxer-max-back-bytes=175MiB
-demuxer-readahead-secs=20
-demuxer-hysteresis-secs=4
-
-### Night Mode & Dialogue Clarity Profile
-[night-audio]
-profile-desc=Dialogue Clarity & Dynamic Normalizer
-af=lavfi=[highpass=f=75,equalizer=f=2500:t=q:w=1.2:g=3.5,dynaudnorm=f=75:g=25:p=0.55]</code></pre>
+save-position-on-quit=yes</code></pre>
                 </div>
 
-                <!-- Subtitles Card -->
+                <!-- Subtitles & Streaming Card -->
                 <div class="code-card">
                     <div class="code-card-header">
-                        <span class="code-card-title">Subtitle Typography & Engine</span>
-                        <span class="code-card-file">mpv.conf</span>
+                        <span class="code-card-title">Subtitles &amp; Streaming</span>
+                        <span class="code-card-file">mpv / yt-dlp</span>
                     </div>
-                    <pre><code>### Subtitles
-sub-auto=fuzzy
-blend-subtitles=no
-sub-hdr-peak=120
-image-subs-hdr-peak=120
-sid=no
-# Prevents video pause/stutter during subtitle track switching
-demuxer-mkv-subtitle-preroll=no
-
-embeddedfonts=yes
-sub-ass-use-video-data=all
-sub-fix-timing=no
-sub-use-margins=no
-sub-ass-force-margins=no
-sub-ass-override=no
-
+                    <pre><code>### Clean Subtitle Rendering
 sub-font="Segoe UI"
 sub-font-size=50
-sub-color="#FFFFFF"
 sub-border-size=1.8
-sub-border-color="#000000"
-sub-shadow-offset=1.5
-sub-shadow-color=0/0/0/0.5
-sub-border-style=outline-and-shadow
-sub-margin-y=36</code></pre>
-                </div>
+sub-auto=fuzzy
+embeddedfonts=yes
+blend-subtitles=no
 
-                <!-- Streaming & Resilience Card -->
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <span class="code-card-title">Streaming & Network Resilience</span>
-                        <span class="code-card-file">yt-dlp.conf</span>
-                    </div>
-                    <pre><code>### Network Resilience & Anti-Throttling
---retries 10
---fragment-retries 10
---file-access-retries 3
---retry-sleep 1
---no-check-certificates
-
-### DASH / HLS Acceleration
+### Network Acceleration
 --concurrent-fragments 4
-
-### Subtitles, Metadata, Thumbnails & Packaging
+--retries 10
 --sub-langs all,-live_chat
---embed-subs
 --embed-metadata
---embed-chapters
---embed-thumbnail
---convert-thumbnails jpg
---remux-video ts>mkv/webm>mkv
---merge-output-format mp4/mkv
-
-### Playlist Handling & Safety
---yes-playlist
---compat-options no-youtube-unavailable-videos
-
-### Cookies Auth & Fallback
---cookies "E:\YouTube Downloader (yt-dlp)\yt-cookies.txt"
-# --cookies-from-browser firefox
-# --cookies-from-browser brave
-# --cookies-from-browser chrome
-# --cookies-from-browser edge</code></pre>
+--embed-chapters</code></pre>
                 </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/blob/main/mpv.conf" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    <span>View Complete mpv.conf on GitHub</span>
+                </a>
             </div>
 
             <!-- Reference Benchmark Hardware Card -->
             <div class="benchmark-card">
                 <div class="benchmark-header">
                     <div class="section-tag">Test Environment</div>
-                    <h3 class="benchmark-title">Reference Test Hardware & Benchmark System</h3>
+                    <h3 class="benchmark-title">Reference Test Hardware</h3>
                     <p class="benchmark-subtitle">All shader pipelines, tone-mapping curves, and real-time playback profiles were verified on this reference configuration:</p>
                 </div>
                 <div class="benchmark-grid">
                     <div class="benchmark-item">
                         <span class="benchmark-label">Processor (CPU)</span>
-                        <span class="benchmark-val">Intel Core i5-10300H @ 2.50GHz (4C / 8T, up to 4.5GHz)</span>
+                        <span class="benchmark-val">Intel Core i5-10300H (4C / 8T, up to 4.5GHz)</span>
                     </div>
                     <div class="benchmark-item">
                         <span class="benchmark-label">Dedicated GPU</span>
@@ -1132,16 +1067,8 @@ sub-margin-y=36</code></pre>
                         <span class="benchmark-val">Intel UHD Graphics 630</span>
                     </div>
                     <div class="benchmark-item">
-                        <span class="benchmark-label">System Memory</span>
-                        <span class="benchmark-val">16 GB DDR4 RAM</span>
-                    </div>
-                    <div class="benchmark-item">
-                        <span class="benchmark-label">Operating System</span>
-                        <span class="benchmark-val">Microsoft Windows 10 Home (64-bit)</span>
-                    </div>
-                    <div class="benchmark-item">
-                        <span class="benchmark-label">Storage</span>
-                        <span class="benchmark-val">High-Speed PCIe NVMe SSD</span>
+                        <span class="benchmark-label">RAM &amp; Storage</span>
+                        <span class="benchmark-val">16 GB DDR4 &bull; High-Speed NVMe SSD</span>
                     </div>
                 </div>
             </div>
