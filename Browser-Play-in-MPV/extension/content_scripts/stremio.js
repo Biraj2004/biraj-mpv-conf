@@ -253,8 +253,6 @@
         return;
       }
 
-      showStremioToast('Opening in MPV...', 'info');
-
       // Extract title
       const titleEl = menu.querySelector('[class*="title"]');
       let title = titleEl ? titleEl.textContent.trim() : '';

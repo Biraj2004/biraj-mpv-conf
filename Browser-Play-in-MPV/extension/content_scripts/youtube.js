@@ -265,9 +265,6 @@
       btn.style.opacity = '0.5';
       setTimeout(() => { btn.style.opacity = ''; }, 200);
 
-      // Show instant feedback toast
-      showPlayerToast('Opening in MPV...', 'info');
-
       try {
         sendMessageWithRetry({ action: 'play_in_mpv', url, time, title });
       } catch (err) {
