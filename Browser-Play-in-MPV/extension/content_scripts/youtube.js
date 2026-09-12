@@ -198,7 +198,11 @@
     const path = window.location.pathname;
     const isWatch  = path.startsWith('/watch');
     const isShorts = path.startsWith('/shorts/');
-    if (!isWatch && !isShorts) return;
+    if (!isWatch && !isShorts) {
+      stopRetry();
+      document.getElementById(BUTTON_ID)?.remove();
+      return;
+    }
 
     startInjection();
   }
@@ -208,7 +212,11 @@
 
   // YouTube SPA: fires on every client-side navigation
   window.addEventListener('yt-navigate-finish', () => {
-    // Brief delay so the URL and DOM settle before we probe the player
+    setTimeout(init, 150);
+  });
+
+  // YouTube SPA: fires when new video metadata/playlist data updates
+  window.addEventListener('yt-page-data-updated', () => {
     setTimeout(init, 150);
   });
 

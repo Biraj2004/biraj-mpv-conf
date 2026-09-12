@@ -32,21 +32,37 @@ const BLOCKED_SCHEMES = new Set([
 
 // ─── Context menu ──────────────────────────────────────────────────────────
 
-chrome.runtime.onInstalled.addListener(() => {
-  // Remove any stale menus from a previous install/reload then recreate.
+function setupContextMenu() {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id:       MENU_ITEM_ID,
-      title:    'Open Link in MPV',
-      contexts: ['link'],   // Only fires when right-clicking a hyperlink
+      title:    'Play in MPV',
+      contexts: ['link', 'selection', 'video', 'audio'],
     });
   });
-});
+}
+
+chrome.runtime.onInstalled.addListener(setupContextMenu);
+chrome.runtime.onStartup.addListener(setupContextMenu);
 
 chrome.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId !== MENU_ITEM_ID) return;
 
-  const url = sanitizeUrl(info.linkUrl);
+  let rawUrl = '';
+  if (info.linkUrl) {
+    rawUrl = info.linkUrl;
+  } else if (info.srcUrl) {
+    rawUrl = info.srcUrl;
+  } else if (info.selectionText) {
+    let text = info.selectionText.trim().replace(/^["'<(\[]+|["'>)\]]+$/g, '');
+    if (/^https?:\/\//i.test(text)) {
+      rawUrl = text;
+    } else if (/^(?:www\.|youtube\.com|youtu\.be|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})/i.test(text)) {
+      rawUrl = 'https://' + text;
+    }
+  }
+
+  const url = sanitizeUrl(rawUrl);
   if (!url) return;
 
   sendToMpv(url, 0);

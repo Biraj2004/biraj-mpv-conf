@@ -3,61 +3,63 @@
  * Part of: biraj-mpv-conf | github.com/Biraj2004/biraj-mpv-conf
  *
  * Scoped exclusively to #biraj-mpv-btn.
- * Matches YouTube's native dark player button appearance and sizing.
- * No external fonts. No network requests. No !important overrides.
+ * Matches YouTube's native player button sizing and vertical alignment.
+ * No hover background bubble. No hover zoom/scale.
  */
 
 #biraj-mpv-btn {
-  /* Sizing — identical to adjacent YT player buttons */
+  /* Sizing & alignment — identical to native .ytp-button elements */
   display:         inline-flex;
   align-items:     center;
   justify-content: center;
   width:           48px;
-  height:          48px;
+  height:          100%;
   padding:         0;
   margin:          0;
   flex-shrink:     0;
+  vertical-align:  top;
 
-  /* Appearance — blend with YT dark chrome */
+  /* Clean appearance without custom background or borders */
   background:      transparent;
   border:          none;
-  border-radius:   50%;
+  border-radius:   0;
+  outline:         none;
+  box-shadow:      none;
   color:           #ffffff;
   cursor:          pointer;
   opacity:         0.9;
 
-  /* Smooth hover transitions — no jank */
-  transition:      opacity 0.15s ease,
-                   transform 0.12s ease,
-                   background-color 0.15s ease;
+  /* Subtle opacity transition matching native YT controls */
+  transition:      opacity 0.1s ease;
 
-  /* Prevent text/icon selection on rapid clicks */
   user-select:     none;
   -webkit-user-select: none;
 }
 
+/* Hover: subtle brighten only, no scale, no background bubble */
 #biraj-mpv-btn:hover {
-  opacity:          1;
-  transform:        scale(1.1);
-  background-color: rgba(255, 255, 255, 0.08);
+  opacity:         1;
+  background:      transparent;
+  transform:       none;
 }
 
 #biraj-mpv-btn:active {
-  transform:        scale(0.93);
-  background-color: rgba(255, 255, 255, 0.12);
+  opacity:         0.7;
+  background:      transparent;
+  transform:       none;
 }
 
-/* Keyboard focus ring — accessibility */
+/* Keyboard focus ring */
 #biraj-mpv-btn:focus-visible {
   outline:        2px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
 
 /* SVG icon inside the button */
 #biraj-mpv-btn svg {
-  width:          22px;
-  height:         22px;
+  width:          24px;
+  height:         24px;
   display:        block;
-  pointer-events: none;    /* Prevent click-on-SVG from bypassing the button handler */
+  pointer-events: none;
   fill:           currentColor;
 }
