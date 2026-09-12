@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="images/icon128.png" alt="Play in MPV Extension Icon" width="96">
+
 # Browser-Play-in-MPV
 
 **Open any link or YouTube video in your local [MPV media player](https://mpv.io/) directly from Brave, Chrome, or Edge.**
@@ -11,7 +13,7 @@
 
 *Seamlessly launch MPV at the exact YouTube timestamp with one click.*
 
-[Official Documentation](https://biraj2004.github.io/biraj-mpv-conf/extension.html) • [Parent Suite](https://github.com/Biraj2004/biraj-mpv-conf) • [Publishing Guide](../HOW_TO_PUBLISH_CHROME_WEBSTORE.md) • [Testing Guide](../HOW_TO_TEST_BROWSER_EXTENSION.md)
+[Official Documentation](https://biraj2004.github.io/biraj-mpv-conf/extension.html) • [Parent Suite](https://github.com/Biraj2004/biraj-mpv-conf) • [Setup Guide](https://biraj2004.github.io/biraj-mpv-conf/extension.html#setup)
 
 </div>
 
@@ -49,13 +51,16 @@ The extension acts as a launcher. Playback quality, cookies, and formats are han
 
 ### 1. MPV Media Player
 
-Install MPV using winget:
+You can install MPV using either **zhongfly** or **winget (shinchiro)** builds. Both builds will work, though we actively use and recommend the zhongfly build:
 
-```powershell
-winget install --id shinchiro.mpv
-```
+- **Option A: zhongfly mpv-winbuild (Used & Recommended):** Download the latest build from [**zhongfly mpv-winbuild Releases**](https://github.com/zhongfly/mpv-winbuild/releases) (choose `x86_64-v3` for modern processors). Extract and place it in `C:\Program Files\mpv\` (so that `C:\Program Files\mpv\mpv.exe` exists).
+- **Option B: winget (Fastest):**
+  ```powershell
+  winget install --id shinchiro.mpv
+  ```
 
-Recommended build: [zhongfly mpv-winbuild](https://github.com/zhongfly/mpv-winbuild/releases) (x86_64-v3 with `gpu-next` and `libplacebo`). Extract or install to `C:\Program Files\mpv\` for automatic detection.
+> [!IMPORTANT]
+> **Check Installation Paths:** Make sure `mpv.exe` is placed at `C:\Program Files\mpv\mpv.exe` or that its parent folder is added to your Windows system `PATH` so the native messaging host can invoke it immediately.
 
 ### 2. yt-dlp (Streaming Engine)
 
@@ -127,6 +132,12 @@ Reload the extension in `chrome://extensions` by clicking the circular reload ic
 
 When watching any YouTube video or Short, click the **Play in MPV** button in the player controls (next to settings and fullscreen).
 
+<p align="center">
+  <img src="images/screenshot_youtube_button.jpg" alt="Native Play in MPV Button in YouTube Video and Shorts Controls" width="850">
+  <br>
+  <em>Native "Play in MPV" button integrated into the YouTube control bar. Clicking transfers playback to MPV at the exact current timestamp and auto-pauses the browser.</em>
+</p>
+
 | Media Type | Hand-Off Behavior |
 |---|---|
 | Standard YouTube Video | MPV opens at the current playback timestamp with the full video title |
@@ -143,9 +154,21 @@ When browsing media on `https://web.stremio.com/` or `https://app.strem.io/`:
 2. In the stream source context menu (three dots or stream selection menu), click **"Play in MPV"**.
 3. The stream is immediately dispatched to your local MPV player, and the web player is paused automatically to prevent dual audio.
 
+<p align="center">
+  <img src="images/screenshot_stremio_menu.jpg" alt="Play in MPV Stream Action in Stremio Web" width="850">
+  <br>
+  <em>One-click stream handoff directly inside Stremio Web context menus, launching high-bitrate streams into MPV without copying links manually.</em>
+</p>
+
 ### Context Menu
 
 Right-click any hyperlink, video tag, audio player, or thumbnail across the web and select **"Play in MPV"**.
+
+<p align="center">
+  <img src="images/screenshot_context_menu.jpg" alt="Universal Right-Click Context Menu" width="850">
+  <br>
+  <em>Universal right-click context menu integration allowing instant launching of any webpage, hyperlink, video tag, or audio element into MPV.</em>
+</p>
 
 ---
 
@@ -177,7 +200,6 @@ Right-click any hyperlink, video tag, audio player, or thumbnail across the web 
 ## Project References
 
 - Extension Documentation Page: [Play in MPV Documentation](https://biraj2004.github.io/biraj-mpv-conf/extension.html)
-- Suite Repository: [biraj-mpv-conf](https://github.com/Biraj2004/biraj-mpv-conf)
-- Testing Guide: [HOW_TO_TEST_BROWSER_EXTENSION.md](../HOW_TO_TEST_BROWSER_EXTENSION.md)
-- Web Store Publication Guide: [HOW_TO_PUBLISH_CHROME_WEBSTORE.md](../HOW_TO_PUBLISH_CHROME_WEBSTORE.md)
+- Parent Configuration Suite: [biraj-mpv-conf](https://github.com/Biraj2004/biraj-mpv-conf)
+- Online Setup & Troubleshooting: [Extension Setup Guide](https://biraj2004.github.io/biraj-mpv-conf/extension.html#setup)
 

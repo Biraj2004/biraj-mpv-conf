@@ -28,33 +28,66 @@ function initDynamicYear() {
 }
 
 /**
- * 2. Mobile Navigation Drawer Toggle
+ * 2. Mobile Navigation Drawer Toggle with Background Blur
  */
 function initMobileNavigation() {
     const mobileToggle = document.getElementById('mobileToggle');
     const navLinks = document.getElementById('navLinks');
+    let navBackdrop = document.getElementById('navBackdrop');
 
     if (!mobileToggle || !navLinks) return;
 
+    // Create backdrop element dynamically if not present in DOM
+    if (!navBackdrop) {
+        navBackdrop = document.createElement('div');
+        navBackdrop.className = 'nav-backdrop';
+        navBackdrop.id = 'navBackdrop';
+        document.body.appendChild(navBackdrop);
+    }
+
+    const setMenuState = (open) => {
+        navLinks.classList.toggle('open', open);
+        navBackdrop.classList.toggle('active', open);
+        document.body.classList.toggle('nav-open', open);
+        mobileToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+
     mobileToggle.addEventListener('click', (e) => {
         e.stopPropagation();
-        const isOpen = navLinks.classList.toggle('open');
-        mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const isOpen = navLinks.classList.contains('open');
+        setMenuState(!isOpen);
+    });
+
+    // Close menu when clicking the blurred backdrop
+    navBackdrop.addEventListener('click', () => {
+        setMenuState(false);
     });
 
     // Close menu when clicking any nav link or CTA button inside drawer
     navLinks.querySelectorAll('.nav-link, .btn-mobile-dl').forEach(link => {
         link.addEventListener('click', () => {
-            navLinks.classList.remove('open');
-            mobileToggle.setAttribute('aria-expanded', 'false');
+            setMenuState(false);
         });
     });
 
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
         if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
-            navLinks.classList.remove('open');
-            mobileToggle.setAttribute('aria-expanded', 'false');
+            setMenuState(false);
+        }
+    });
+
+    // Close menu on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+            setMenuState(false);
+        }
+    });
+
+    // Reset menu on resize to desktop view
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900 && navLinks.classList.contains('open')) {
+            setMenuState(false);
         }
     });
 }
