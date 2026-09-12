@@ -33,7 +33,6 @@
     <polygon points="9.5,7 16.8,12 9.5,17" fill="#FFFFFF"/>
   </svg>`;
 
-  let activeNonce = null;
   let pendingResolver = null;
   let pendingTimer = null;
   let scanScheduled = false;
@@ -46,11 +45,9 @@
       event.data.source === 'PLAY_IN_MPV_BRIDGE' &&
       event.data.type === 'CAPTURED_STREAM_URL'
     ) {
-      if (activeNonce && event.data.nonce === activeNonce) {
-        const url = event.data.url;
-        activeNonce = null;
-
-        if (pendingResolver && typeof url === 'string' && /^(https?|http|magnet):/i.test(url)) {
+      const url = event.data.url;
+      if (typeof url === 'string' && /^(https?|http|magnet):/i.test(url)) {
+        if (pendingResolver) {
           pendingResolver(url);
           pendingResolver = null;
           if (pendingTimer) {
@@ -61,6 +58,24 @@
       }
     }
   });
+
+  /** Display a floating toast directly in Stremio Web. */
+  function showStremioToast(message, type = 'info') {
+    try {
+      let toast = document.getElementById('biraj-stremio-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'biraj-stremio-toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.className = `biraj-stremio-toast-visible biraj-stremio-toast-${type}`;
+      clearTimeout(toast._hideTimer);
+      toast._hideTimer = setTimeout(() => {
+        toast.className = '';
+      }, 2500);
+    } catch (e) {}
+  }
 
   /** Helper to find option elements by text content or title. */
   function findOption(menu, query) {
@@ -233,13 +248,12 @@
       e.preventDefault();
       e.stopPropagation();
 
-      const targetCopyBtn = findOption(menu, 'copy stream link')
-                         || findOption(menu, 'stream link')
-                         || findOption(menu, 'link')
-                         || findOption(menu, 'download link')
-                         || findOption(menu, 'download video');
+      if (!isExtensionValid()) {
+        showStremioToast('Extension reloaded. Please refresh the page (F5).', 'warning');
+        return;
+      }
 
-      if (!targetCopyBtn) return;
+      showStremioToast('Opening in MPV...', 'info');
 
       // Extract title
       const titleEl = menu.querySelector('[class*="title"]');
@@ -254,53 +268,88 @@
         ? Math.floor(video.currentTime)
         : 0;
 
-      // Firmly pause and mute web player so no background audio plays
+      // Check if video already has a direct HTTP/HTTPS stream URL (not a blob)
+      const directVideoSrc = video && video.currentSrc && !video.currentSrc.startsWith('blob:') && /^(https?|http):/i.test(video.currentSrc)
+        ? video.currentSrc
+        : null;
+
+      // Firmly pause and mute web player
       pauseStremioPlayback();
 
-      // Cryptographic nonce authentication
-      const nonceArr = new Uint32Array(2);
-      crypto.getRandomValues(nonceArr);
-      const nonce = nonceArr[0].toString(36) + nonceArr[1].toString(36);
-      activeNonce = nonce;
+      function sendUrl(targetUrl) {
+        if (!targetUrl) {
+          showStremioToast('Could not retrieve stream link.', 'error');
+          return;
+        }
+        sendMessageWithRetry({ action: 'play_in_mpv', url: targetUrl, time, title });
+      }
 
-      document.documentElement.setAttribute('data-mpv-nonce', nonce);
+      function dismissMenu() {
+        setTimeout(() => {
+          const activeMenu = document.querySelector('[class*="context-menu-content"], [class*="options-menu-container"]');
+          if (activeMenu) {
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
+          }
+        }, 150);
+      }
+
+      if (directVideoSrc) {
+        sendUrl(directVideoSrc);
+        dismissMenu();
+        return;
+      }
+
+      const targetCopyBtn = findOption(menu, 'copy stream link')
+                         || findOption(menu, 'stream link')
+                         || findOption(menu, 'link')
+                         || findOption(menu, 'download link')
+                         || findOption(menu, 'download video');
+
+      if (!targetCopyBtn) {
+        showStremioToast('Stream option not found.', 'warning');
+        dismissMenu();
+        return;
+      }
 
       const capturePromise = new Promise((resolve) => {
         pendingResolver = resolve;
         pendingTimer = setTimeout(() => {
           if (pendingResolver === resolve) {
             pendingResolver = null;
-            activeNonce = null;
             resolve(null);
           }
-        }, 800);
+        }, 1200);
       });
 
-      // Trigger native copy action EXACTLY ONCE (prevents duplicate toasts)
-      targetCopyBtn.click();
+      // Dispatch click to trigger Stremio's clipboard write
+      try {
+        targetCopyBtn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+        targetCopyBtn.click();
+      } catch (err) {}
 
       capturePromise.then((capturedUrl) => {
-        if (!capturedUrl) {
-          if (navigator.clipboard && navigator.clipboard.readText) {
-            navigator.clipboard.readText().then((clipText) => {
-              if (typeof clipText === 'string' && /^(https?|http|magnet):/i.test(clipText.trim())) {
-                sendMessageWithRetry({ action: 'play_in_mpv', url: clipText.trim(), time, title });
-              }
-            }).catch(() => {});
-          }
+        if (capturedUrl) {
+          sendUrl(capturedUrl);
           return;
         }
 
-        sendMessageWithRetry({ action: 'play_in_mpv', url: capturedUrl, time, title });
+        // Fallback: try reading clipboard if permissions permit
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          navigator.clipboard.readText().then((clipText) => {
+            if (typeof clipText === 'string' && /^(https?|http|magnet):/i.test(clipText.trim())) {
+              sendUrl(clipText.trim());
+            } else {
+              showStremioToast('Could not capture stream link.', 'warning');
+            }
+          }).catch(() => {
+            showStremioToast('Could not capture stream link.', 'warning');
+          });
+        } else {
+          showStremioToast('Could not capture stream link.', 'warning');
+        }
       });
 
-      // Dismiss menu cleanly if still open
-      setTimeout(() => {
-        const activeMenu = document.querySelector('[class*="context-menu-content"], [class*="options-menu-container"]');
-        if (activeMenu) {
-          document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true }));
-        }
-      }, 100);
+      dismissMenu();
     });
 
     // Placement: right after "Play", or before "Copy Stream Link"

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Play in MPV",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Open any link, YouTube video, or Stremio stream in your local MPV media player. Seamlessly hand off playback with zero manual copying.",
 
   "icons": {

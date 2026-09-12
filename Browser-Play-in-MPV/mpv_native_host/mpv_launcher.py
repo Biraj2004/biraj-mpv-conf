@@ -90,6 +90,16 @@ def _find_mpv() -> Optional[str]:
 # Launch
 # ──────────────────────────────────────────────────────────────────────────────
 
+import datetime
+
+def _log(msg: str) -> None:
+    try:
+        log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'launcher.log')
+        with open(log_path, 'a', encoding='utf-8') as f:
+            f.write(f'[{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {msg}\n')
+    except Exception:
+        pass
+
 # Windows process creation flags: DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
 _DETACHED_PROCESS = 0x00000008          # Detach from parent console
 _CREATE_NEW_PROCESS_GROUP = 0x00000200  # Independent process group
@@ -101,6 +111,7 @@ def _launch_mpv(url: str, time: int, title: str = '') -> dict:
     """
     mpv = _find_mpv()
     if not mpv:
+        _log(f'ERROR: mpv.exe not found for url: {url}')
         return {
             'success': False,
             'error':   'mpv_not_found',
@@ -112,7 +123,9 @@ def _launch_mpv(url: str, time: int, title: str = '') -> dict:
         }
 
     # Build argument list safely
-    args = [mpv]
+    # --force-window=immediate ensures the player window appears immediately
+    # while streams or yt-dlp load in the background
+    args = [mpv, '--force-window=immediate']
     if time > 0:
         args.append(f'--start={time}')
     if title:
@@ -128,6 +141,7 @@ def _launch_mpv(url: str, time: int, title: str = '') -> dict:
     launch_cwd = config_dir if os.path.isdir(config_dir) else os.path.dirname(mpv)
     env = os.environ.copy()
 
+    _log(f'Launching: {args} in cwd: {launch_cwd}')
     try:
         subprocess.Popen(
             args,
@@ -138,8 +152,10 @@ def _launch_mpv(url: str, time: int, title: str = '') -> dict:
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
+        _log('Launch successful (process spawned)')
         return {'success': True}
     except OSError as exc:
+        _log(f'ERROR: subprocess.Popen failed: {exc}')
         return {
             'success': False,
             'error':   'launch_failed',
@@ -185,8 +201,11 @@ def main() -> None:
         return
 
     if message is None:
+        _log('Received empty message (EOF)')
         _write_message({'success': False, 'error': 'empty_message'})
         return
+
+    _log(f'Received payload: {message}')
 
     # ── Validate fields ─────────────────────────────────────────────────────
     raw_url = message.get('url', '')

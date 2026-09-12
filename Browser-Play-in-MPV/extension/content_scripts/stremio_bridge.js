@@ -8,8 +8,8 @@
  * asking for clipboard permissions.
  *
  * Security:
- *  - Sandboxed communication via window.postMessage with strict origin and nonce checks.
- *  - Validates all captured URLs before dispatching.
+ *  - Sandboxed communication via window.postMessage with strict origin checks.
+ *  - Validates all captured URLs against stream protocol allowlist.
  *  - Zero eval, zero inline script strings, zero external network requests.
  */
 
@@ -24,22 +24,14 @@
     const originalWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
 
     navigator.clipboard.writeText = function (text) {
-      const nonce = document.documentElement.getAttribute('data-mpv-nonce');
-      const isArmed = !!nonce;
-
-      if (nonce) {
-        document.documentElement.removeAttribute('data-mpv-nonce');
-      }
-
       if (typeof text === 'string') {
         const trimmed = text.trim();
         const isStreamUrl = /^(https?|http|magnet):/i.test(trimmed);
 
-        if (isArmed && isStreamUrl) {
+        if (isStreamUrl) {
           window.postMessage({
             source: 'PLAY_IN_MPV_BRIDGE',
             type: 'CAPTURED_STREAM_URL',
-            nonce: nonce,
             url: trimmed
           }, '*');
         }

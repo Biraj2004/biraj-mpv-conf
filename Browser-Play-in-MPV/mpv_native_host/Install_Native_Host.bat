@@ -58,25 +58,31 @@ echo ===========================================================================
 
 set "PYTHON_EXE="
 
-:: Check system PATH first
+:: Check system PATH first (skip WindowsApps 0-byte execution alias)
 for /f "delims=" %%P in ('where python.exe 2^>nul') do (
-    if not defined PYTHON_EXE set "PYTHON_EXE=%%P"
+    if not defined PYTHON_EXE (
+        echo "%%P" | findstr /i "WindowsApps" >nul
+        if errorlevel 1 set "PYTHON_EXE=%%P"
+    )
 )
 
 :: Common install locations if not in PATH
 if not defined PYTHON_EXE (
     for %%D in (
+        "%LOCALAPPDATA%\Python\bin\python.exe"
+        "%LOCALAPPDATA%\Programs\Python\Python314\python.exe"
         "%LOCALAPPDATA%\Programs\Python\Python313\python.exe"
         "%LOCALAPPDATA%\Programs\Python\Python312\python.exe"
         "%LOCALAPPDATA%\Programs\Python\Python311\python.exe"
         "%LOCALAPPDATA%\Programs\Python\Python310\python.exe"
         "%LOCALAPPDATA%\Programs\Python\Python39\python.exe"
+        "%APPDATA%\Python\Python314\Scripts\python.exe"
         "%APPDATA%\Python\Python313\Scripts\python.exe"
+        "C:\Python314\python.exe"
         "C:\Python313\python.exe"
         "C:\Python312\python.exe"
         "C:\Python311\python.exe"
         "%USERPROFILE%\scoop\shims\python.exe"
-        "%USERPROFILE%\AppData\Local\Microsoft\WindowsApps\python.exe"
     ) do (
         if not defined PYTHON_EXE if exist %%D set "PYTHON_EXE=%%~D"
     )
@@ -184,7 +190,7 @@ set "MANIFEST_JSON=!HOST_DIR!\mpv_launcher_host.json"
 :: On Windows, a .bat file works perfectly — stdin/stdout are piped through correctly.
 (
     echo @echo off
-    echo "!PYTHON_EXE!" "!LAUNCHER_PY!"
+    echo "!PYTHON_EXE!" "!LAUNCHER_PY!" %%*
 ) > "!WRAPPER_BAT!"
 
 if not exist "!WRAPPER_BAT!" (
