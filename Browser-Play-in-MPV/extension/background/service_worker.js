@@ -83,7 +83,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   }
 
   const rawTime = msg.time;
-  const time = (Number.isFinite(rawTime) && rawTime > 1)
+  const time = (Number.isFinite(rawTime) && rawTime > 0)
     ? Math.floor(rawTime)
     : 0;
 

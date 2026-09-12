@@ -114,7 +114,7 @@ def _launch_mpv(url: str, time: int, title: str = '') -> dict:
 
     # Build argument list safely
     args = [mpv]
-    if time > 1:
+    if time > 0:
         args.append(f'--start={time}')
     if title:
         args.append(f'--force-media-title={title}')

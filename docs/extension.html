@@ -3,43 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play in MPV — Browser Extension | Biraj MPV Configuration</title>
+    <title>Play in MPV | Browser Extension Guide &amp; Documentation</title>
     
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Play in MPV — Browser Extension | Biraj MPV Configuration">
-    <meta name="description" content="Stream any web video, YouTube timestamp, or Stremio Web stream directly into your local hardware-accelerated MPV player. Manifest V3 compliant, zero telemetry, and native messaging IPC.">
-    <meta name="keywords" content="play in mpv, mpv browser extension, chrome mpv extension, youtube to mpv, stremio web mpv, native messaging, mpv launcher, chrome web store, brave mpv, edge mpv">
+    <meta name="title" content="Play in MPV | Browser Extension Guide &amp; Documentation">
+    <meta name="description" content="Official setup guide and documentation for the Play in MPV browser extension. Stream YouTube, Stremio Web media, and web videos directly into MPV.">
+    <meta name="keywords" content="play in mpv, mpv browser extension, chrome mpv, youtube to mpv, stremio web mpv, native messaging, mpv setup guide">
     <meta name="author" content="Biraj Sarkar">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://biraj2004.github.io/biraj-mpv-conf/extension.html">
 
-    <!-- Theme Color & Web App -->
+    <!-- Theme & Icons -->
     <meta name="theme-color" content="#090a0f">
     <meta name="color-scheme" content="dark">
-    <link rel="manifest" href="site.webmanifest">
-
-    <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="128x128" href="assets/extension/icon128.png">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://biraj2004.github.io/biraj-mpv-conf/extension.html">
-    <meta property="og:title" content="Play in MPV — Browser Extension">
-    <meta property="og:description" content="Stream any web video, YouTube timestamp, or Stremio Web stream directly into your local hardware-accelerated MPV player with one click.">
-    <meta property="og:image" content="https://biraj2004.github.io/biraj-mpv-conf/assets/extension/promotional_tile_1280x800.jpg">
-    <meta property="og:image:width" content="1280">
-    <meta property="og:image:height" content="800">
-    <meta property="og:image:alt" content="Play in MPV Browser Extension Promotional Banner">
-    <meta property="og:site_name" content="Biraj MPV Configuration">
-
-    <!-- Twitter Card -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://biraj2004.github.io/biraj-mpv-conf/extension.html">
-    <meta property="twitter:title" content="Play in MPV — Browser Extension">
-    <meta property="twitter:description" content="Stream any web video, YouTube timestamp, or Stremio Web stream directly into your local hardware-accelerated MPV player with one click.">
-    <meta property="twitter:image" content="https://biraj2004.github.io/biraj-mpv-conf/assets/extension/promotional_tile_1280x800.jpg">
 
     <!-- Fonts & Stylesheet -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,55 +26,425 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Play in MPV",
-      "operatingSystem": "Windows 10, Windows 11, Linux, macOS",
-      "applicationCategory": "BrowserApplication",
-      "description": "Browser extension to stream YouTube videos, Stremio Web media, and web video links directly to local MPV with live timestamp sync.",
-      "url": "https://biraj2004.github.io/biraj-mpv-conf/extension.html",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "author": {
-        "@type": "Person",
-        "name": "Biraj Sarkar",
-        "url": "https://github.com/Biraj2004"
-      }
-    }
-    </script>
+    <style>
+        /* ==========================================================================
+           Extension Documentation - Specific Styles
+           Clean, minimal, responsive card layout layered on master design system
+           ========================================================================== */
+
+        /* Smooth Anchor Scrolling Offset for Fixed 70px Header */
+        section[id] {
+            scroll-margin-top: 85px;
+        }
+
+        /* Hero Extension App Icon */
+        .ext-logo-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 76px;
+            height: 76px;
+            background: rgba(22, 25, 34, 0.8);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .ext-logo-badge:hover {
+            transform: translateY(-3px) scale(1.04);
+            border-color: var(--border-accent);
+            box-shadow: 0 16px 40px var(--primary-glow);
+        }
+
+        .ext-logo-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        /* Container for content cards */
+        .ext-content-container {
+            max-width: 820px;
+            margin-inline: auto;
+            padding-inline: clamp(1rem, 3.5vw, 1.5rem);
+            padding-bottom: clamp(3rem, 6vw, 5rem);
+        }
+
+        /* Documentation Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: clamp(1.25rem, 3.5vw, 2.25rem);
+            margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.25);
+        }
+
+        .card h2 {
+            font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            color: var(--text-primary);
+        }
+
+        .card h2 svg {
+            width: 22px;
+            height: 22px;
+            color: var(--primary-light);
+            flex-shrink: 0;
+        }
+
+        /* Feature Bullets */
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            font-size: clamp(0.88rem, 1.4vw, 0.96rem);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .feature-bullet {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            margin-top: 0.6rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        .feature-item strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Tab Switcher */
+        .tabs-nav {
+            display: flex;
+            gap: 6px;
+            background: rgba(13, 15, 22, 0.8);
+            border: 1px solid var(--border-subtle);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.65rem 0.85rem;
+            font-family: var(--font-sans);
+            font-size: clamp(0.8rem, 1.2vw, 0.88rem);
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .tab-btn.active {
+            color: #ffffff;
+            background: rgba(99, 102, 241, 0.18);
+            box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.4);
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Step-by-Step Instructions */
+        .steps {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: clamp(2.4rem, 5vw, 3rem);
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: clamp(26px, 4vw, 32px);
+            height: clamp(26px, 4vw, 32px);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: clamp(0.78rem, 1.2vw, 0.85rem);
+            font-family: var(--font-mono);
+        }
+
+        .step-title {
+            font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: var(--text-primary);
+        }
+
+        .step-desc {
+            color: var(--text-secondary);
+            font-size: clamp(0.85rem, 1.3vw, 0.92rem);
+            margin-bottom: 0.75rem;
+            line-height: 1.55;
+        }
+
+        /* Interactive Code Box */
+        .code-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0d0f16;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 0.65rem 0.85rem;
+            margin-bottom: 0.45rem;
+            gap: 0.75rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .code-box code {
+            font-family: var(--font-mono);
+            font-size: clamp(0.75rem, 1.2vw, 0.84rem);
+            color: #e2e8f0;
+            white-space: nowrap;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .code-hint {
+            font-size: clamp(0.74rem, 1.1vw, 0.8rem);
+            color: var(--text-muted);
+            display: block;
+            line-height: 1.45;
+        }
+
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-copy:hover {
+            color: #ffffff;
+            border-color: var(--border-hover);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-copy svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-copy .check-icon {
+            display: none;
+            color: var(--accent-emerald);
+        }
+
+        .btn-copy.copied .copy-icon {
+            display: none;
+        }
+
+        .btn-copy.copied .check-icon {
+            display: block;
+        }
+
+        /* Screenshot Showcase */
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .screenshot-card {
+            background: #0d0f16;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .screenshot-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-accent);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .screenshot-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.25s ease;
+        }
+
+        .screenshot-card:hover .screenshot-thumb {
+            transform: scale(1.02);
+        }
+
+        .screenshot-caption {
+            padding: 0.65rem 0.85rem;
+            font-size: clamp(0.78rem, 1.1vw, 0.84rem);
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Minimal Architecture Pipe Diagram */
+        .pipe-flow {
+            background: #0d0f16;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: clamp(0.74rem, 1.1vw, 0.82rem);
+            color: #cbd5e1;
+            line-height: 1.6;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* FAQ Q&A Items */
+        .faq-item {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .faq-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .faq-q {
+            font-size: clamp(0.92rem, 1.4vw, 1rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+        }
+
+        .faq-a {
+            font-size: clamp(0.85rem, 1.3vw, 0.92rem);
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 640px) {
+            .tabs-nav {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .tab-btn {
+                width: 100%;
+                padding: 0.75rem 0.85rem;
+            }
+
+            .screenshot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ext-logo-badge {
+                width: 66px;
+                height: 66px;
+            }
+
+            .ext-logo-img {
+                width: 42px;
+                height: 42px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
+    <!-- Navigation Bar (Identical to Main Documentation Page) -->
     <header class="site-header" id="header">
         <div class="nav-container">
             <a href="index.html" class="brand-logo">
                 <span class="logo-icon">
-                    <img src="assets/extension/icon128.png" alt="Play in MPV Logo" style="width: 26px; height: 26px; border-radius: 50%; vertical-align: middle;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
                 </span>
-                <span class="logo-text">Play in MPV</span>
+                <span class="logo-text">biraj-mpv-conf</span>
             </a>
 
             <nav class="nav-links" id="navLinks">
                 <a href="#overview" class="nav-link">Overview</a>
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#showcase" class="nav-link">Showcase</a>
+                <a href="#setup" class="nav-link">Setup</a>
+                <a href="#screenshots" class="nav-link">Screenshots</a>
                 <a href="#architecture" class="nav-link">Architecture</a>
-                <a href="#installation" class="nav-link">Installation</a>
-                <a href="#integrations" class="nav-link">Integrations</a>
                 <a href="#faq" class="nav-link">FAQ</a>
                 <a href="index.html" class="nav-link">MPV Config Docs</a>
                 <div class="mobile-nav-cta">
-                    <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" class="btn btn-primary btn-sm btn-mobile-dl" target="_blank" rel="noopener">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                    <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="btn btn-primary btn-sm btn-mobile-dl">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                         </svg>
                         <span>Extension Source</span>
                     </a>
@@ -103,15 +452,7 @@
             </nav>
 
             <div class="nav-actions">
-                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="btn btn-download-nav">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    <span>Extension Source</span>
-                </a>
-                <a href="https://github.com/Biraj2004/biraj-mpv-conf" target="_blank" rel="noopener" class="btn btn-github" aria-label="GitHub Repository">
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="btn btn-github" aria-label="Extension GitHub Source">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                     </svg>
@@ -131,568 +472,315 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section" id="overview">
+    <!-- Hero Section (Fluid Scaling with Ambient Glow) -->
+    <section class="hero-section">
         <div class="hero-bg-glow"></div>
         <div class="container hero-container">
             <div class="hero-badge">
                 <span class="badge-dot"></span>
                 <span class="badge-text">
-                    <span class="badge-primary-text">Chrome &bull; Brave &bull; Edge &bull; Chromium</span>
-                    <span class="badge-secondary-text">Manifest V3 &bull; Zero Telemetry &bull; Native Messaging</span>
+                    <strong class="badge-primary-text">Manifest V3 &bull; Chromium &bull; Native IPC</strong>
+                    <span class="badge-secondary-text">Zero Telemetry &bull; YouTube &amp; Stremio Web</span>
                 </span>
             </div>
+
+            <div>
+                <div class="ext-logo-badge">
+                    <img src="assets/extension/icon128.png" alt="Play in MPV Icon" class="ext-logo-img">
+                </div>
+            </div>
+
             <h1 class="hero-title">
-                Stream Web Media <br>
-                <span class="gradient-text">Directly in MPV</span>
+                Play in <span class="gradient-text">MPV</span>
             </h1>
+
             <p class="hero-description">
-                A lightweight, privacy-focused browser companion. Hand off YouTube streams at your exact playback timestamp, dispatch Stremio Web media with one click, or right-click any video across the web to launch directly into your hardware-accelerated MPV player.
+                A lightweight companion to launch YouTube, Stremio Web, and web video links directly in your local MPV media player.
             </p>
-            
+
             <div class="hero-buttons">
-                <a href="#installation" class="btn btn-primary">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    <span>Install &amp; Setup Guide</span>
-                </a>
-                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="btn btn-secondary">
+                <a href="#setup" class="btn btn-primary">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
-                    <span>Browse GitHub Repository</span>
+                    <span>Quick Setup</span>
+                </a>
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="btn btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    <span>Extension Source</span>
+                </a>
+                <a href="index.html" class="btn btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span>MPV Config Docs</span>
                 </a>
             </div>
+        </div>
+    </section>
 
-            <!-- Quick Clone Code Box -->
-            <div class="hero-clone-box">
-                <span class="clone-label">Extension Directory</span>
-                <code id="extPath">Browser-Play-in-MPV/extension</code>
-                <button class="btn-copy" onclick="copyCode('extPath', this)" title="Copy path" aria-label="Copy extension directory path">
-                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    <!-- Main Content Container -->
+    <main class="ext-content-container">
+        <!-- Overview & Features Card -->
+        <section class="card" id="overview">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Overview</span>
+            </h2>
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <span class="feature-bullet"></span>
+                    <div><strong>YouTube Controls Button:</strong> Injects a sleek Play button into YouTube watch and Shorts player controls. Resumes playback in MPV at the exact current second and automatically pauses the browser video.</div>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-bullet"></span>
+                    <div><strong>Stremio Web Integration:</strong> Adds a native "Play in MPV" option directly inside stream menus on <code>web.stremio.com</code>. Auto-pauses the web player and streams with zero manual copy-pasting.</div>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-bullet"></span>
+                    <div><strong>Universal Context Menu:</strong> Right-click any video, audio element, hyperlink, or selected URL to open it in MPV instantly.</div>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-bullet"></span>
+                    <div><strong>Zero Background Daemon:</strong> Communicates via Chrome's Native Messaging API (stdin/stdout). No open network ports, no background web server, and zero persistent RAM usage.</div>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-bullet"></span>
+                    <div><strong>Full Config &amp; Cookies Inheritance:</strong> Passes canonical URLs directly to MPV, utilizing your existing <code>yt-dlp.conf</code>, authenticated cookies, and HDR tone-mapping settings.</div>
+                </li>
+            </ul>
+
+            <div class="hero-buttons" style="justify-content: flex-start; margin-bottom: 0;">
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="btn btn-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
-                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
+                    <span>View Extension Source</span>
+                </a>
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf" target="_blank" rel="noopener" class="btn btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                     </svg>
-                </button>
+                    <span>biraj-mpv-conf Repository</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Setup Guide Card -->
+        <section class="card" id="setup">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Installation &amp; Setup Guide</span>
+            </h2>
+
+            <!-- OS Selection Tabs -->
+            <div class="tabs-nav">
+                <button class="tab-btn os-tab-btn active" data-os="windows" data-tab="windows">Windows (Load Unpacked)</button>
+                <button class="tab-btn os-tab-btn" data-os="crossplatform" data-tab="crossplatform">Linux / macOS</button>
             </div>
 
-            <!-- Showcase Preview Frame -->
-            <div class="hero-preview-frame">
-                <div class="frame-bar">
-                    <div class="frame-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div class="frame-title">Play in MPV &bull; Chromium Extension &bull; Hardware Acceleration</div>
-                    <div class="frame-action-tag">Native Messaging Pipe Active</div>
-                </div>
-                <div class="frame-image-wrapper">
-                    <img src="assets/extension/promotional_tile_1280x800.jpg" alt="Play in MPV Extension Overview and Feature Highlights" class="hero-image zoomable">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Key Features Section -->
-    <section class="section features-section" id="features">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Core Capabilities</div>
-                <h2 class="section-title">Engineered for Seamless Video Hand-Off</h2>
-                <p class="section-subtitle">No background servers. No open network ports. Pure Manifest V3 event architecture combined with local operating system IPC.</p>
-            </div>
-
-            <div class="features-grid">
-                <!-- Feature 1 -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">YouTube Player Integration</h3>
-                    <p class="feature-desc">Injects an unobtrusive button directly into YouTube's player controls. Reads the active seekbar timestamp, media title, and URL, opening MPV at the exact current second.</p>
-                </div>
-
-                <!-- Feature 2 -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
-                            <polyline points="17 2 12 7 7 2"></polyline>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">Stremio Web Integration</h3>
-                    <p class="feature-desc">Hooks natively into Stremio Web (<code>web.stremio.com</code> and <code>app.strem.io</code>) stream context menus. Dispatches torrent or HTTP stream links directly to MPV and auto-pauses the browser player.</p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <path d="M9 3v18"></path>
-                            <path d="M14 9l3 3-3 3"></path>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">Universal Context Menu</h3>
-                    <p class="feature-desc">Right-click any link, video thumbnail, HTML5 media element, or highlighted URL across any website to send it directly to MPV with instant audio/video playback.</p>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">Chrome Native Messaging Pipe</h3>
-                    <p class="feature-desc">Communicates via local standard input/output with Python. Avoids running vulnerable localhost HTTP daemons, eliminating network attack surfaces and persistent background memory drain.</p>
-                </div>
-
-                <!-- Feature 5 -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                            <rect x="9" y="9" width="6" height="6"></rect>
-                            <line x1="9" y1="1" x2="9" y2="4"></line>
-                            <line x1="15" y1="1" x2="15" y2="4"></line>
-                            <line x1="9" y1="20" x2="9" y2="23"></line>
-                            <line x1="15" y1="20" x2="15" y2="23"></line>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">Argument Hardening &amp; Sanitization</h3>
-                    <p class="feature-desc">Enforces scheme validation (<code>http:</code>, <code>https:</code>, <code>magnet:</code>), escapes titles, and employs the <code>--</code> argument terminator before media URLs to prevent command-line option injection.</p>
-                </div>
-
-                <!-- Feature 6 -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
-                            <line x1="16" y1="8" x2="2" y2="22"></line>
-                            <line x1="17.5" y1="15" x2="9" y2="15"></line>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">yt-dlp &amp; Cookie Inheritance</h3>
-                    <p class="feature-desc">MPV launches with its full suite configuration, automatically inheriting your local <code>yt-dlp.conf</code>, HDR/SDR tone-mapping, ModernZ OSC, and exported cookies for authenticated or members-only video streams.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Visual Showcase Gallery -->
-    <section class="section showcase-section" id="showcase">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Visual Showcase</div>
-                <h2 class="section-title">Seamless Browser &amp; Player Experience</h2>
-                <p class="section-subtitle">Click any screenshot below to inspect high-resolution interface details.</p>
-            </div>
-
-            <div class="gallery-grid">
-                <!-- Gallery Card 1 -->
-                <div class="gallery-card zoomable-trigger" data-img="assets/extension/screenshot_youtube_button.jpg">
-                    <div class="gallery-image-box">
-                        <img src="assets/extension/screenshot_youtube_button.jpg" alt="YouTube Player with Play in MPV Button" loading="lazy">
-                        <div class="gallery-overlay">
-                            <span class="gallery-zoom-badge">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    <line x1="11" y1="8" x2="11" y2="14"></line>
-                                    <line x1="8" y1="11" x2="14" y2="11"></line>
-                                </svg>
-                                <span>Inspect Screenshot</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-tag">YouTube Player Integration</div>
-                        <h3 class="gallery-title">Live Timestamp Seek Synchronization</h3>
-                        <p class="gallery-desc">Injected into YouTube's bottom controls next to the miniplayer. Preserves current playback position and launches MPV without audio pops or window flicker.</p>
-                    </div>
-                </div>
-
-                <!-- Gallery Card 2 -->
-                <div class="gallery-card zoomable-trigger" data-img="assets/extension/screenshot_stremio_menu.jpg">
-                    <div class="gallery-image-box">
-                        <img src="assets/extension/screenshot_stremio_menu.jpg" alt="Stremio Web with Play in MPV Menu Item" loading="lazy">
-                        <div class="gallery-overlay">
-                            <span class="gallery-zoom-badge">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    <line x1="11" y1="8" x2="11" y2="14"></line>
-                                    <line x1="8" y1="11" x2="14" y2="11"></line>
-                                </svg>
-                                <span>Inspect Screenshot</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-tag">Stremio Web Integration</div>
-                        <h3 class="gallery-title">Stream Context Menu Integration</h3>
-                        <p class="gallery-desc">Native Stremio Web stream handoff. Right-click or click stream actions in Stremio Web to route video streams directly into MPV while automatically pausing the web player.</p>
-                    </div>
-                </div>
-
-                <!-- Gallery Card 3 -->
-                <div class="gallery-card zoomable-trigger" data-img="assets/extension/screenshot_context_menu.jpg">
-                    <div class="gallery-image-box">
-                        <img src="assets/extension/screenshot_context_menu.jpg" alt="Chromium Right-Click Context Menu" loading="lazy">
-                        <div class="gallery-overlay">
-                            <span class="gallery-zoom-badge">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    <line x1="11" y1="8" x2="11" y2="14"></line>
-                                    <line x1="8" y1="11" x2="14" y2="11"></line>
-                                </svg>
-                                <span>Inspect Screenshot</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-tag">Universal Context Menu</div>
-                        <h3 class="gallery-title">One-Click Dispatch for Web Media</h3>
-                        <p class="gallery-desc">Right-click any link, video player, audio track, or page background to stream video instantly in MPV with full GPU debanding and tone-mapping.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Architecture & Security Pipeline -->
-    <section class="section architecture-section" id="architecture">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">System Architecture</div>
-                <h2 class="section-title">Zero-Daemon Native Messaging Pipeline</h2>
-                <p class="section-subtitle">How Play in MPV bridges browser isolation and native media playback securely.</p>
-            </div>
-
-            <!-- Pipeline Visual Card -->
-            <div class="step-card" style="margin-bottom: 2rem;">
-                <div class="step-number">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
-                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                    </svg>
-                </div>
-                <div class="step-body">
-                    <h3 class="step-title">The Secure IPC Data Flow</h3>
-                    <p class="step-desc">Unlike traditional browser extensions that run vulnerable background HTTP servers on <code>localhost</code>, Play in MPV utilizes Chromium's native standard I/O messaging channel:</p>
-                    <div class="structure-preview">
-<pre>
-+-------------------------------------------------------------------------------+
-|  1. Web Page & Content Script (Isolated DOM Environment)                       |
-|     - YouTube Player Hook: Reads active playback second and media title       |
-|     - Stremio Web Bridge: Extracts stream URL, pauses web audio/video         |
-|     - Context Menu Handler: Extracts target link or media source              |
-+---------------------------------------+---------------------------------------+
-                                        | chrome.runtime.sendMessage()
-                                        v
-+-------------------------------------------------------------------------------+
-|  2. Manifest V3 Background Service Worker (Transient / Event-Driven)          |
-|     - Sanitizes payload, validates URL scheme (http:, https:, magnet:)        |
-|     - Dispatches JSON payload to Native Host via chrome.runtime.connectNative |
-+---------------------------------------+---------------------------------------+
-                                        | Chrome Native Messaging (stdin/stdout)
-                                        v
-+-------------------------------------------------------------------------------+
-|  3. Local Python Host Launcher (mpv_launcher.py)                              |
-|     - Validates input format and sanitizes window titles                      |
-|     - Enforces '--' delimiter to eliminate command-line parameter injection   |
-|     - Locates mpv.exe in standard directories or system PATH                  |
-+---------------------------------------+---------------------------------------+
-                                        | subprocess.Popen(creationflags=DETACHED)
-                                        v
-+-------------------------------------------------------------------------------+
-|  4. Hardware-Accelerated MPV Media Player (mpv.exe)                           |
-|     - Inherits biraj-mpv-conf: gpu-next, ModernZ OSC, libplacebo tone-mapping |
-|     - Automatically accesses configured yt-dlp.conf and authenticated cookies |
-+-------------------------------------------------------------------------------+
-</pre>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Architectural Comparison Table -->
-            <div class="section-header" style="margin-top: 3rem; margin-bottom: 1.5rem;">
-                <h3 class="section-title" style="font-size: 1.4rem;">Architectural Comparison</h3>
-                <p class="section-subtitle">Evaluating Play in MPV against legacy extension approaches.</p>
-            </div>
-
-            <div class="table-container" style="overflow-x: auto; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1rem;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid var(--border-subtle); color: var(--primary-light);">
-                            <th style="padding: 0.85rem 1rem;">Metric</th>
-                            <th style="padding: 0.85rem 1rem;">Play in MPV (Native Messaging)</th>
-                            <th style="padding: 0.85rem 1rem;">Local HTTP Server Daemons</th>
-                            <th style="padding: 0.85rem 1rem;">Custom Protocol Schemes (mpv://)</th>
-                        </tr>
-                    </thead>
-                    <tbody style="color: var(--text-secondary);">
-                        <tr style="border-bottom: 1px solid var(--border-subtle);">
-                            <td style="padding: 0.85rem 1rem; font-weight: 600; color: var(--text-primary);">Network Attack Surface</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--accent-emerald);">Zero (No open ports, no TCP/IP)</td>
-                            <td style="padding: 0.85rem 1rem; color: #ef4444;">High (Vulnerable to localhost DNS rebinding)</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--text-secondary);">Low (OS protocol handler)</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border-subtle);">
-                            <td style="padding: 0.85rem 1rem; font-weight: 600; color: var(--text-primary);">Memory &amp; CPU Footprint</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--accent-emerald);">0 MB idle (Terminates immediately)</td>
-                            <td style="padding: 0.85rem 1rem; color: #ef4444;">Persistent RAM (Node/Python background daemon)</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--accent-emerald);">0 MB idle</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border-subtle);">
-                            <td style="padding: 0.85rem 1rem; font-weight: 600; color: var(--text-primary);">Browser Dialog Friction</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--accent-emerald);">Zero prompts (Seamless 1-click execution)</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--accent-emerald);">Zero prompts</td>
-                            <td style="padding: 0.85rem 1rem; color: #ef4444;">Annoying "Open in external app?" browser prompts</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 0.85rem 1rem; font-weight: 600; color: var(--text-primary);">DOM UI Integration</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--accent-emerald);">Full (YouTube control bar &amp; Stremio Web menu)</td>
-                            <td style="padding: 0.85rem 1rem; color: var(--text-secondary);">Limited</td>
-                            <td style="padding: 0.85rem 1rem; color: #ef4444;">None (Context menu only)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Installation & Setup Guide -->
-    <section class="section installation-section" id="installation">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Quick Installation</div>
-                <h2 class="section-title">Setup in Under Two Minutes</h2>
-                <p class="section-subtitle">Follow these three simple steps to connect your browser to MPV.</p>
-            </div>
-
-            <div class="os-tabs-container">
-                <!-- Step 1 Card -->
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-body">
-                        <h3 class="step-title">Install the Extension</h3>
-                        <p class="step-desc">Choose between the official Chrome Web Store installation or loading unpacked for local development:</p>
-                        
-                        <div style="margin-bottom: 1rem;">
-                            <strong style="color: var(--text-primary); font-size: 0.95rem;">Option A: Chrome Web Store (Recommended)</strong>
-                            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                                Install <strong>Play in MPV</strong> with one click from the Chrome Web Store (works on Chrome, Brave, Edge, and Opera).
-                            </p>
-                            <div style="margin-top: 0.5rem;">
-                                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="display: inline-flex;">
-                                    <span>Chrome Web Store Listing (Pending Store Release)</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div>
-                            <strong style="color: var(--text-primary); font-size: 0.95rem;">Option B: Load Unpacked (Developer Mode)</strong>
-                            <ol style="margin-left: 1.25rem; font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.4rem; line-height: 1.6;">
-                                <li>Navigate to <code>chrome://extensions</code> (or <code>brave://extensions</code> / <code>edge://extensions</code>).</li>
-                                <li>Enable <strong>Developer mode</strong> toggle in the top-right corner.</li>
-                                <li>Click <strong>Load unpacked</strong> and select the directory:</li>
-                            </ol>
-                            <div class="code-block" style="margin-top: 0.5rem;">
-                                <code id="loadPath">Browser-Play-in-MPV\extension</code>
-                                <button class="btn-copy" onclick="copyCode('loadPath', this)" title="Copy path" aria-label="Copy folder path">
-                                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
-                                    <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                </button>
-                            </div>
-                            <span class="path-hint">Copy the 32-character Extension ID shown on the extension card for Step 2.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 2 Card -->
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-body">
-                        <h3 class="step-title">Register the Native Messaging Host</h3>
-                        <p class="step-desc">Run the automated registration script. No administrator privileges required; writes safely to Current User registry:</p>
-                        <div class="code-block">
-                            <code id="hostScript">Browser-Play-in-MPV\mpv_native_host\Install_Native_Host.bat</code>
-                            <button class="btn-copy" onclick="copyCode('hostScript', this)" title="Copy path" aria-label="Copy script path">
-                                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                </svg>
-                                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
+            <!-- Tab 1: Windows (Load Unpacked) -->
+            <div class="tab-pane os-content active" id="content-windows">
+                <ol class="steps">
+                    <li class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Load Unpacked Extension <span class="code-hint" style="display:inline; margin-left:6px; color:var(--primary-light);">(Chrome Web Store coming soon)</span></div>
+                        <p class="step-desc">Open <code>chrome://extensions</code> (or <code>brave://extensions</code> / <code>edge://extensions</code> / <code>opera://extensions</code>) and toggle <strong>Developer mode</strong> in the top-right corner. Click <strong>Load unpacked</strong> and select the extension folder:</p>
+                        <div class="code-box">
+                            <code id="cmdUnpackedWin">Browser-Play-in-MPV\extension</code>
+                            <button class="btn-copy" onclick="copySnippet('cmdUnpackedWin', this)" title="Copy folder path" aria-label="Copy folder path">
+                                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                             </button>
                         </div>
-                        <ol style="margin-left: 1.25rem; font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.6;">
-                            <li>Select option <code>1</code> (<strong>Install</strong>).</li>
-                            <li>Paste your Extension ID when prompted and press <kbd>Enter</kbd>.</li>
-                            <li>The script writes registry keys for Chrome, Brave, and Edge at <code>HKCU\Software\Google\Chrome\NativeMessagingHosts\com.biraj.play_in_mpv</code>.</li>
-                        </ol>
-                    </div>
-                </div>
+                        <span class="code-hint">Copy the 32-character <strong>Extension ID</strong> shown on the extension card. (The official Chrome Web Store one-click install will be available as soon as review completes).</span>
+                    </li>
 
-                <!-- Step 3 Card -->
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <div class="step-body">
-                        <h3 class="step-title">Verify Diagnostic Self-Test</h3>
-                        <p class="step-desc">Run the launcher self-test in PowerShell to ensure Python and MPV are detected properly:</p>
-                        <div class="code-block">
-                            <code id="testCmd">python "Browser-Play-in-MPV\mpv_native_host\mpv_launcher.py" --test</code>
-                            <button class="btn-copy" onclick="copyCode('testCmd', this)" title="Copy command" aria-label="Copy test command">
-                                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                </svg>
-                                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
+                    <li class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Register the Native Messaging Host</div>
+                        <p class="step-desc">Run the one-time registration script. Writes safely to Current User registry (<code>HKCU</code>) without requiring Administrator rights:</p>
+                        <div class="code-box">
+                            <code id="cmdHost">Browser-Play-in-MPV\mpv_native_host\Install_Native_Host.bat</code>
+                            <button class="btn-copy" onclick="copySnippet('cmdHost', this)" title="Copy script path" aria-label="Copy script path">
+                                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                             </button>
                         </div>
-                        <span class="path-hint">Expected JSON response: <code>{"success": true, "mpv_path": "C:\\Program Files\\mpv\\mpv.exe"}</code></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                        <span class="code-hint">Select option 1 (Install), paste your Extension ID when prompted, and press Enter.</span>
+                    </li>
 
-    <!-- Platform Integrations Guide -->
-    <section class="section integrations-section" id="integrations">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Platform Integrations</div>
-                <h2 class="section-title">Deep Integration with Leading Platforms</h2>
-                <p class="section-subtitle">How Play in MPV delivers native-grade convenience across your favorite media sources.</p>
-            </div>
-
-            <div class="features-grid">
-                <!-- YouTube Integration Details -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">YouTube Watch &amp; Shorts Hand-Off</h3>
-                    <p class="feature-desc">
-                        When watching videos or Shorts, click <strong>Play in MPV</strong> in the bottom controls:
-                    </p>
-                    <ul style="margin-left: 1.25rem; font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.6;">
-                        <li><strong>Live Seek Synchronization:</strong> MPV launches with <code>--start=N</code>, resuming at your exact second.</li>
-                        <li><strong>Shorts Conversion:</strong> Automatically translates <code>/shorts/ID</code> to standard watch URLs.</li>
-                        <li><strong>Clean Player Styling:</strong> High-DPI transparent vector icon blending seamlessly into YouTube's dark and light player modes.</li>
-                        <li><strong>Members-Only &amp; Cookies:</strong> Inherits your local <code>yt-dlp.conf</code> cookie file automatically.</li>
-                    </ul>
-                </div>
-
-                <!-- Stremio Web Integration Details -->
-                <div class="feature-card">
-                    <div class="feature-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
-                            <polyline points="17 2 12 7 7 2"></polyline>
-                        </svg>
-                    </div>
-                    <h3 class="feature-title">Stremio Web Integration</h3>
-                    <p class="feature-desc">
-                        Available on <code>web.stremio.com</code> and <code>app.strem.io</code>:
-                    </p>
-                    <ul style="margin-left: 1.25rem; font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.6;">
-                        <li><strong>Stream Source Menu:</strong> Adds "Play in MPV" to the stream action menu alongside "Copy stream link".</li>
-                        <li><strong>Direct Torrent &amp; HTTP Streams:</strong> Resolves streams through the local Stremio Streaming Server.</li>
-                        <li><strong>Auto-Pause Web Player:</strong> Pauses HTML5 audio/video in the browser to prevent dual audio output.</li>
-                        <li><strong>Single-Click Dispatch:</strong> Clean event handling with zero double-trigger notifications.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ & Security Section -->
-    <section class="section faq-section" id="faq">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Security &amp; FAQ</div>
-                <h2 class="section-title">Frequently Asked Questions</h2>
-                <p class="section-subtitle">Transparency, privacy guarantees, and troubleshooting solutions.</p>
+                    <li class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Verify Diagnostic Self-Test</div>
+                        <p class="step-desc">Run the test command in PowerShell to ensure Python and MPV are detected properly:</p>
+                        <div class="code-box">
+                            <code id="cmdTest">python "Browser-Play-in-MPV\mpv_native_host\mpv_launcher.py" --test</code>
+                            <button class="btn-copy" onclick="copySnippet('cmdTest', this)" title="Copy command" aria-label="Copy test command">
+                                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </button>
+                        </div>
+                        <span class="code-hint">Expected response: <code>{"success": true, "mpv_path": "C:\\Program Files\\mpv\\mpv.exe"}</code></span>
+                    </li>
+                </ol>
             </div>
 
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3 class="feature-title">Does the extension collect telemetry or user data?</h3>
-                    <p class="feature-desc">No. Play in MPV has zero analytics, zero external network calls, and zero telemetry. It only communicates locally with your machine's Python native messaging host over standard input/output.</p>
+            <!-- Tab 2: Linux / macOS -->
+            <div class="tab-pane os-content" id="content-crossplatform">
+                <ol class="steps">
+                    <li class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Install MPV &amp; Python 3</div>
+                        <p class="step-desc">Ensure <code>mpv</code> and <code>python3</code> are available on your system PATH via your package manager (<code>brew install mpv</code> or <code>apt install mpv python3</code>).</p>
+                    </li>
+
+                    <li class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Load Unpacked Extension in Browser</div>
+                        <p class="step-desc">Open <code>chrome://extensions</code>, toggle <strong>Developer mode</strong>, click <strong>Load unpacked</strong>, and select <code>Browser-Play-in-MPV/extension</code>. Copy your Extension ID.</p>
+                    </li>
+
+                    <li class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Copy Native Messaging Host Manifest</div>
+                        <p class="step-desc">Copy <code>com.biraj.play_in_mpv.json</code> to your browser's native messaging directory:</p>
+                        <div class="code-box">
+                            <code id="cmdLinux">~/.config/google-chrome/NativeMessagingHosts/</code>
+                            <button class="btn-copy" onclick="copySnippet('cmdLinux', this)" title="Copy path" aria-label="Copy Linux path">
+                                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </button>
+                        </div>
+                        <span class="code-hint">macOS: <code>~/Library/Application Support/Google/Chrome/NativeMessagingHosts/</code></span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Screenshots Showcase Card -->
+        <section class="card" id="screenshots">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Visual Showcase</span>
+            </h2>
+            <p style="font-size: clamp(0.85rem, 1.3vw, 0.92rem); color: var(--text-secondary); margin-bottom: 1rem;">Click any screenshot to preview in full resolution.</p>
+
+            <div class="screenshot-grid">
+                <div class="screenshot-card zoomable-trigger" data-img="assets/extension/screenshot_youtube_button.jpg">
+                    <img src="assets/extension/screenshot_youtube_button.jpg" alt="YouTube Player Button" class="screenshot-thumb" loading="lazy">
+                    <div class="screenshot-caption gallery-title">YouTube Player Timestamp Button</div>
                 </div>
 
-                <div class="feature-card">
-                    <h3 class="feature-title">How does MPV play members-only or premium videos?</h3>
-                    <p class="feature-desc">The extension simply hands the video URL to MPV. MPV uses your local <code>yt-dlp</code> installation, which automatically utilizes your configured <code>yt-dlp.conf</code> and exported cookie files (e.g. <code>--cookies</code>).</p>
+                <div class="screenshot-card zoomable-trigger" data-img="assets/extension/screenshot_stremio_menu.jpg">
+                    <img src="assets/extension/screenshot_stremio_menu.jpg" alt="Stremio Web Menu" class="screenshot-thumb" loading="lazy">
+                    <div class="screenshot-caption gallery-title">Stremio Web Integration</div>
                 </div>
 
-                <div class="feature-card">
-                    <h3 class="feature-title">Why is a one-time registration script needed?</h3>
-                    <p class="feature-desc">Chromium's security model forbids browser extensions from directly executing arbitrary local <code>.exe</code> binaries without explicit operating system registry registration. The script configures the safe native messaging manifest in <code>HKCU</code>.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3 class="feature-title">How do I uninstall the native messaging host?</h3>
-                    <p class="feature-desc">Run <code>Install_Native_Host.bat</code> and select option <code>2</code> (<strong>Uninstall</strong>). The script will cleanly delete the registry entries from Chrome, Brave, and Edge.</p>
+                <div class="screenshot-card zoomable-trigger" data-img="assets/extension/screenshot_context_menu.jpg">
+                    <img src="assets/extension/screenshot_context_menu.jpg" alt="Context Menu" class="screenshot-thumb" loading="lazy">
+                    <div class="screenshot-caption gallery-title">Universal Context Menu</div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
+        <!-- Architecture & Security Card -->
+        <section class="card" id="architecture">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>Architecture &amp; Security</span>
+            </h2>
+            <p style="font-size: clamp(0.85rem, 1.3vw, 0.92rem); color: var(--text-secondary); margin-bottom: 0.85rem;">
+                Play in MPV utilizes Chromium's native standard I/O messaging channel instead of vulnerable background HTTP servers on <code>localhost</code>:
+            </p>
+            <div class="pipe-flow">
+Browser UI (YouTube / Stremio / Web Link)
+  &darr; chrome.runtime.sendMessage()
+Manifest V3 Service Worker (Transient / Event-driven)
+  &darr; Chrome Native Messaging API (Local stdin/stdout JSON pipe)
+mpv_launcher.py (Input validation &amp; '--' argument injection defense)
+  &darr; subprocess.Popen(creationflags=DETACHED_PROCESS)
+mpv.exe (Hardware-accelerated playback with local config &amp; yt-dlp)
+            </div>
+        </section>
+
+        <!-- FAQ & Troubleshooting Card -->
+        <section class="card" id="faq">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Frequently Asked Questions</span>
+            </h2>
+
+            <div class="faq-item">
+                <div class="faq-q">Does the extension collect or transmit telemetry?</div>
+                <div class="faq-a">No. Play in MPV has zero analytics, zero external network calls, and zero tracking. Communication occurs strictly over local OS pipes on your computer.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Why is a one-time native host registration required?</div>
+                <div class="faq-a">Chromium extensions run in isolated sandboxes and cannot launch arbitrary local binaries directly without an OS registry key (Native Messaging Host) configured by the user.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">How does MPV play members-only or age-restricted videos?</div>
+                <div class="faq-a">The extension hands the canonical URL to MPV. MPV automatically loads your local <code>yt-dlp.conf</code> and exported cookie file (e.g., <code>--cookies</code>).</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">What should I do if MPV does not open on click?</div>
+                <div class="faq-a">Run <code>python mpv_launcher.py --test</code> in PowerShell to verify MPV detection. If the notification says "Native host not installed", re-run <code>Install_Native_Host.bat</code> and paste your extension ID.</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Master Footer -->
     <footer class="site-footer">
         <div class="container footer-container">
             <div class="footer-brand">
-                <span class="logo-icon">
-                    <img src="assets/extension/icon128.png" alt="Play in MPV Logo" style="width: 24px; height: 24px; border-radius: 50%; vertical-align: middle;">
-                </span>
-                <span class="footer-title">Play in MPV</span>
-                <p class="footer-desc">Part of the Biraj MPV Configuration suite. Built for performance, security, and visual fidelity.</p>
+                <span class="footer-title">biraj-mpv-conf</span>
+                <p class="footer-desc">Crafted for pristine visual fidelity, performance, and seamless media playback.</p>
             </div>
 
             <div class="footer-links-group">
-                <a href="index.html" class="footer-link">MPV Config Documentation</a>
+                <a href="index.html" class="footer-link">MPV Configuration Docs</a>
                 <a href="https://github.com/Biraj2004/biraj-mpv-conf" target="_blank" rel="noopener" class="footer-link">GitHub Repository</a>
-                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="footer-link">Extension Source Code</a>
+                <a href="https://github.com/Biraj2004/biraj-mpv-conf/tree/main/Browser-Play-in-MPV" target="_blank" rel="noopener" class="footer-link">Extension Source</a>
                 <a href="https://github.com/Biraj2004/biraj-mpv-conf/blob/main/LICENSE" target="_blank" rel="noopener" class="footer-link">Apache 2.0 License</a>
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; <span id="currentYear">2026</span> Biraj Sarkar. Open source under Apache 2.0 License. Designed with zero AI slop and zero tracking.</p>
+                <p>&copy; <span id="currentYear">2026</span> Biraj Sarkar. Open source under Apache 2.0 License.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scroll To Top Button -->
+    <!-- Floating Scroll To Top Button -->
     <button class="btn-scroll-top" id="scrollTopBtn" aria-label="Scroll to top of page" title="Scroll to top">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"></polyline>
         </svg>
     </button>
 
-    <!-- Image Lightbox Modal -->
+    <!-- Fullscreen Lightbox Modal -->
     <div class="lightbox-modal" id="lightboxModal" aria-hidden="true">
         <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
         <div class="lightbox-content">
@@ -707,6 +795,13 @@
         </div>
     </div>
 
+    <!-- Core Scripts -->
     <script src="script.js"></script>
+    <script>
+        // Copy snippet helper fallback
+        function copySnippet(id, btn) {
+            copyCode(id, btn);
+        }
+    </script>
 </body>
 </html>

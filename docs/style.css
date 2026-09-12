@@ -456,8 +456,57 @@ kbd {
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     flex-wrap: wrap;
+}
+
+.hero-extension-banner {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.75rem;
+}
+
+.hero-extension-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.38rem 0.95rem;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 999px;
+    font-size: clamp(0.8rem, 1.2vw, 0.88rem);
+    color: var(--text-secondary);
+    transition: var(--transition);
+    max-width: 100%;
+    text-decoration: none;
+}
+
+.hero-extension-link:hover {
+    background: rgba(99, 102, 241, 0.16);
+    border-color: var(--primary-light);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+}
+
+.ext-banner-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.55rem;
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary-light);
+    border-radius: 999px;
+    flex-shrink: 0;
+}
+
+.ext-banner-arrow {
+    transition: transform 0.2s ease;
+}
+
+.hero-extension-link:hover .ext-banner-arrow {
+    transform: translateX(3px);
 }
 
 .hero-clone-box {

@@ -111,19 +111,47 @@
   function getStartTime() {
     if (isLiveStream()) return 0;
 
+    // 1. Try movie_player API first if available in page context
+    try {
+      const player = document.getElementById('movie_player');
+      if (player && typeof player.getCurrentTime === 'function') {
+        const ct = player.getCurrentTime();
+        if (typeof ct === 'number' && isFinite(ct) && ct > 0) {
+          return Math.floor(ct);
+        }
+      }
+    } catch (e) {}
+
+    // 2. Query HTML5 video element
     const video = document.querySelector('video.html5-main-video')
                || document.querySelector('video.video-stream')
                || document.querySelector('video');
 
     if (!video || video.readyState < 1) return 0;
 
-    const ct  = isFinite(video.currentTime) ? video.currentTime : 0;
-    const dur = isFinite(video.duration)    ? video.duration    : 0;
-
-    if (ct < 2)                  return 0;
-    if (dur > 0 && ct > dur - 2) return Math.max(0, Math.floor(dur) - 2);
+    const ct = isFinite(video.currentTime) ? video.currentTime : 0;
+    if (ct <= 0) return 0;
 
     return Math.floor(ct);
+  }
+
+  /** Pause all active HTML5 playback on YouTube to prevent duplicate audio */
+  function pauseYouTubePlayback() {
+    // 1. Pause all HTML5 video elements directly
+    const videos = document.querySelectorAll('video');
+    videos.forEach((v) => {
+      try {
+        if (!v.paused) v.pause();
+      } catch (e) {}
+    });
+
+    // 2. Call movie_player internal API if exposed
+    try {
+      const player = document.getElementById('movie_player');
+      if (player && typeof player.pauseVideo === 'function') {
+        player.pauseVideo();
+      }
+    } catch (e) {}
   }
 
   /** Extracts the clean video title from YouTube DOM or document.title. */
@@ -173,13 +201,18 @@
       e.preventDefault();
       e.stopPropagation();
 
+      // Read exact current timestamp BEFORE anything else
+      const time  = getStartTime();
+      const url   = getCanonicalUrl();
+      const title = getVideoTitle();
+
+      // Immediately pause YouTube playback so it doesn't play simultaneously with MPV
+      pauseYouTubePlayback();
+      setTimeout(pauseYouTubePlayback, 80);
+
       // Visual feedback click flash
       btn.style.opacity = '0.5';
       setTimeout(() => { btn.style.opacity = ''; }, 200);
-
-      const url   = getCanonicalUrl();
-      const time  = getStartTime();
-      const title = getVideoTitle();
 
       sendMessageWithRetry({ action: 'play_in_mpv', url, time, title });
     });
