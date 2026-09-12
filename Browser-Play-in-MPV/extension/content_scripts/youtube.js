@@ -104,6 +104,21 @@
   }
 
 
+  /** Extracts the clean video title from YouTube DOM or document.title. */
+  function getVideoTitle() {
+    const h1 = document.querySelector(
+      'h1.ytd-watch-metadata yt-formatted-string, #above-the-fold #title h1, h1.title.ytd-video-primary-info-renderer'
+    );
+    if (h1 && h1.textContent && h1.textContent.trim()) {
+      return h1.textContent.trim();
+    }
+    let docTitle = document.title || '';
+    docTitle = docTitle.replace(/^\(\d+\)\s*/, '');    // Strip notification counter like "(1) "
+    docTitle = docTitle.replace(/\s*-\s*YouTube$/, ''); // Strip " - YouTube" suffix
+    return docTitle.trim();
+  }
+
+
   // ─── Button ───────────────────────────────────────────────────────────────
 
   function createButton() {
@@ -122,11 +137,12 @@
         return;
       }
 
-      const url  = getCanonicalUrl();
-      const time = getStartTime();
+      const url   = getCanonicalUrl();
+      const time  = getStartTime();
+      const title = getVideoTitle();
 
       // Send to service worker — fire-and-forget (no response needed)
-      chrome.runtime.sendMessage({ action: 'play_in_mpv', url, time }, () => {
+      chrome.runtime.sendMessage({ action: 'play_in_mpv', url, time, title }, () => {
         // Suppress "no listener" error when SW is still waking up;
         // the SW will handle it once active.
         void chrome.runtime.lastError;

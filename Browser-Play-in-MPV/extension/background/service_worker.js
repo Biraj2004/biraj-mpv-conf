@@ -69,7 +69,11 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     ? Math.floor(rawTime)
     : 0;
 
-  sendToMpv(url, time);
+  const title = (typeof msg.title === 'string' && msg.title.trim())
+    ? msg.title.trim().slice(0, 300)
+    : '';
+
+  sendToMpv(url, time, title);
   sendResponse({ success: true });
   return false; // synchronous response; no async needed
 });
@@ -77,8 +81,8 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
 // ─── Core: send to native host ─────────────────────────────────────────────
 
-function sendToMpv(url, time) {
-  const payload = { action: 'open', url, time };
+function sendToMpv(url, time, title = '') {
+  const payload = { action: 'open', url, time, title };
 
   chrome.runtime.sendNativeMessage(NATIVE_HOST, payload, (response) => {
     const err = chrome.runtime.lastError;

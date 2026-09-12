@@ -90,9 +90,9 @@ _DETACHED_PROCESS = 0x00000008   # Detach from parent's console
 _CREATE_NO_WINDOW = 0x08000000   # No new console window
 
 
-def _launch_mpv(url: str, time: int) -> dict:
+def _launch_mpv(url: str, time: int, title: str = '') -> dict:
     """
-    Spawn mpv with the given URL and optional start time.
+    Spawn mpv with the given URL and optional start time and media title.
     Returns a result dict: {success, error?, detail?, hint?}
     """
     mpv = _find_mpv()
@@ -111,6 +111,8 @@ def _launch_mpv(url: str, time: int) -> dict:
     args = [mpv]
     if time > 1:
         args.append(f'--start={time}')
+    if title:
+        args.append(f'--force-media-title={title}')
     args.append(url)
 
     try:
@@ -189,8 +191,15 @@ def main() -> None:
     else:
         time = 0
 
+    # Sanity-check title: must be a string up to 300 characters, no dangerous quotes or newlines
+    raw_title = message.get('title', '')
+    if isinstance(raw_title, str) and raw_title.strip():
+        title = raw_title.replace('"', "'").replace('\n', ' ').replace('\r', '').strip()[:300]
+    else:
+        title = ''
+
     # ── Launch ──────────────────────────────────────────────────────────────
-    result = _launch_mpv(url, time)
+    result = _launch_mpv(url, time, title)
     _write_message(result)
 
 
