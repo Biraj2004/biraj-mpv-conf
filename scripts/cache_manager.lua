@@ -44,6 +44,29 @@ local function init_cache_dirs()
         end
     end
 
+    -- Ensure configured screenshot directory exists
+    local shot_dir = mp.get_property("screenshot-directory")
+    if shot_dir and shot_dir ~= "" then
+        local exp_shot_dir = mp.command_native({"expand-path", shot_dir})
+        if exp_shot_dir and exp_shot_dir ~= "" then
+            local shot_info = utils.file_info(exp_shot_dir)
+            if not (shot_info and shot_info.is_dir) then
+                if is_windows then
+                    local win_path = exp_shot_dir:gsub("/", "\\")
+                    utils.subprocess({
+                        args = { "cmd.exe", "/c", "mkdir", win_path },
+                        cancellable = false,
+                    })
+                else
+                    utils.subprocess({
+                        args = { "mkdir", "-p", exp_shot_dir },
+                        cancellable = false,
+                    })
+                end
+            end
+        end
+    end
+
     -- Automatically purge stale scratch files & legacy root files
     local now = os.time()
 
@@ -79,6 +102,24 @@ local function init_cache_dirs()
         for _, fname in ipairs(root_files) do
             if fname:match("^shader_") then
                 os.remove(cache_root .. fname)
+            end
+        end
+    end
+
+    -- 4. Clean watch_later resume state files older than 90 days (7,776,000s)
+    local wl_prop = mp.get_property("watch-later-directory")
+    local wl_dir = (wl_prop and wl_prop ~= "") and mp.command_native({"expand-path", wl_prop}) or (cache_root .. "watch_later")
+    if wl_dir:sub(-1) ~= "/" and wl_dir:sub(-1) ~= "\\" then
+        wl_dir = wl_dir .. sep
+    end
+    local wl_files = utils.readdir(wl_dir, "files")
+    if wl_files then
+        local max_wl_age = 90 * 86400 -- 90 days
+        for _, fname in ipairs(wl_files) do
+            local fpath = wl_dir .. fname
+            local finfo = utils.file_info(fpath)
+            if finfo and finfo.mtime and (now - finfo.mtime > max_wl_age) then
+                os.remove(fpath)
             end
         end
     end

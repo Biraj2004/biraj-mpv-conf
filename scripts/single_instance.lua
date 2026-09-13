@@ -31,17 +31,37 @@ local temp_dir = is_windows and (os.getenv("TEMP") or os.getenv("TMP") or "C:\\W
 local lock_file = is_windows and (temp_dir .. "\\mpv_playlist_master.lock") or (temp_dir .. "/mpv_playlist_master.lock")
 
 local ffi_loaded, ffi = pcall(require, "ffi")
-if ffi_loaded and is_windows then
-    pcall(function()
-        ffi.cdef[[
-            void Sleep(unsigned long dwMilliseconds);
-        ]]
-    end)
+local sleep_fn
+
+if ffi_loaded then
+    if is_windows then
+        local ok = pcall(function()
+            ffi.cdef[[
+                void Sleep(unsigned long dwMilliseconds);
+            ]]
+        end)
+        if ok and pcall(function() return ffi.C.Sleep end) then
+            sleep_fn = function(ms)
+                ffi.C.Sleep(ms)
+            end
+        end
+    else
+        local ok = pcall(function()
+            ffi.cdef[[
+                int usleep(unsigned int usec);
+            ]]
+        end)
+        if ok and pcall(function() return ffi.C.usleep end) then
+            sleep_fn = function(ms)
+                ffi.C.usleep(ms * 1000)
+            end
+        end
+    end
 end
 
 local function sleep_ms(ms)
-    if ffi_loaded and is_windows then
-        ffi.C.Sleep(ms)
+    if sleep_fn then
+        sleep_fn(ms)
     else
         local start = mp.get_time()
         local target = ms / 1000.0
