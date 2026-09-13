@@ -62,7 +62,7 @@ end
 
 -- Compose formatted pause text matching mpv styling
 local function get_pause_message()
-    local pos = mp.get_property_number("time-pos", 0)
+    local pos = mp.get_property_number("playback-time", nil) or mp.get_property_number("time-pos", 0)
     local duration = mp.get_property_number("duration", 0)
 
     local has_hours = false
@@ -402,14 +402,27 @@ local function on_time_pos_change(_, _)
     end
 end
 
+local function start_observing_time()
+    if not is_observing_time then
+        is_observing_time = true
+        mp.observe_property("playback-time", "number", on_time_pos_change)
+        mp.observe_property("time-pos", "number", on_time_pos_change)
+        mp.observe_property("seeking", "bool", on_time_pos_change)
+    end
+end
+
+local function stop_observing_time()
+    if is_observing_time then
+        is_observing_time = false
+        mp.unobserve_property(on_time_pos_change)
+    end
+end
+
 -- Handle pause / unpause state changes
 local function on_pause_change(_, paused)
     is_paused = (paused == true)
     if is_paused then
-        if not is_observing_time then
-            is_observing_time = true
-            mp.observe_property("time-pos", "number", on_time_pos_change)
-        end
+        start_observing_time()
         local now = mp.get_time() or 0
         -- If an OSD message (e.g. from seek or volume right before pausing) is still active on screen:
         if now < active_osd_expire_time then
@@ -440,10 +453,7 @@ local function on_pause_change(_, paused)
         end
         update_overlay()
     else
-        if is_observing_time then
-            is_observing_time = false
-            mp.unobserve_property(on_time_pos_change)
-        end
+        stop_observing_time()
         if shift_timer then
             shift_timer:kill()
             shift_timer = nil
@@ -475,6 +485,19 @@ end)
 mp.register_event("file-loaded", function()
     is_stats_active = false
     is_console_active = false
+    if is_paused and opts.enable then
+        update_overlay()
+    end
+end)
+
+-- Update immediately on seek events while paused
+mp.register_event("seek", function()
+    if is_paused and opts.enable then
+        update_overlay()
+    end
+end)
+
+mp.register_event("playback-restart", function()
     if is_paused and opts.enable then
         update_overlay()
     end

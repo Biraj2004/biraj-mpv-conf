@@ -70,6 +70,7 @@ local user_opts = {
     timecurrent = true,                    -- show current time instead of remaining time
     timems = false,                        -- show timecodes with milliseconds
     unicodeminus = false,                  -- use the Unicode minus sign in remaining time
+    remaining_playtime = false,            -- scale remaining time by playback speed (false = VLC-style raw media time; true = speed-scaled watch time)
     time_format = "dynamic",               -- "dynamic" or "fixed". dynamic shows MM:SS when possible, fixed always shows HH:MM:SS
     time_font_size = 16,                   -- font size of the time display
 
@@ -815,7 +816,18 @@ end
 -- width of the time codes element
 local function get_time_codes_width()
     local dur = state.duration or 0
-    local rt_sec = state.tc_left_rem and mp.get_property_number("playtime-remaining", 0) or mp.get_property_number("playback-time", 0)
+    local rt_sec
+    if state.tc_left_rem then
+        if user_opts.remaining_playtime then
+            rt_sec = mp.get_property_number("playtime-remaining", 0)
+        elseif state.tc_ms or user_opts.timems then
+            rt_sec = mp.get_property_number("time-remaining", 0)
+        else
+            rt_sec = math.max(0, math.floor(dur) - math.floor(mp.get_property_number("playback-time", 0) or 0))
+        end
+    else
+        rt_sec = mp.get_property_number("playback-time", 0)
+    end
 
     local function time_fmt(s)
         local has_h = (s >= 3600) or user_opts.time_format == "fixed"
@@ -3711,7 +3723,21 @@ local function osc_init()
         local playback_time = mp.get_property_number("playback-time", 0)
         if not state.duration then return "--:--" end
 
-        local playtime_remaining = state.tc_left_rem and mp.get_property_number("playtime-remaining", 0) or playback_time
+        local playtime_remaining
+        if state.tc_left_rem then
+            if user_opts.remaining_playtime then
+                playtime_remaining = mp.get_property_number("playtime-remaining", 0)
+            elseif state.tc_ms or user_opts.timems then
+                playtime_remaining = mp.get_property_number("time-remaining", 0)
+            else
+                -- Integer consistency (VLC mode): elapsed + remaining == duration
+                local dur_int = math.floor(state.duration or 0)
+                local cur_int = math.floor(playback_time or 0)
+                playtime_remaining = math.max(0, dur_int - cur_int)
+            end
+        else
+            playtime_remaining = playback_time
+        end
         local prefix = state.tc_left_rem and (user_opts.unicodeminus and UNICODE_MINUS or "-") or ""
 
         -- call request_init() only when needed to update time code width
