@@ -367,7 +367,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "$src = '!ROOT_EXTRACT!';" ^
     "$dst = [System.Environment]::ExpandEnvironmentVariables('%%APPDATA%%\mpv');" ^
     "if (-not (Test-Path $dst)) { New-Item -ItemType Directory -Path $dst -Force | Out-Null };" ^
-    "$cfgFiles = @('mpv.conf', 'input.conf', 'menu.conf', 'yt-dlp.conf', 'biraj-mpv-guide.pdf', 'biraj-mpv-key-binding.pdf');" ^
+    "$cfgFiles = @('mpv.conf', 'input.conf', 'menu.conf', 'yt-dlp.conf', 'biraj-mpv-guide.pdf', 'biraj-mpv-key-binding.pdf', 'Win_Set_MPV_As_Default_Video_Player.bat');" ^
     "foreach ($f in $cfgFiles) {" ^
     "    $sp = Join-Path $src $f;" ^
     "    if (Test-Path $sp) { Copy-Item -Path $sp -Destination (Join-Path $dst $f) -Force; Write-Host ('  Updated: ' + $f) };" ^
@@ -413,15 +413,19 @@ echo     - If icons appear as boxes/squares, open:
 echo       %APPDATA%\mpv\fonts\modernz-icons.ttf
 echo     - Right-click -^> Click "Install" (or "Install for all users").
 echo.
-echo  2. EXPLORER RIGHT-CLICK CONTEXT MENU [Optional]:
+echo  2. SET MPV AS DEFAULT VIDEO PLAYER [Optional]:
+echo     - To configure MPV as default for 81 video formats (no admin rights needed):
+echo       Run "%APPDATA%\mpv\Win_Set_MPV_As_Default_Video_Player.bat".
+echo.
+echo  3. EXPLORER RIGHT-CLICK CONTEXT MENU [Optional]:
 echo     - To add "Play with MPV" for videos and folders in Windows Explorer:
 echo       Open %APPDATA%\mpv\Windows-Context-Menu\ and run "Setup_Play_with_MPV_Context_Menu.bat".
 echo.
-echo  3. STREMIO "PLAY IN MPV" INTEGRATION [Optional]:
+echo  4. STREMIO "PLAY IN MPV" INTEGRATION [Optional]:
 echo     - To stream torrents/HTTP links directly into MPV with tone-mapping:
 echo       Follow instructions in %APPDATA%\mpv\Stremio-Play-in-MPV\README.md.
 echo.
-echo  4. CHEAT-SHEET ^& DOCUMENTATION:
+echo  5. CHEAT-SHEET ^& DOCUMENTATION:
 echo     - User Guide PDF        : %APPDATA%\mpv\biraj-mpv-guide.pdf
 echo     - Keybinding Cheat-Sheet : %APPDATA%\mpv\biraj-mpv-key-binding.pdf
 echo     - Online Website         : https://biraj2004.github.io/biraj-mpv-conf/

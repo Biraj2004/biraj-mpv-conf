@@ -15,7 +15,7 @@
 
 *Bridges the gap between mpv's bare-metal performance and a sleek, feature-rich modern media player.*
 
-[Live Documentation](https://biraj2004.github.io/biraj-mpv-conf/) • [Browser Extension Docs](https://biraj2004.github.io/biraj-mpv-conf/extension.html) • [Installation](#installation) • [Showcase](#visual-showcase) • [Usage Guide](#how-to-play--usage-guide) • [Companion Suites](#companion-suites--integrations) • [Features](#key-features) • [Shortcuts](#keyboard--mouse-shortcuts) • [Profiles](#smart-automation-profiles) • [HDR / Tone-Mapping](#hdr--dolby-vision-playback) • [Credits](#credits--acknowledgements)
+[Live Documentation](https://biraj2004.github.io/biraj-mpv-conf/) • [Browser Extension Docs](https://biraj2004.github.io/biraj-mpv-conf/extension.html) • [Installation](#installation) • [Default Player](#step-2-set-mpv-as-default-video-player-windows) • [Showcase](#visual-showcase) • [Usage Guide](#how-to-play--usage-guide) • [Companion Suites](#companion-suites--integrations) • [Features](#key-features) • [Shortcuts](#keyboard--mouse-shortcuts) • [Profiles](#smart-automation-profiles) • [HDR / Tone-Mapping](#hdr--dolby-vision-playback) • [Credits](#credits--acknowledgements)
 
 ---
 
@@ -75,7 +75,9 @@ We actively use and develop with the **zhongfly** build because it includes mode
 
 1. Download the latest release from [**zhongfly mpv-winbuild Releases**](https://github.com/zhongfly/mpv-winbuild/releases) (for modern Intel/AMD CPUs, select the `x86_64-v3` build).
 2. Extract the archive, rename the directory to `mpv`, and place it in **`C:\Program Files\mpv\`** so that the executable is located at `C:\Program Files\mpv\mpv.exe`.
-3. Right-click **`mpv-register.bat`** &rarr; **Run as administrator** to register file associations and player protocols.
+3. Configure file associations:
+   - **Recommended (User Scope, zero admin, 81 video formats)**: Double-click **[`Win_Set_MPV_As_Default_Video_Player.bat`](Win_Set_MPV_As_Default_Video_Player.bat)**.
+   - *Alternative (System Scope)*: Right-click `mpv-register.bat` &rarr; **Run as administrator**.
 4. Install yt-dlp via winget:
    ```powershell
    winget install --id yt-dlp.yt-dlp
@@ -126,6 +128,25 @@ Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat
 git clone https://github.com/Biraj2004/biraj-mpv-conf.git ~/.config/mpv
 ```
 Automatic native fallbacks engage: Cocoa file dialogs via `osascript` on macOS, Zenity/KDialog on Linux, `coreaudio`/`pipewire` audio drivers, and POSIX domain sockets for `thumbfast`.
+
+---
+
+### Step 2: Set MPV as Default Video Player (Windows)
+
+To configure MPV as the primary media handler for all video formats without requiring administrator privileges:
+
+```cmd
+Win_Set_MPV_As_Default_Video_Player.bat
+```
+
+| Feature | Details |
+| :--- | :--- |
+| **81 Video-Only Formats** | Associates MP4, MKV, WebM, MOV, AVI, WMV, FLV, MPEG, TS (`.m2ts`, `.mts`), DVD VOB, Camcorder, Raw streams (H.264/HEVC), and specialty video containers. |
+| **Developer-Safe (TypeScript Safe)** | Intelligently omits `.ts` so TypeScript source code files remain associated with your code editor. |
+| **Zero Admin Privileges Required** | Operates strictly in user scope (`HKCU:\Software\Classes`, `Capabilities`, `OpenWithProgIDs`, and `SystemFileAssociations\video`). |
+| **Smart MPV Discovery** | Auto-detects `mpv.exe` across system `PATH`, Scoop (`~/scoop/apps/mpv/current/`), `C:\Program Files\mpv\`, `C:\mpv\`, LocalAppData, and Chocolatey, or accepts a custom executable path: <br/> `Win_Set_MPV_As_Default_Video_Player.bat "C:\custom\path\to\mpv.exe"` |
+| **Instant Icon Cache Refresh** | Directly calls native Win32 `SHChangeNotify` to flush the Windows Explorer shell cache immediately — video icons refresh with no restart required. |
+| **Idempotent & Safe** | Detects existing associations and skips them cleanly. Re-running at any time is completely safe. |
 
 ---
 
@@ -185,6 +206,11 @@ First-party tools built to integrate MPV across your desktop workflow:
 - **Documentation & Setup**: [`Windows-Context-Menu/README.md`](Windows-Context-Menu/README.md)
 - **Play as Playlist**: Adds a right-click **"Play with MPV as a Playlist"** option to folders, multi-selected files, and external drives using HKCU registry entries (no admin rights needed).
 
+### 4. [Set MPV as Default Video Player](Win_Set_MPV_As_Default_Video_Player.bat)
+- **Script**: [`Win_Set_MPV_As_Default_Video_Player.bat`](Win_Set_MPV_As_Default_Video_Player.bat)
+- **One-Click Default Player Setup**: Registers MPV capabilities, shell verbs (`&Play with mpv`), ProgIDs, and file associations for 81 video-only formats in user scope (`HKCU`) without administrator rights.
+- **Developer Safe**: Automatically preserves `.ts` for TypeScript development files.
+
 ---
 
 ## Key Features
@@ -225,6 +251,7 @@ biraj-mpv-conf/
 ├── menu.conf                 # Right-click context menu structure
 ├── yt-dlp.conf               # Streaming network retries and format selectors
 ├── Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat # Interactive updater
+├── Win_Set_MPV_As_Default_Video_Player.bat # One-click default video player association (81 formats)
 ├── Browser-Play-in-MPV/      # Chromium browser companion extension (Manifest V3 + Native Host)
 ├── Stremio-Play-in-MPV/      # Stremio desktop player integration scripts
 ├── Windows-Context-Menu/     # Windows File Explorer context menu registry installers
@@ -349,6 +376,7 @@ screenshot-jpeg-quality=99
   - **`hdr_badge.lua`**, **`resume_indicator.lua`**, & **`pause_notify.lua`**: Dynamic format badge overlay, on-screen resume notifications, and collision-free OSD pause alerts with native bare-metal opening speed.
   - **`auto_exit_eof.lua`**: Graceful 4s end-of-media auto-exit with 2s OSD countdown and instant seek abort.
   - **`single_instance.lua`**: Win32 FFI zero-CPU sleep implementation for multi-file enqueueing.
+  - **`Win_Set_MPV_As_Default_Video_Player.bat`**: User-mode Windows default video player association suite configuring 81 video-only formats with TypeScript conflict avoidance, shell icon cache flushing, and multi-location auto-detection.
   - **Integrations & Documentation**: [Play in MPV Extension](https://biraj2004.github.io/biraj-mpv-conf/extension.html), [Stremio Desktop Hooks](Stremio-Play-in-MPV/), [Windows Context Menu](Windows-Context-Menu/), and interactive documentation portal.
 
 ### Upstream Open-Source Projects
