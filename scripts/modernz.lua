@@ -127,6 +127,9 @@ local user_opts = {
     loop_button = true,                    -- show file loop button
     shuffle_button = false,                -- show shuffle button
     speed_button = true,                   -- show speed control button
+    speed_step = 0.25,                     -- speed step amount for mouse click/wheel
+    speed_min = 0.25,                      -- minimum speed value
+    speed_max = 5,                         -- maximum speed value
 
     buttons_always_active = "none",        -- force buttons to always be active. can add: playlist_prev, playlist_next
 
@@ -308,10 +311,10 @@ local user_opts = {
     file_loop_mbtn_right_command = "osd-msg cycle-values loop-playlist inf no",
 
     -- speed button mouse actions
-    speed_mbtn_left_command = "osd-msg add speed 1",
+    speed_mbtn_left_command = "script-binding modernz/speed-up",
     speed_mbtn_right_command = "osd-msg set speed 1",
-    speed_wheel_down_command = "osd-msg add speed -0.25",
-    speed_wheel_up_command = "osd-msg add speed 0.25",
+    speed_wheel_down_command = "script-binding modernz/speed-down",
+    speed_wheel_up_command = "script-binding modernz/speed-up",
 }
 
 local osc_param = {                  -- calculated by osc_init()
@@ -3094,6 +3097,16 @@ local function bind_buttons(element_name, use_down)
     end
 end
 
+-- speed step helper with precision rounding and min/max clamping
+local function speed_step(delta)
+    local s = mp.get_property_number("speed", 1)
+    local min_val = user_opts.speed_min or 0.25
+    local max_val = user_opts.speed_max or 5.0
+    local new_s = math.floor((s + delta) * 100 + 0.5) / 100
+    new_s = math.max(min_val, math.min(max_val, new_s))
+    mp.commandv("osd-msg", "set", "speed", new_s)
+end
+
 -- format seconds into a time string
 local function format_time(seconds)
     if not seconds then return "--:--" end
@@ -3507,6 +3520,15 @@ local function osc_init()
     ne.content = function() return string.format(state.speed % 1 == 0 and "%.1f×" or "%g×", state.speed) end
     ne.tooltipF = locale.speed_control
     bind_buttons("speed")
+    if user_opts.speed_mbtn_left_command == "script-binding modernz/speed-up" then
+        ne.eventresponder["mbtn_left_up"] = function() speed_step(user_opts.speed_step or 0.25) end
+    end
+    if user_opts.speed_wheel_up_command == "script-binding modernz/speed-up" then
+        ne.eventresponder["wheel_up_press"] = function() speed_step(user_opts.speed_step or 0.25) end
+    end
+    if user_opts.speed_wheel_down_command == "script-binding modernz/speed-down" then
+        ne.eventresponder["wheel_down_press"] = function() speed_step(-(user_opts.speed_step or 0.25)) end
+    end
 
     --download
     ne = new_element("download", "button")
@@ -4559,6 +4581,9 @@ mp.add_key_binding(nil, "progress-toggle", function()
     state.persistent_progress_toggle = user_opts.persistent_progress
     request_init()
 end)
+mp.add_key_binding(nil, "speed-up", function() speed_step(user_opts.speed_step or 0.25) end)
+mp.add_key_binding(nil, "speed-down", function() speed_step(-(user_opts.speed_step or 0.25)) end)
+mp.register_script_message("speed-step", function(delta) speed_step(tonumber(delta) or (user_opts.speed_step or 0.25)) end)
 mp.register_script_message("osc-idlescreen", idlescreen_visibility)
 mp.register_script_message("thumbfast-info", function(json)
     local data = utils.parse_json(json)
@@ -4582,6 +4607,19 @@ local function validate_user_opts()
     if user_opts.seek_handle_size < 0 then
         msg.warn("seek_handle_size must be 0 or higher. Setting it to 0 (minimum).")
         user_opts.seek_handle_size = 0
+    end
+
+    if user_opts.speed_step <= 0 then
+        user_opts.speed_step = 0.25
+    end
+    if user_opts.speed_min <= 0 then
+        user_opts.speed_min = 0.25
+    end
+    if user_opts.speed_max < user_opts.speed_min then
+        user_opts.speed_max = 5.0
+    end
+    if user_opts.speed_mbtn_left_command == "osd-msg add speed 1" then
+        user_opts.speed_mbtn_left_command = "script-binding modernz/speed-up"
     end
 
     local function validate_string_opt(key, valid, default)

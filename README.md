@@ -179,6 +179,7 @@ Advanced streaming and network options are isolated in [`yt-dlp.conf`](yt-dlp.co
   - **Browser Extraction**: Set `--cookies-from-browser firefox` (or `brave` / `chrome` / `edge`).
 
 ### 4. Audio, Subtitles & Playback Controls
+- **Playback Speed Controls (ModernZ OSC)**: **Left-click** on the speed button (`1.0×`) or **Scroll Up** to increase playback speed gradually by **+0.25×** (up to **5.0× max**). **Right-click** to immediately reset playback speed back to **1.0×** (or **Scroll Down** to decrease down to **0.25×**).
 - **Cycle Subtitles**: <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (or <kbd>j</kbd> / <kbd>J</kbd>) with instant OSD, anti-spam debounce, and `Off/None` state.
 - **Cycle Audio Tracks**: <kbd>b</kbd> / <kbd>Shift</kbd> + <kbd>b</kbd> (or <kbd>#</kbd> / <kbd>_</kbd>).
 - **Add External Subtitle / Audio**: <kbd>Ctrl</kbd> + <kbd>s</kbd> (Subtitles) or <kbd>Ctrl</kbd> + <kbd>a</kbd> (Audio) to open the native picker.
@@ -216,7 +217,7 @@ First-party tools built to integrate MPV across your desktop workflow:
 ## Key Features
 
 ### Modern UI & On-Screen Controller
-- **[ModernZ OSC](https://github.com/Samillion/ModernZ) ([`scripts/modernz.lua`](scripts/modernz.lua))**: Responsive Fluent & Material controller with layout presets (*default, compact, mini, seekbar*).
+- **[ModernZ OSC](https://github.com/Samillion/ModernZ) ([`scripts/modernz.lua`](scripts/modernz.lua))**: Responsive Fluent & Material controller with layout presets (*default, compact, mini, seekbar*), including granular playback speed controls (left-click/wheel-up increases speed gradually by +0.25× up to 5× max; right-click immediately resets to 1×).
 - **Translucent Pillbox OSD**: Crisp Segoe UI typography with 2.5s readable durations (`osd-duration=2500`), eliminating disruptive double seekbars (`osd-bar=no`).
 - **Visual Pause & Unpause Indicator ([`pause_indicator_lite.lua`](scripts/pause_indicator_lite.lua))**: Subtle, non-distracting center canvas feedback.
 
