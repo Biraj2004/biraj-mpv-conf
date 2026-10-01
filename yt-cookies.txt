@@ -1,0 +1,5 @@
+# Netscape HTTP Cookie File
+# https://curl.se/docs/http-cookies.html
+# This file is used by yt-dlp to authenticate age-restricted and member streams.
+# Paste your exported cookies in NETSCAPE format below:
+

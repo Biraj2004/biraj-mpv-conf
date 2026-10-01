@@ -175,8 +175,8 @@ Win_Set_MPV_As_Default_Video_Player.bat
 Advanced streaming and network options are isolated in [`yt-dlp.conf`](yt-dlp.conf):
 - **Resilience**: 10 connection/fragment retries and 4 concurrent DASH chunks prevent HTTP 403 throttling.
 - **Age-Restricted & Member Videos (Cookies)**:
-  - **Static File (Recommended)**: Set `--cookies "E:\path\to\yt-cookies.txt"` in `yt-dlp.conf`.
-  - **Browser Extraction**: Set `--cookies-from-browser firefox` (or `brave` / `chrome` / `edge`).
+  - **Static File (Recommended)**: By default, `--cookies "%APPDATA%\mpv\yt-cookies.txt"` is pre-configured in [`yt-dlp.conf`](yt-dlp.conf). Export your browser cookies in **NETSCAPE** format (using an extension like *Get cookies.txt LOCALLY* or *Cookie-Editor*) and paste them directly into `yt-cookies.txt` inside your config folder (`%APPDATA%\mpv\yt-cookies.txt`). You can also change the `--cookies` path in `yt-dlp.conf` to any custom location or filename of your choice.
+  - **Browser Extraction**: Alternatively, comment out `--cookies` and set `--cookies-from-browser firefox` (or `brave` / `chrome` / `edge`) for zero-export live browser sessions.
 
 ### 4. Audio, Subtitles & Playback Controls
 - **Playback Speed Controls (ModernZ OSC)**: **Left-click** on the speed button (`1.0×`) or **Scroll Up** to increase playback speed gradually by **+0.25×** (up to **5.0× max**). **Right-click** to immediately reset playback speed back to **1.0×** (or **Scroll Down** to decrease down to **0.25×**).
@@ -251,6 +251,7 @@ biraj-mpv-conf/
 ├── input.conf                # Custom keybindings and script bindings
 ├── menu.conf                 # Right-click context menu structure
 ├── yt-dlp.conf               # Streaming network retries and format selectors
+├── yt-cookies.txt            # Netscape-format cookies template for authenticated streams
 ├── Fetch_And_Update_Biraj_MPV_Config_From_Latest_GitHub_Commit.bat # Interactive updater
 ├── Win_Set_MPV_As_Default_Video_Player.bat # One-click default video player association (81 formats)
 ├── Browser-Play-in-MPV/      # Chromium browser companion extension (Manifest V3 + Native Host)
