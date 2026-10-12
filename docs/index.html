@@ -674,6 +674,7 @@
 │   ├── pause_indicator_lite.lua
 │   ├── pause_notify.lua
 │   ├── resume_indicator.lua
+│   ├── select.lua
 │   ├── single_instance.lua
 │   ├── sort_playlist.lua
 │   └── thumbfast.lua
@@ -875,8 +876,13 @@
 
                         <!-- Subtitles -->
                         <tr data-cat="subtitles">
-                            <td><kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> <small class="text-muted">(or <kbd>j</kbd> / <kbd>J</kbd>)</small></td>
-                            <td>Cycle subtitle tracks forward / backward <em>(VLC & MPV standard, includes Off/None, zero-lag)</em></td>
+                            <td><kbd>j</kbd> / <kbd>J</kbd></td>
+                            <td>Toggle Subtitles on / off <em>(intelligent memory of last track, auto-detects English on first enable, zero-lag)</em></td>
+                            <td><span class="badge-cat">Subtitles</span></td>
+                        </tr>
+                        <tr data-cat="subtitles">
+                            <td><kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> <small class="text-muted">(or <kbd>V</kbd>)</small></td>
+                            <td>Cycle subtitle tracks forward / backward <em>(VLC-style, includes Off/None, zero-lag debounced)</em></td>
                             <td><span class="badge-cat">Subtitles</span></td>
                         </tr>
                         <tr data-cat="subtitles">
@@ -1107,7 +1113,7 @@ blend-subtitles=no
                     <p class="credit-desc">Original author, curator, and maintainer of this configuration suite. Custom developed features and scripts include:</p>
                     <ul class="credit-list">
                         <li><strong><code>cache_manager.lua</code></strong> — Centralized & segregated cache architecture on C: drive (<code>%LOCALAPPDATA%\mpv\cache\</code>) with dedicated subdirectories for GPU shaders, resume watch history, and hover thumbnails, auto-healing missing folders on startup.</li>
-                        <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio &amp; subtitle cycler supporting both VLC and MPV standard shortcuts with 0ms visual OSD feedback, two-pass deterministic track matching, 30ms anti-spam debouncing, type-safety, and seamless GUI menu synchronization.</li>
+                        <li><strong><code>cycle_audio.lua</code></strong> — Zero-lag audio &amp; subtitle engine with intelligent subtitle display toggle (remembers last track, English auto-detection fallback), 0ms visual OSD feedback, two-pass deterministic track matching, 30ms anti-spam debouncing, and seamless GUI menu synchronization.</li>
                         <li><strong><code>single_instance.lua</code></strong> — Win32 FFI zero-CPU sleep implementation for the single-instance IPC pipeline, eliminating CPU spin-loops during Windows Explorer multi-select launches.</li>
                         <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
                         <li><strong><code>hdr_badge.lua</code>, <code>resume_indicator.lua</code>, &amp; <code>pause_notify.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming: (14:22 / 24:00)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with event-driven zero-overhead observer architecture, dynamic collision avoidance with multi-line clearance, stats (<kbd>i</kbd>) &amp; console (<kbd>`</kbd>) auto-suppression, motion isolation, and native bare-metal startup speed.</li>

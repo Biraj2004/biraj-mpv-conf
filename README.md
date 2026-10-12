@@ -238,8 +238,7 @@ First-party tools built to integrate MPV across your desktop workflow:
 ### Automated Notifications & Boundaries
 - **Collision-Free Pause Notification ([`scripts/pause_notify.lua`](scripts/pause_notify.lua))**: Displays a top-left badge (`Paused at hr:min:sec / total time`) that dynamically shifts down when other OSD messages appear, automatically suppressing during stats (<kbd>i</kbd>) and console (<kbd>`</kbd>).
 - **Graceful EOF Auto-Exit ([`scripts/auto_exit_eof.lua`](scripts/auto_exit_eof.lua))**: Pauses on the last frame for 4s with a 2s countdown before exit; aborts instantly on user input.
-- **Resume Notification ([`scripts/resume_indicator.lua`](scripts/resume_indicator.lua))**: Shows `Resuming: (MM:SS / Total)` when continuing unfinished videos, suppressing accidental short clips &le; 100s.
-- **Anti-Spam Audio Cycler ([`scripts/cycle_audio.lua`](scripts/cycle_audio.lua))**: Debounced 30ms track cycler preventing audio pops, video freezes, and race conditions during rapid key presses.
+- **Anti-Spam Audio & Subtitle Engine ([`scripts/cycle_audio.lua`](scripts/cycle_audio.lua))**: Debounced 30ms track cycler and intelligent subtitle toggle (`j`/`J`) with track memory and English fallback, preventing audio pops, video freezes, and race conditions.
 
 ---
 
@@ -373,7 +372,7 @@ screenshot-jpeg-quality=99
 ### Author & Maintainer
 - **[Biraj Sarkar](https://github.com/Biraj2004)** ([@Biraj2004](https://github.com/Biraj2004)):
   - Creator and maintainer of **`biraj-mpv-conf`**.
-  - **`cycle_audio.lua`**: Anti-spam debounced audio & subtitle track cycler with two-pass deterministic matching and instant OSD.
+  - **`cycle_audio.lua`**: Anti-spam debounced audio & subtitle track cycler and intelligent display toggle with track memory, English auto-detection, and instant OSD.
   - **`sort_playlist.lua`**: Natural alphanumeric ascending playlist sorting engine with non-video clutter filtering.
   - **`hdr_badge.lua`**, **`resume_indicator.lua`**, & **`pause_notify.lua`**: Dynamic format badge overlay, on-screen resume notifications, and collision-free OSD pause alerts with native bare-metal opening speed.
   - **`auto_exit_eof.lua`**: Graceful 4s end-of-media auto-exit with 2s OSD countdown and instant seek abort.
