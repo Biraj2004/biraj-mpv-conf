@@ -3368,7 +3368,7 @@ local function osc_init()
     --sub_track
     ne = new_element("sub_track", "button")
     ne.enabled = state.sub_track_count > 0
-    ne.off = state.sub_track_count == 0 or not mp.get_property_native("sid")
+    ne.off = false
     ne.content = icons.subtitle
     ne.tooltipF = function () return track_tooltip(locale.subtitle, "sub", "sid", state.sub_track_count) end
     ne.nothingavailable = locale.no_subs
