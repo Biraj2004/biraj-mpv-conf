@@ -451,6 +451,46 @@ local function inject_into_png(file_path, info)
 end
 
 -- ---------------------------------------------------------
+-- In-Place JPEG Metadata Injection (Native Pure-Lua Fallback)
+-- ---------------------------------------------------------
+local function inject_into_jpeg(file_path, info)
+    local f, err = io.open(file_path, "rb")
+    if not f then
+        msg.warn("Cannot open JPEG for injection: " .. tostring(err))
+        return false
+    end
+    local full = f:read("*all")
+    f:close()
+    if not full or #full < 4 or full:sub(1, 2) ~= string.char(255, 216) then
+        return false
+    end
+
+    if full:find("Exif%z%z") then
+        return true
+    end
+
+    local exif_bytes = build_exif(info.exif_tags)
+    if not exif_bytes then
+        return true
+    end
+
+    local payload = "Exif\0\0" .. exif_bytes
+    local seg_len = #payload + 2
+    local app1 = string.char(255, 225) .. u16(seg_len) .. payload
+    local new_content = full:sub(1, 2) .. app1 .. full:sub(3)
+
+    local fw, werr = io.open(file_path, "wb")
+    if fw then
+        fw:write(new_content)
+        fw:close()
+        return true
+    else
+        msg.warn("Cannot write EXIF to JPEG: " .. tostring(werr))
+        return false
+    end
+end
+
+-- ---------------------------------------------------------
 -- Event Handlers
 -- ---------------------------------------------------------
 local function to_json_val(v)
@@ -473,47 +513,57 @@ local function on_screenshot_saved(file_path)
     local ext = file_path:lower():match("%.([^%.]+)$")
 
     if ext == "jpg" or ext == "jpeg" then
-        -- Ultra HDR (ISO 21496-1) + EXIF + GPS background processing via process_capture.py
-        local script_dir = mp.get_script_directory() or "scripts"
+        -- Ultra HDR (ISO 21496-1) + EXIF + GPS background processing via utils/process_capture.py
         local py_script = mp.find_config_file("utils/process_capture.py") or mp.command_native({"normalize-path", "~~/utils/process_capture.py"})
 
-        local json_parts = {
-            string.format('"is_hdr":%s', meta.is_hdr and "true" or "false"),
-            string.format('"hdr_format":%s', to_json_val(meta.hdr_format)),
-            string.format('"make":%s', to_json_val(meta.make)),
-            string.format('"model":%s', to_json_val(meta.model)),
-            string.format('"creation_time":%s', to_json_val(meta.creation_time)),
-            string.format('"raw_gps":%s', to_json_val(meta.raw_gps)),
-            string.format('"filename":%s', to_json_val(meta.filename)),
-            string.format('"time_str":%s', to_json_val(meta.time_str)),
-            string.format('"peak_nits":%s', tostring(meta.peak_nits or 1000.0))
-        }
-        local json_str = "{" .. table.concat(json_parts, ",") .. "}"
-
-        mp.command_native_async({
-            name = "subprocess",
-            playback_only = false,
-            capture_stdout = true,
-            capture_stderr = true,
-            args = { "python", py_script, file_path, json_str }
-        }, function(success, res, err)
-            if success and res and res.status == 0 then
-                msg.info("Ultra HDR & EXIF processed for " .. file_path)
-                if opts.show_osd_badge then
-                    local badge_tag = meta.is_hdr and "Ultra HDR" or "SDR"
-                    local dev_tag = (meta.model ~= "") and meta.model or meta.hdr_format
-                    local osd_text = string.format("Frame Captured: %s\n[%s • %s • Metadata Saved]", fname_only, badge_tag, dev_tag)
-                    mp.osd_message(osd_text, opts.osd_duration)
-                end
-            else
-                local err_msg = (res and res.stderr) and res.stderr or tostring(err)
-                msg.warn("Ultra HDR injection warning: " .. tostring(err_msg))
-                if opts.show_osd_badge then
-                    local osd_text = string.format("Frame Captured: %s\n[%s • Metadata Saved]", fname_only, meta.summary)
-                    mp.osd_message(osd_text, opts.osd_duration)
-                end
+        local function do_lua_jpeg_fallback(reason)
+            pcall(function() inject_into_jpeg(file_path, meta) end)
+            if opts.show_osd_badge then
+                local badge_tag = meta.is_hdr and (meta.hdr_format .. " -> sRGB") or "SDR"
+                local dev_tag = (meta.model ~= "") and meta.model or meta.hdr_format
+                local osd_text = string.format("Frame Captured: %s\n[%s • %s • Metadata Saved]", fname_only, badge_tag, dev_tag)
+                mp.osd_message(osd_text, opts.osd_duration)
             end
-        end)
+        end
+
+        if py_script then
+            local json_parts = {
+                string.format('"is_hdr":%s', meta.is_hdr and "true" or "false"),
+                string.format('"hdr_format":%s', to_json_val(meta.hdr_format)),
+                string.format('"make":%s', to_json_val(meta.make)),
+                string.format('"model":%s', to_json_val(meta.model)),
+                string.format('"creation_time":%s', to_json_val(meta.creation_time)),
+                string.format('"raw_gps":%s', to_json_val(meta.raw_gps)),
+                string.format('"filename":%s', to_json_val(meta.filename)),
+                string.format('"time_str":%s', to_json_val(meta.time_str)),
+                string.format('"peak_nits":%s', tostring(meta.peak_nits or 1000.0))
+            }
+            local json_str = "{" .. table.concat(json_parts, ",") .. "}"
+
+            mp.command_native_async({
+                name = "subprocess",
+                playback_only = false,
+                capture_stdout = true,
+                capture_stderr = true,
+                args = { "python", py_script, file_path, json_str }
+            }, function(success, res, err)
+                if success and res and res.status == 0 then
+                    msg.info("Ultra HDR & EXIF processed for " .. file_path)
+                    if opts.show_osd_badge then
+                        local badge_tag = meta.is_hdr and "Ultra HDR" or "SDR"
+                        local dev_tag = (meta.model ~= "") and meta.model or meta.hdr_format
+                        local osd_text = string.format("Frame Captured: %s\n[%s • %s • Metadata Saved]", fname_only, badge_tag, dev_tag)
+                        mp.osd_message(osd_text, opts.osd_duration)
+                    end
+                else
+                    local err_msg = (res and res.stderr and res.stderr ~= "") and res.stderr or tostring(err or (res and res.error_string))
+                    msg.info("Python Ultra HDR processor unavailable: " .. tostring(err_msg) .. ". Embedded EXIF via native Lua engine.")
+                    do_lua_jpeg_fallback(err_msg)
+                end
+            end)
+        else
+            do_lua_jpeg_fallback("process_capture.py not found")
+        end
     else
         -- PNG metadata injection fallback
         local success, err = pcall(function()
