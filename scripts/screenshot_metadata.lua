@@ -301,10 +301,27 @@ local function collect_metadata()
         exif_tags[0x0132] = normalized_date
     end
 
+    -- Check if MPV is tone-mapping to sRGB (screenshot-tag-colorspace=no)
+    local tag_colorspace = mp.get_property_bool("screenshot-tag-colorspace", false)
+    local is_tonemapped = (not tag_colorspace) and is_hdr
+
+    if is_tonemapped then
+        text_chunks["Color_Space"] = "sRGB (libplacebo tone-mapped)"
+        text_chunks["Source_HDR_Format"] = hdr_format
+        text_chunks["Tone_Mapping"] = "libplacebo dynamic tone-mapping"
+        text_chunks["Transfer_Function"] = "srgb"
+        text_chunks["Color_Primaries"] = "bt.709"
+    end
+
     -- Summary for OSD
-    local badge_elements = { hdr_format }
-    if primaries ~= "" and primaries ~= "auto" then
-        table.insert(badge_elements, primaries:upper())
+    local badge_elements = {}
+    if is_tonemapped then
+        table.insert(badge_elements, hdr_format .. " -> sRGB")
+    else
+        table.insert(badge_elements, hdr_format)
+        if primaries ~= "" and primaries ~= "auto" then
+            table.insert(badge_elements, primaries:upper())
+        end
     end
     if model ~= "" then
         table.insert(badge_elements, model)
@@ -315,6 +332,8 @@ local function collect_metadata()
         exif_tags = exif_tags,
         hdr_format = hdr_format,
         is_hdr = is_hdr,
+        is_tonemapped = is_tonemapped,
+        tag_colorspace = tag_colorspace,
         cicp_primaries = cicp_primaries,
         cicp_transfer = cicp_transfer,
         summary = table.concat(badge_elements, " • "),
@@ -340,30 +359,52 @@ local function inject_into_png(file_path, info)
         return false
     end
 
-    -- Check if cICP already exists in file
+    -- Check if cICP or sRGB already exists in file
     local has_cicp = (head:find("cICP") ~= nil)
+    local has_srgb = (head:find("sRGB") ~= nil)
 
-    -- If cICP is missing and ensure_cicp is enabled for HDR or wide-gamut
-    if not has_cicp and opts.ensure_cicp and info.is_hdr then
-        -- Insert cICP right after IHDR chunk (starts at byte 34)
-        f:seek("set", 0)
-        local full_content = f:read("*all")
-        f:close()
+    if info.is_tonemapped then
+        -- Tone-mapped sRGB capture: embed standard sRGB chunk (Perceptual intent = 0)
+        -- so all viewers (Windows Photos, browsers, apps) render it vibrant and accurate
+        if not has_srgb and not has_cicp then
+            f:seek("set", 0)
+            local full_content = f:read("*all")
+            f:close()
 
-        if full_content and #full_content > 33 then
-            local cicp_data = string.char(info.cicp_primaries, info.cicp_transfer, 0, 1)
-            local cicp_chunk = make_chunk("cICP", cicp_data)
-            local new_content = full_content:sub(1, 33) .. cicp_chunk .. full_content:sub(34)
-            local fw = io.open(file_path, "wb")
-            if fw then
-                fw:write(new_content)
-                fw:close()
+            if full_content and #full_content > 33 then
+                local srgb_chunk = make_chunk("sRGB", string.char(0))
+                local new_content = full_content:sub(1, 33) .. srgb_chunk .. full_content:sub(34)
+                local fw = io.open(file_path, "wb")
+                if fw then
+                    fw:write(new_content)
+                    fw:close()
+                end
             end
-        end
 
-        -- Reopen for chunk append
-        f = io.open(file_path, "r+b")
-        if not f then return false end
+            f = io.open(file_path, "r+b")
+            if not f then return false end
+        end
+    else
+        -- Raw HDR capture: Only inject cICP when tagging raw colorspace and ensure_cicp is enabled
+        if not has_cicp and opts.ensure_cicp and info.is_hdr and info.tag_colorspace then
+            f:seek("set", 0)
+            local full_content = f:read("*all")
+            f:close()
+
+            if full_content and #full_content > 33 then
+                local cicp_data = string.char(info.cicp_primaries, info.cicp_transfer, 0, 1)
+                local cicp_chunk = make_chunk("cICP", cicp_data)
+                local new_content = full_content:sub(1, 33) .. cicp_chunk .. full_content:sub(34)
+                local fw = io.open(file_path, "wb")
+                if fw then
+                    fw:write(new_content)
+                    fw:close()
+                end
+            end
+
+            f = io.open(file_path, "r+b")
+            if not f then return false end
+        end
     end
 
     -- 2. Locate IEND at the end of the file

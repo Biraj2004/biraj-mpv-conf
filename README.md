@@ -377,11 +377,12 @@ sub-color="#FFFFFF"
 sub-border-size=1.8
 sub-border-color="#000000"
 
-# Screenshots Directory
+# Frame Capture (16-bit TrueColor with accurate sRGB tone-mapping)
 screenshot-directory=~/Pictures/MPV-Screenshots
 screenshot-format=png
 screenshot-high-bit-depth=yes
-screenshot-tag-colorspace=yes
+screenshot-tag-colorspace=no
+screenshot-png-compression=4
 ```
 
 ---
