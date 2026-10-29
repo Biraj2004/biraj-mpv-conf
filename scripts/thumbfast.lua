@@ -27,13 +27,13 @@ local options = {
     scale_factor = 1,
 
     -- Apply tone-mapping, no to disable
-    tone_mapping = "auto",
+    tone_mapping = "no",
 
     -- Overlay id
     overlay_id = 42,
 
     -- Spawn thumbnailer on file load for faster initial thumbnails
-    spawn_first = false,
+    spawn_first = true,
 
     -- Close thumbnailer process after an inactivity period in seconds, 0 to disable
     quit_after_inactivity = 0,
@@ -45,7 +45,7 @@ local options = {
     audio = false,
 
     -- Enable hardware decoding
-    hwdec = false,
+    hwdec = true,
 
     -- Windows only: use native Windows API to write to pipe (requires LuaJIT)
     direct_io = false,
