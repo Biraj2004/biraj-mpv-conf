@@ -372,7 +372,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
     "    $sp = Join-Path $src $f;" ^
     "    if (Test-Path $sp) { Copy-Item -Path $sp -Destination (Join-Path $dst $f) -Force; Write-Host ('  Updated: ' + $f) };" ^
     "};" ^
-    "$cfgDirs = @('fonts', 'script-opts', 'scripts', 'Stremio-Play-in-MPV', 'Windows-Context-Menu');" ^
+    "$cfgDirs = @('fonts', 'script-opts', 'scripts', 'utils', 'Stremio-Play-in-MPV', 'Windows-Context-Menu');" ^
     "foreach ($d in $cfgDirs) {" ^
     "    $sd = Join-Path $src $d;" ^
     "    if (Test-Path $sd) {" ^

@@ -27,6 +27,11 @@ This repository consists of mpv configuration files, Lua scripts, and script opt
    - All bundled Lua scripts (`modernz.lua`, `thumbfast.lua`, `pause_indicator_lite.lua`, `open-file.lua`) are vetted from reputable open-source community developers ([Samillion](https://github.com/Samillion), [po5](https://github.com/po5), [rossy](https://github.com/rossy)).
    - Do not add arbitrary unverified `.lua` or `.js` scripts into your `scripts/` directory without inspecting their source code.
 
+4. **Frame Capture & Privacy Safeguards (`scripts/screenshot_metadata.lua` & `utils/process_capture.py`)**:
+   - Frame captures operate 100% locally and offline without external network or telemetry calls.
+   - All geolocation data (GPS coordinates, altitude, location tags) is strictly stripped and omitted from frame captures to protect personal privacy.
+   - Only technical stream properties present within the local video container (camera make/model, timestamps, colorimetry, codec, resolution) are embedded.
+
 ---
 
 ## Reporting a Vulnerability
