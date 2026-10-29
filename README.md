@@ -294,14 +294,16 @@ biraj-mpv-conf/
 | **Subtitles** | <kbd>v</kbd> / <kbd>Shift</kbd> + <kbd>v</kbd> (<kbd>V</kbd>) | Cycle subtitle tracks forward / backward *(includes Off/None)* |
 | | <kbd>z</kbd> / <kbd>Shift</kbd> + <kbd>z</kbd> (<kbd>Z</kbd>) | Adjust Subtitle delay (&minus;100ms / +100ms) |
 | | <kbd>r</kbd> / <kbd>t</kbd> | Shift subtitle vertical position up / down |
-| | <kbd>Ctrl</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
+| | <kbd>Alt</kbd> + <kbd>s</kbd> | Open Native File Dialog to add Subtitle track |
 | **Video & UI** | <kbd>f</kbd> / Double Click | Toggle Fullscreen |
 | | <kbd>Right Click</kbd> / <kbd>g</kbd> <kbd>m</kbd> | Open Context Menu |
 | | <kbd>l</kbd> | Toggle Dynamic Format Badge (DV / HDR10+ / HDR / SDR) |
 | | <kbd>Ctrl</kbd> + <kbd>y</kbd> | Cycle Streaming Quality (*720p &rarr; 1080p &rarr; 1440p &rarr; Best*) |
 | | <kbd>g</kbd> | Toggle Debanding filter |
 | | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
-| | <kbd>s</kbd> / <kbd>Shift</kbd> + <kbd>s</kbd> (<kbd>S</kbd>) | Capture Frame with Subtitles / Clean Frame (with background HDR & stream metadata injection) |
+| | <kbd>s</kbd> | **Capture Video Frame with Subtitles** (16-bit lossless PNG with HDR colorimetry & EXIF metadata) |
+| | <kbd>Shift</kbd> + <kbd>s</kbd> (<kbd>S</kbd>) | **Capture Clean Video Frame without Subtitles** (Direct decoded stream capture vs desktop `PrtScr`) |
+| | <kbd>Ctrl</kbd> + <kbd>s</kbd> | **Capture Frame with Window & OSD UI** (Captures player interface and seekbar) |
 | | <kbd>Ctrl</kbd> + <kbd>o</kbd> | Open Native File Dialog to load Media file(s) |
 
 ---
@@ -323,6 +325,22 @@ All configurations, tone-mapping curves, and real-time playback benchmarks were 
 
 > [!NOTE]
 > The format badge overlay reflects the **color metadata of the incoming video file**, confirming active tone-mapping on SDR displays.
+
+---
+
+## Direct Frame Capture vs Desktop PrintScreen (`PrtScr`)
+
+Capturing a frame in MPV using <kbd>s</kbd>, <kbd>S</kbd>, or <kbd>Ctrl</kbd> + <kbd>s</kbd> differs fundamentally from capturing your screen with the Windows **PrintScreen (`PrtScr`)** key or Snipping Tool:
+
+| Capability | Windows PrintScreen (`PrtScr`) / Snipping Tool | MPV Direct Frame Capture (<kbd>s</kbd> / <kbd>S</kbd> / <kbd>Ctrl+s</kbd>) |
+| :--- | :--- | :--- |
+| **Capture Source** | Desktop window framebuffer / screen surface | **Direct decoded video stream pipeline** (lossless) |
+| **Resolution** | Clamped to desktop resolution & Windows DPI scaling | **Bit-perfect native video resolution** (e.g. 4K 3840&times;2160, 8K) |
+| **Color Fidelity** | 8-bit desktop color | **Lossless 16-bit TrueColor** (`rgba64be` / `rgb48be`) |
+| **HDR Dynamic Range** | Tone-mapped and clipped to SDR desktop limits | **Native `cICP` chunk (ITU-T H.273)** preserving BT.2020 &amp; PQ/HLG |
+| **Embedded Metadata** | None (standard blank bitmap) | **Camera Make/Model, ISO 6709 GPS, Date, MaxCLL, Codec, Timecode** |
+| **Device Compatibility** | SDR only | **100% compatible across all post-2019 devices** (iOS 13+, Android 10+, macOS, Win 10/11) |
+| **Subtitle Independence** | Always burns whatever text is on screen | **Selective (<kbd>s</kbd> with subtitles, <kbd>S</kbd> clean frame)** |
 
 ---
 

@@ -382,6 +382,18 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Feature 12 -->
+                <div class="feature-card">
+                    <div class="feature-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Bit-Perfect Direct Frame Capture</h3>
+                    <p class="feature-desc">Unlike desktop screenshot tools (PrtScr / Snipping Tool) that grab the compressed SDR display framebuffer, <kbd>s</kbd> / <kbd>Shift</kbd>+<kbd>s</kbd> / <kbd>Ctrl</kbd>+<kbd>s</kbd> directly captures uncompressed video frames straight from the decoder pipeline at full native resolution and 16-bit color. Features automated background injection of standardized HDR colorimetry (<code>cICP</code> chunk), camera EXIF metadata, and stream tags without dropping a single playback frame.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -901,7 +913,7 @@
                             <td><span class="badge-cat">Subtitles</span></td>
                         </tr>
                         <tr data-cat="subtitles">
-                            <td><kbd>Ctrl</kbd> + <kbd>s</kbd></td>
+                            <td><kbd>Alt</kbd> + <kbd>s</kbd></td>
                             <td>Open Native File Dialog to attach Subtitle track</td>
                             <td><span class="badge-cat">Subtitles</span></td>
                         </tr>
@@ -934,7 +946,17 @@
                         </tr>
                         <tr data-cat="video">
                             <td><kbd>s</kbd></td>
-                            <td>Take Screenshot (saved to <code>~/Pictures/MPV-Screenshots/</code>)</td>
+                            <td><strong>Capture Video Frame (with Subtitles)</strong> &mdash; 16-bit direct stream frame capture (distinct from desktop PrtScr) with automated background HDR (<code>cICP</code>), camera EXIF, &amp; stream metadata injection (saved to <code>~/Pictures/MPV-Screenshots/</code>)</td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+                        <tr data-cat="video">
+                            <td><kbd>Shift</kbd> + <kbd>s</kbd> <small class="text-muted">(or <kbd>S</kbd>)</small></td>
+                            <td><strong>Capture Clean Video Frame (without Subtitles)</strong> &mdash; Direct decoded video stream capture for wallpapers, cinematography stills, and photography</td>
+                            <td><span class="badge-cat">Video</span></td>
+                        </tr>
+                        <tr data-cat="video">
+                            <td><kbd>Ctrl</kbd> + <kbd>s</kbd></td>
+                            <td><strong>Capture Frame with Window &amp; OSD UI</strong> &mdash; Direct frame capture including ModernZ OSC player controls, seekbar, and format badge overlay</td>
                             <td><span class="badge-cat">Video</span></td>
                         </tr>
 
@@ -1118,6 +1140,7 @@ blend-subtitles=no
                         <li><strong><code>sort_playlist.lua</code></strong> — High-speed natural ascending video playlist sorter & media filter with precomputed cached keys, 0ms background reordering, and defensive batch safety caps.</li>
                         <li><strong><code>hdr_badge.lua</code>, <code>resume_indicator.lua</code>, &amp; <code>pause_notify.lua</code></strong> — Dynamic floating format badge overlay (HDR10+, Dolby Vision, SDR), clean on-screen resume notifications ("Resuming: (14:22 / 24:00)"), and persistent pause OSD notifications ("Paused at hr:min:sec / total time") with event-driven zero-overhead observer architecture, dynamic collision avoidance with multi-line clearance, stats (<kbd>i</kbd>) &amp; console (<kbd>`</kbd>) auto-suppression, motion isolation, and native bare-metal startup speed.</li>
                         <li><strong><code>auto_exit_eof.lua</code></strong> — Graceful auto-exit on media/playlist finish with a 4s grace period, 2s native OSD warning, and instant seek/playback abort safeguards.</li>
+                        <li><strong><code>screenshot_metadata.lua</code></strong> — Automated background HDR frame capture &amp; metadata injection engine. Intercepts native 16-bit PNG frame captures and embeds standardized ITU-T H.273 colorimetry (<code>cICP</code> chunk), camera EXIF tags (Make, Model, DateTime), and rich stream metadata (Title, Timestamp, Primaries, TRC, Matrix, GPS) in &lt;5ms without interrupting 4K 60fps playback.</li>
                         <li><strong>UTF-8 Unicode Dialog Fix (<code>open-file.lua</code>)</strong> — PowerShell UTF-8 standard output encoding fix to support curly quotes, apostrophes, and accented symbols in media paths.</li>
                         <li><strong>Windows Context Menu (<code>Windows-Context-Menu/</code>)</strong> — Native File Explorer right-click integration ("Play with MPV as a Playlist") for single folders, folder backgrounds, drives, and multi-selected video files.</li>
                         <li><strong>Engine Architecture & Subtitles</strong> — Dynamic RAM fast-seeking cache (250MB local, up to 425MB streaming buffer, zero SSD wear), <code>gpu-next</code> libplacebo tone-mapping pipeline, and tailored 50px high-contrast subtitle typography.</li>

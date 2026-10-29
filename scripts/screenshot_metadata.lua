@@ -1,9 +1,9 @@
 --[[
-    screenshot_metadata.lua - Background HDR and Stream Metadata Injection for mpv
+    screenshot_metadata.lua - Background HDR Frame Capture & Stream Metadata Injection for mpv
     Part of biraj-mpv-conf (https://github.com/Biraj2004/biraj-mpv-conf)
 
-    Automatically intercepts screenshots captured via 's', 'S', ModernZ GUI, or commands,
-    and embeds rich stream/container properties in the background:
+    Direct decoded stream frame capture (distinct from desktop PrtScr) triggered via
+    's', 'S', 'Ctrl+s', or context menu, automatically embedding rich stream properties:
       - Standardized cICP Chunk (ITU-T H.273 / ISO 23091-2) for true HDR on iOS 13+, macOS, Windows 10/11, Android 10+
       - Standard TIFF/EXIF 'eXIf' Chunk (Make, Model, DateTime, Description, Software)
       - Standard PNG 'tEXt' Chunks (Title, Timestamp, Frame, HDR Format, Primaries, TRC, Matrix,
@@ -419,7 +419,7 @@ local function on_screenshot_saved(file_path)
         msg.info(string.format("Metadata embedded into %s [%s]", file_path, meta.summary))
         if opts.show_osd_badge then
             local fname_only = file_path:match("[^/\\]+$") or file_path
-            local osd_text = string.format("Screenshot: %s\n[%s • Metadata Saved]", fname_only, meta.summary)
+            local osd_text = string.format("Frame Captured: %s\n[%s • Metadata Saved]", fname_only, meta.summary)
             mp.osd_message(osd_text, opts.osd_duration)
         end
     else
