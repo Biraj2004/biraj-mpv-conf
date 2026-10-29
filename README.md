@@ -301,7 +301,7 @@ biraj-mpv-conf/
 | | <kbd>Ctrl</kbd> + <kbd>y</kbd> | Cycle Streaming Quality (*720p &rarr; 1080p &rarr; 1440p &rarr; Best*) |
 | | <kbd>g</kbd> | Toggle Debanding filter |
 | | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
-| | <kbd>s</kbd> | **Capture Video Frame with Subtitles** (Universal Ultra HDR / ISO 21496-1 JPEG with EXIF & GPS metadata) |
+| | <kbd>s</kbd> | **Capture Video Frame with Subtitles** (Universal Ultra HDR / ISO 21496-1 JPEG with EXIF metadata) |
 | | <kbd>Shift</kbd> + <kbd>s</kbd> (<kbd>S</kbd>) | **Capture Clean Video Frame without Subtitles** (Direct decoded stream capture vs desktop `PrtScr`) |
 | | <kbd>Ctrl</kbd> + <kbd>s</kbd> | **Capture Frame with Window & OSD UI** (Captures player interface and seekbar) |
 | | <kbd>Ctrl</kbd> + <kbd>o</kbd> | Open Native File Dialog to load Media file(s) |
@@ -338,7 +338,7 @@ Capturing a frame in MPV using <kbd>s</kbd>, <kbd>S</kbd>, or <kbd>Ctrl</kbd> + 
 | **Resolution** | Clamped to desktop resolution & Windows DPI scaling | **Bit-perfect native video resolution** (e.g. 4K 3840&times;2160, 8K) |
 | **Color Fidelity** | 8-bit desktop color | **Perceptually lossless high-precision JPEG** (~1.8 MB vs 41 MB PNG) |
 | **HDR Dynamic Range** | Tone-mapped and clipped to SDR desktop limits | **Universal ISO 21496-1 / Ultra HDR Gain Map** (Accurate SDR base + native HDR boost) |
-| **Embedded Metadata** | None (standard blank bitmap) | **Camera Make/Model (e.g. "Apple iPhone 13"), DateTime, GPS Location Pin, Timecode** |
+| **Embedded Metadata** | None (standard blank bitmap) | **Camera Make/Model (e.g. "Apple iPhone 13"), DateTime, Timecode (GPS strictly excluded)** |
 | **Cross-Platform Compatibility** | SDR only | **100% universal**: non-washed-out in Windows Photos / WhatsApp, full HDR badge & glow in Apple Photos & Google Photos |
 | **Subtitle Independence** | Always burns whatever text is on screen | **Selective (<kbd>s</kbd> with subtitles, <kbd>S</kbd> clean frame)** |
 
@@ -377,7 +377,7 @@ sub-color="#FFFFFF"
 sub-border-size=1.8
 sub-border-color="#000000"
 
-# Frame Capture (Universal Ultra HDR JPEG with ISO 21496-1 Gain Map & EXIF/GPS)
+# Frame Capture (Universal Ultra HDR JPEG with ISO 21496-1 Gain Map & EXIF)
 screenshot-directory=~/Pictures/MPV-Screenshots
 screenshot-format=jpg
 screenshot-jpeg-quality=99
@@ -394,7 +394,7 @@ screenshot-tag-colorspace=no
   - Creator and maintainer of **`biraj-mpv-conf`**.
   - **`cycle_audio.lua`**: Anti-spam debounced audio & subtitle track cycler and intelligent display toggle with track memory, English auto-detection, and instant OSD.
   - **`sort_playlist.lua`**: Natural alphanumeric ascending playlist sorting engine with non-video clutter filtering.
-  - **`screenshot_metadata.lua` & `utils/process_capture.py`**: Automated background Ultra HDR (ISO 21496-1) & metadata injection engine. Encodes an embedded HDR Gain Map (`hdrgm:Version="1.0"`, MPF APP2) and injects camera EXIF tags (Make, Model, DateTime) and GPS coordinates into frame captures. Delivers 100% accurate, non-washed-out rendering on SDR screens (Windows Photos, WhatsApp), full dynamic range on HDR screens (Apple Photos, Google Photos), and ~95% smaller file sizes (~1.8 MB vs 41 MB) without dropping playback frames.
+  - **`screenshot_metadata.lua` & `utils/process_capture.py`**: Automated background Ultra HDR (ISO 21496-1) & metadata injection engine. Encodes an embedded HDR Gain Map (`hdrgm:Version="1.0"`, MPF APP2) and injects camera EXIF tags (Make, Model, DateTime) into frame captures (GPS is strictly excluded to preserve privacy). Delivers 100% accurate, non-washed-out rendering on SDR screens (Windows Photos, WhatsApp), full dynamic range on HDR screens (Apple Photos, Google Photos), and ~95% smaller file sizes (~1.8 MB vs 41 MB) without dropping playback frames.
   - **`hdr_badge.lua`**, **`resume_indicator.lua`**, & **`pause_notify.lua`**: Dynamic format badge overlay, on-screen resume notifications, and collision-free OSD pause alerts with native bare-metal opening speed.
   - **`auto_exit_eof.lua`**: Graceful 4s end-of-media auto-exit with 2s OSD countdown and instant seek abort.
   - **`single_instance.lua`**: Win32 FFI zero-CPU sleep implementation for multi-file enqueueing.

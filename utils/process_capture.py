@@ -6,7 +6,8 @@ Part of biraj-mpv-conf (https://github.com/Biraj2004/biraj-mpv-conf)
 Converts captured frames into standard ISO 21496-1 / Google Ultra HDR / Apple HDR Gain Map JPEGs:
   - Base Image: Tone-mapped sRGB JPEG (100% accurate, non-washed-out on SDR displays, Windows Photos, WhatsApp, etc.)
   - Gain Map: Embedded auxiliary image with MPF APP2 (0xFFE2) and XMP APP1 (hdrgm:Version="1.0") for native HDR displays (Apple Photos, Google Photos, HDR screens)
-  - EXIF & GPS: Injected into primary APP1 segment (Make, Model, DateTime, Description, GPS Latitude/Longitude/Altitude)
+  - EXIF Metadata: Injected into primary APP1 segment (Make, Model, DateTime, Description, Software)
+  - Privacy: Frame captures NEVER include GPS data (kept strictly exclusive to original media)
   - File Size: ~1.5 - 2.5 MB (95% smaller than raw 41MB PNG)
 """
 
@@ -34,37 +35,6 @@ except ImportError:
     HAS_ULTRA_HDR = False
 
 
-def parse_iso6709(iso_str):
-    """
-    Parses ISO 6709 string (e.g. '+26.3247+089.4498+048.546/' or '+26.3247-089.4498/').
-    Returns (lat_deg, lon_deg, alt_m) or None.
-    """
-    if not iso_str:
-        return None
-    iso_clean = str(iso_str).strip().strip('/')
-    m = re.match(r'^([+-])([\d.]+)([+-])([\d.]+)(?:([+-][\d.]+))?', iso_clean)
-    if not m:
-        return None
-    lat_sign, lat_str, lon_sign, lon_str, alt_str = m.groups()
-    try:
-        lat = float(lat_str) * (-1 if lat_sign == '-' else 1)
-        lon = float(lon_str) * (-1 if lon_sign == '-' else 1)
-        alt = float(alt_str) if alt_str else None
-        return lat, lon, alt
-    except ValueError:
-        return None
-
-
-def to_dms(deg_val):
-    """Converts decimal degrees to (deg, min, sec) floats for EXIF rational format."""
-    deg_val = abs(deg_val)
-    d = int(deg_val)
-    rem = (deg_val - d) * 60.0
-    m = int(rem)
-    s = round((rem - m) * 60.0, 3)
-    return (float(d), float(m), float(s))
-
-
 def normalize_datetime(dt_str):
     """Normalizes ISO or QuickTime date strings to standard EXIF 'YYYY:MM:DD HH:MM:SS' format."""
     if not dt_str:
@@ -78,8 +48,9 @@ def normalize_datetime(dt_str):
 
 def build_exif_app1(meta):
     """
-    Builds a standard JPEG APP1 segment containing EXIF IFD0 and GPS IFD.
+    Builds a standard JPEG APP1 segment containing EXIF IFD0.
     Returns bytes or b''.
+    NOTE: GPS data is strictly excluded from frame captures.
     """
     if not HAS_PIL:
         return b''
@@ -92,7 +63,6 @@ def build_exif_app1(meta):
     filename = meta.get("filename") or ""
     time_str = meta.get("time_str") or ""
     hdr_format = meta.get("hdr_format") or "SDR"
-    raw_gps = meta.get("raw_gps") or ""
 
     # Primary IFD tags
     if make:
@@ -105,31 +75,7 @@ def build_exif_app1(meta):
         exif[ExifTags.Base.DateTime] = normalized_date
 
     exif[ExifTags.Base.Software] = "mpv (biraj-mpv-conf)"
-
-    desc_parts = [f"{filename} @ {time_str}", f"[{hdr_format}]"]
-    gps_info = parse_iso6709(raw_gps)
-    if gps_info:
-        lat, lon, alt = gps_info
-        lat_dir = "S" if lat < 0 else "N"
-        lon_dir = "W" if lon < 0 else "E"
-        coord_str = f"{abs(lat):.4f}° {lat_dir}, {abs(lon):.4f}° {lon_dir}"
-        if alt is not None:
-            coord_str += f" ({alt:.1f}m)"
-        desc_parts.append(f"({coord_str})")
-
-    exif[ExifTags.Base.ImageDescription] = " ".join(desc_parts)
-
-    # GPS IFD tags
-    if gps_info:
-        lat, lon, alt = gps_info
-        gps_ifd = exif.get_ifd(ExifTags.IFD.GPSInfo)
-        gps_ifd[ExifTags.GPS.GPSLatitudeRef] = "S" if lat < 0 else "N"
-        gps_ifd[ExifTags.GPS.GPSLatitude] = to_dms(lat)
-        gps_ifd[ExifTags.GPS.GPSLongitudeRef] = "W" if lon < 0 else "E"
-        gps_ifd[ExifTags.GPS.GPSLongitude] = to_dms(lon)
-        if alt is not None:
-            gps_ifd[ExifTags.GPS.GPSAltitudeRef] = 1 if alt < 0 else 0
-            gps_ifd[ExifTags.GPS.GPSAltitude] = abs(alt)
+    exif[ExifTags.Base.ImageDescription] = f"{filename} @ {time_str} [{hdr_format}]"
 
     try:
         exif_bytes = exif.tobytes()

@@ -7,7 +7,7 @@
       - Standardized cICP Chunk (ITU-T H.273 / ISO 23091-2) for true HDR on iOS 13+, macOS, Windows 10/11, Android 10+
       - Standard TIFF/EXIF 'eXIf' Chunk (Make, Model, DateTime, Description, Software)
       - Standard PNG 'tEXt' Chunks (Title, Timestamp, Frame, HDR Format, Primaries, TRC, Matrix,
-        Mastering Luminance, MaxCLL/MaxFALL, GPS, Codec, Resolution)
+        Mastering Luminance, MaxCLL/MaxFALL, Codec, Resolution)
       - Zero playback lag / zero frame drops (pure in-place chunk injection in <10ms)
 --]]
 
@@ -129,26 +129,6 @@ local function format_time(seconds)
     return string.format("%02d:%02d:%06.3f", h, m, s)
 end
 
-local function parse_iso6709(iso_str)
-    if not iso_str or iso_str == "" then return nil end
-    -- Example: "+26.3247+089.4498+048.546/" or "+26.3247-089.4498/"
-    local lat_sign, lat_val, lon_sign, lon_val, alt = iso_str:match("([%+%-])([%d%.]+)([%+%-])([%d%.]+)([%+%-%d%.]*)")
-    if not lat_val or not lon_val then return nil end
-    local lat_num = tonumber(lat_val) or 0
-    local lon_num = tonumber(lon_val) or 0
-    local lat_dir = (lat_sign == "-") and "S" or "N"
-    local lon_dir = (lon_sign == "-") and "W" or "E"
-    local res = string.format("%.4f° %s, %.4f° %s", lat_num, lat_dir, lon_num, lon_dir)
-    if alt and alt ~= "" and alt ~= "/" then
-        local alt_clean = alt:gsub("/", "")
-        local alt_num = tonumber(alt_clean)
-        if alt_num then
-            res = res .. string.format(" (Alt: %.1f m)", alt_num)
-        end
-    end
-    return res
-end
-
 local function normalize_date(date_str)
     if not date_str or date_str == "" then return nil end
     local y, mo, d, ho, mi, se = date_str:match("(%d%d%d%d)%-(%d%d)%-(%d%d)[T ](%d%d):(%d%d):(%d%d)")
@@ -230,8 +210,6 @@ local function collect_metadata()
     local make = meta["com.apple.quicktime.make"] or meta["make"] or meta["Make"] or ""
     local model = meta["com.apple.quicktime.model"] or meta["model"] or meta["Model"] or ""
     local creation_time = meta["com.apple.quicktime.creationdate"] or meta["creation_time"] or meta["date"] or ""
-    local raw_gps = meta["com.apple.quicktime.location.ISO6709"] or meta["location"] or ""
-    local readable_gps = parse_iso6709(raw_gps)
     local software_tag = meta["com.apple.quicktime.software"] or meta["encoder"] or "mpv (biraj-mpv-conf)"
 
     -- Resolution and Aspect Ratio
@@ -276,8 +254,6 @@ local function collect_metadata()
     if make ~= "" then text_chunks["Camera_Make"] = make end
     if model ~= "" then text_chunks["Camera_Model"] = model end
     if creation_time ~= "" then text_chunks["Creation_Time"] = creation_time end
-    if raw_gps ~= "" then text_chunks["GPS_ISO6709"] = raw_gps end
-    if readable_gps then text_chunks["GPS_Coordinates"] = readable_gps end
 
     -- Web stream metadata
     local artist = meta["artist"] or meta["uploader"] or meta["channel"] or ""
@@ -285,9 +261,6 @@ local function collect_metadata()
 
     -- Standard EXIF tags (IFD0)
     local exif_desc = string.format("%s @ %s [%s]", filename, time_str, hdr_format)
-    if readable_gps then
-        exif_desc = exif_desc .. " (" .. readable_gps .. ")"
-    end
 
     local exif_tags = {
         [0x0131] = "mpv player (biraj-mpv-conf)",
@@ -344,7 +317,6 @@ local function collect_metadata()
         make = make,
         model = model,
         creation_time = creation_time,
-        raw_gps = raw_gps,
         peak_nits = peak_val
     }
 end
@@ -513,7 +485,7 @@ local function on_screenshot_saved(file_path)
     local ext = file_path:lower():match("%.([^%.]+)$")
 
     if ext == "jpg" or ext == "jpeg" then
-        -- Ultra HDR (ISO 21496-1) + EXIF + GPS background processing via utils/process_capture.py
+        -- Ultra HDR (ISO 21496-1) + EXIF background processing (GPS excluded for privacy) via utils/process_capture.py
         local py_script = mp.find_config_file("utils/process_capture.py") or mp.command_native({"normalize-path", "~~/utils/process_capture.py"})
 
         local function do_lua_jpeg_fallback(reason)
@@ -533,7 +505,6 @@ local function on_screenshot_saved(file_path)
                 string.format('"make":%s', to_json_val(meta.make)),
                 string.format('"model":%s', to_json_val(meta.model)),
                 string.format('"creation_time":%s', to_json_val(meta.creation_time)),
-                string.format('"raw_gps":%s', to_json_val(meta.raw_gps)),
                 string.format('"filename":%s', to_json_val(meta.filename)),
                 string.format('"time_str":%s', to_json_val(meta.time_str)),
                 string.format('"peak_nits":%s', tostring(meta.peak_nits or 1000.0))
