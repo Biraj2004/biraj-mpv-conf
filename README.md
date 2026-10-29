@@ -301,7 +301,7 @@ biraj-mpv-conf/
 | | <kbd>Ctrl</kbd> + <kbd>y</kbd> | Cycle Streaming Quality (*720p &rarr; 1080p &rarr; 1440p &rarr; Best*) |
 | | <kbd>g</kbd> | Toggle Debanding filter |
 | | <kbd>i</kbd> | Toggle Real-Time Performance & Dropped Frame Statistics |
-| | <kbd>s</kbd> / <kbd>Shift</kbd> + <kbd>s</kbd> (<kbd>S</kbd>) | Take Screenshot / Screenshot without subtitles |
+| | <kbd>s</kbd> / <kbd>Shift</kbd> + <kbd>s</kbd> (<kbd>S</kbd>) | Capture Frame with Subtitles / Clean Frame (with background HDR & stream metadata injection) |
 | | <kbd>Ctrl</kbd> + <kbd>o</kbd> | Open Native File Dialog to load Media file(s) |
 
 ---
@@ -361,8 +361,9 @@ sub-border-color="#000000"
 
 # Screenshots Directory
 screenshot-directory=~/Pictures/MPV-Screenshots
-screenshot-format=jpeg
-screenshot-jpeg-quality=99
+screenshot-format=png
+screenshot-high-bit-depth=yes
+screenshot-tag-colorspace=yes
 ```
 
 ---
@@ -374,6 +375,7 @@ screenshot-jpeg-quality=99
   - Creator and maintainer of **`biraj-mpv-conf`**.
   - **`cycle_audio.lua`**: Anti-spam debounced audio & subtitle track cycler and intelligent display toggle with track memory, English auto-detection, and instant OSD.
   - **`sort_playlist.lua`**: Natural alphanumeric ascending playlist sorting engine with non-video clutter filtering.
+  - **`screenshot_metadata.lua`**: Automated background metadata & HDR tag injector embedding `cICP` (ITU-T H.273), TIFF/EXIF `eXIf`, and `tEXt` chunks (Title, Timestamp, Dolby Vision / HDR10+, Camera Make/Model, GPS) into 16-bit PNG frame captures.
   - **`hdr_badge.lua`**, **`resume_indicator.lua`**, & **`pause_notify.lua`**: Dynamic format badge overlay, on-screen resume notifications, and collision-free OSD pause alerts with native bare-metal opening speed.
   - **`auto_exit_eof.lua`**: Graceful 4s end-of-media auto-exit with 2s OSD countdown and instant seek abort.
   - **`single_instance.lua`**: Win32 FFI zero-CPU sleep implementation for multi-file enqueueing.

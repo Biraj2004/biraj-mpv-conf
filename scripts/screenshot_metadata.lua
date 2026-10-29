@@ -459,3 +459,4 @@ end)
 mp.add_key_binding(nil, "capture-window", function()
     trigger_capture("window")
 end)
+
