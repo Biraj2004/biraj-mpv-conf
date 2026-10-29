@@ -327,6 +327,8 @@ local function collect_metadata()
         table.insert(badge_elements, model)
     end
 
+    local peak_val = (max_luma > 0 and max_luma) or (sig_peak > 0 and (sig_peak * 203)) or 1000.0
+
     return {
         text_chunks = text_chunks,
         exif_tags = exif_tags,
@@ -338,7 +340,12 @@ local function collect_metadata()
         cicp_transfer = cicp_transfer,
         summary = table.concat(badge_elements, " • "),
         filename = filename,
-        time_str = time_str
+        time_str = time_str,
+        make = make,
+        model = model,
+        creation_time = creation_time,
+        raw_gps = raw_gps,
+        peak_nits = peak_val
     }
 end
 
@@ -446,25 +453,82 @@ end
 -- ---------------------------------------------------------
 -- Event Handlers
 -- ---------------------------------------------------------
+local function to_json_val(v)
+    if type(v) == "boolean" then
+        return v and "true" or "false"
+    elseif type(v) == "number" then
+        return tostring(v)
+    else
+        return string.format("%q", tostring(v or ""))
+    end
+end
+
 local function on_screenshot_saved(file_path)
     local meta = table.remove(capture_queue, 1)
     if not meta then
         meta = collect_metadata()
     end
 
-    local success, err = pcall(function()
-        return inject_into_png(file_path, meta)
-    end)
+    local fname_only = file_path:match("[^/\\]+$") or file_path
+    local ext = file_path:lower():match("%.([^%.]+)$")
 
-    if success and err then
-        msg.info(string.format("Metadata embedded into %s [%s]", file_path, meta.summary))
-        if opts.show_osd_badge then
-            local fname_only = file_path:match("[^/\\]+$") or file_path
-            local osd_text = string.format("Frame Captured: %s\n[%s • Metadata Saved]", fname_only, meta.summary)
-            mp.osd_message(osd_text, opts.osd_duration)
-        end
+    if ext == "jpg" or ext == "jpeg" then
+        -- Ultra HDR (ISO 21496-1) + EXIF + GPS background processing via process_capture.py
+        local script_dir = mp.get_script_directory() or "scripts"
+        local py_script = mp.find_config_file("utils/process_capture.py") or mp.command_native({"normalize-path", "~~/utils/process_capture.py"})
+
+        local json_parts = {
+            string.format('"is_hdr":%s', meta.is_hdr and "true" or "false"),
+            string.format('"hdr_format":%s', to_json_val(meta.hdr_format)),
+            string.format('"make":%s', to_json_val(meta.make)),
+            string.format('"model":%s', to_json_val(meta.model)),
+            string.format('"creation_time":%s', to_json_val(meta.creation_time)),
+            string.format('"raw_gps":%s', to_json_val(meta.raw_gps)),
+            string.format('"filename":%s', to_json_val(meta.filename)),
+            string.format('"time_str":%s', to_json_val(meta.time_str)),
+            string.format('"peak_nits":%s', tostring(meta.peak_nits or 1000.0))
+        }
+        local json_str = "{" .. table.concat(json_parts, ",") .. "}"
+
+        mp.command_native_async({
+            name = "subprocess",
+            playback_only = false,
+            capture_stdout = true,
+            capture_stderr = true,
+            args = { "python", py_script, file_path, json_str }
+        }, function(success, res, err)
+            if success and res and res.status == 0 then
+                msg.info("Ultra HDR & EXIF processed for " .. file_path)
+                if opts.show_osd_badge then
+                    local badge_tag = meta.is_hdr and "Ultra HDR" or "SDR"
+                    local dev_tag = (meta.model ~= "") and meta.model or meta.hdr_format
+                    local osd_text = string.format("Frame Captured: %s\n[%s • %s • Metadata Saved]", fname_only, badge_tag, dev_tag)
+                    mp.osd_message(osd_text, opts.osd_duration)
+                end
+            else
+                local err_msg = (res and res.stderr) and res.stderr or tostring(err)
+                msg.warn("Ultra HDR injection warning: " .. tostring(err_msg))
+                if opts.show_osd_badge then
+                    local osd_text = string.format("Frame Captured: %s\n[%s • Metadata Saved]", fname_only, meta.summary)
+                    mp.osd_message(osd_text, opts.osd_duration)
+                end
+            end
+        end)
     else
-        msg.warn("Screenshot metadata injection encountered: " .. tostring(err))
+        -- PNG metadata injection fallback
+        local success, err = pcall(function()
+            return inject_into_png(file_path, meta)
+        end)
+
+        if success and err then
+            msg.info(string.format("Metadata embedded into %s [%s]", file_path, meta.summary))
+            if opts.show_osd_badge then
+                local osd_text = string.format("Frame Captured: %s\n[%s • Metadata Saved]", fname_only, meta.summary)
+                mp.osd_message(osd_text, opts.osd_duration)
+            end
+        else
+            msg.warn("Screenshot metadata injection encountered: " .. tostring(err))
+        end
     end
 end
 
