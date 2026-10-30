@@ -475,6 +475,29 @@ local function to_json_val(v)
     end
 end
 
+local function show_capture_osd(fname_only, meta)
+    if not opts.show_osd_badge then return end
+    local elements = {}
+    if meta.is_hdr then
+        table.insert(elements, "Ultra HDR")
+        if meta.model ~= "" then
+            table.insert(elements, meta.model)
+        elseif meta.hdr_format ~= "" and meta.hdr_format ~= "Ultra HDR" then
+            table.insert(elements, meta.hdr_format)
+        end
+    else
+        table.insert(elements, "SDR")
+        if meta.model ~= "" then
+            table.insert(elements, meta.model)
+        end
+    end
+    table.insert(elements, "Metadata Saved")
+
+    local osd_text = string.format("Frame Captured: %s\n[%s]", fname_only, table.concat(elements, " • "))
+    mp.osd_message(osd_text, opts.osd_duration)
+    mp.commandv("script-message-to", "pause_notify", "osd-notify", osd_text, tostring(opts.osd_duration))
+end
+
 local function on_screenshot_saved(file_path)
     local meta = table.remove(capture_queue, 1)
     if not meta then
@@ -484,18 +507,15 @@ local function on_screenshot_saved(file_path)
     local fname_only = file_path:match("[^/\\]+$") or file_path
     local ext = file_path:lower():match("%.([^%.]+)$")
 
+    -- Instant OSD feedback (<10ms): sync immediately with user keystroke and coordinate with pause_notify
+    show_capture_osd(fname_only, meta)
+
     if ext == "jpg" or ext == "jpeg" then
         -- Ultra HDR (ISO 21496-1) + EXIF background processing (GPS excluded for privacy) via utils/process_capture.py
         local py_script = mp.find_config_file("utils/process_capture.py") or mp.command_native({"normalize-path", "~~/utils/process_capture.py"})
 
         local function do_lua_jpeg_fallback(reason)
             pcall(function() inject_into_jpeg(file_path, meta) end)
-            if opts.show_osd_badge then
-                local badge_tag = meta.is_hdr and (meta.hdr_format .. " -> sRGB") or "SDR"
-                local dev_tag = (meta.model ~= "") and meta.model or meta.hdr_format
-                local osd_text = string.format("Frame Captured: %s\n[%s • %s • Metadata Saved]", fname_only, badge_tag, dev_tag)
-                mp.osd_message(osd_text, opts.osd_duration)
-            end
         end
 
         if py_script then
@@ -520,12 +540,6 @@ local function on_screenshot_saved(file_path)
             }, function(success, res, err)
                 if success and res and res.status == 0 then
                     msg.info("Ultra HDR & EXIF processed for " .. file_path)
-                    if opts.show_osd_badge then
-                        local badge_tag = meta.is_hdr and "Ultra HDR" or "SDR"
-                        local dev_tag = (meta.model ~= "") and meta.model or meta.hdr_format
-                        local osd_text = string.format("Frame Captured: %s\n[%s • %s • Metadata Saved]", fname_only, badge_tag, dev_tag)
-                        mp.osd_message(osd_text, opts.osd_duration)
-                    end
                 else
                     local err_msg = (res and res.stderr and res.stderr ~= "") and res.stderr or tostring(err or (res and res.error_string))
                     msg.info("Python Ultra HDR processor unavailable: " .. tostring(err_msg) .. ". Embedded EXIF via native Lua engine.")
@@ -543,10 +557,6 @@ local function on_screenshot_saved(file_path)
 
         if success and err then
             msg.info(string.format("Metadata embedded into %s [%s]", file_path, meta.summary))
-            if opts.show_osd_badge then
-                local osd_text = string.format("Frame Captured: %s\n[%s • Metadata Saved]", fname_only, meta.summary)
-                mp.osd_message(osd_text, opts.osd_duration)
-            end
         else
             msg.warn("Screenshot metadata injection encountered: " .. tostring(err))
         end

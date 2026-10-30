@@ -413,9 +413,16 @@ screenshot-tag-colorspace=no
 
 ---
 
-## Security
+## Privacy, Security & Offline Guarantee
 
-Please refer to the [SECURITY.md](SECURITY.md) policy for supported versions and vulnerability disclosure.
+`biraj-mpv-conf` is engineered strictly with an **offline-first, zero-telemetry, and privacy-preserving** architecture:
+
+- **100% Native & Local Execution**: All configuration profiles, Lua scripts, and post-processing tools execute strictly on your local machine. No external servers or background daemons are ever contacted.
+- **Zero Data Collection, Storage, or Transmission**: The suite does not record, log, or transmit your watch history, file paths, or system information. Absolutely no analytics or tracking data is sent anywhere.
+- **Privacy-Safe Frame Captures**: Video frame captures extract technical playback properties directly from the active local media container. **All GPS location tags and coordinates are strictly stripped and excluded** to prevent accidental exposure of your physical location.
+- **Fully Open-Source & Auditable**: Every single line of code across all `.lua`, `.py`, and `.conf` files is plain-text, transparent, and completely free of proprietary or obfuscated binaries.
+
+For our complete security considerations and vulnerability reporting guidelines, please review our official [**SECURITY.md**](SECURITY.md) policy.
 
 ---
 
